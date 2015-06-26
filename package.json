@@ -6,18 +6,27 @@
     "type": "git",
     "url": "https://github.com/achtungonline/client.git"
   },
-  "author": [{
-    "name": "Lucas Wiener",
-    "email": "lucas@wiener.se"
-  }, {
-    "name": "Mathias Lindblom",
-    "email": "ommatte@gmail.com"
-  }],
+  "author": [
+    {
+      "name": "Lucas Wiener",
+      "email": "lucas@wiener.se"
+    },
+    {
+      "name": "Mathias Lindblom",
+      "email": "ommatte@gmail.com"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/achtungonline/client/issues"
   },
   "dependencies": {
     "core": "achtungonline/core"
   },
-  "homepage": "https://github.com/achtungonline/client"
+  "homepage": "https://github.com/achtungonline/client",
+  "devDependencies": {
+    "browserify": "^10.2.4",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^3.8.0",
+    "load-grunt-tasks": "^3.2.0"
+  }
 }

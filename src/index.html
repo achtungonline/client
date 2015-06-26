@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="game-canvas" width="1000" height="1000"></canvas>
+
+        <script src="../build/engine.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event) {
+                var canvas = document.getElementById("game-canvas");
+                var canvasContext = canvas.getContext("2d");
+                var engine = Engine();
+                engine.start(canvasContext);
+            });
+        </script>
+    </body>
+</html>
