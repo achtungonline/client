@@ -1,0 +1,23 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "description": "The web client of the game.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/achtungonline/client.git"
+  },
+  "author": [{
+    "name": "Lucas Wiener",
+    "email": "lucas@wiener.se"
+  }, {
+    "name": "Mathias Lindblom",
+    "email": "ommatte@gmail.com"
+  }],
+  "bugs": {
+    "url": "https://github.com/achtungonline/client/issues"
+  },
+  "dependencies": {
+    "core": "achtungonline/core"
+  },
+  "homepage": "https://github.com/achtungonline/client"
+}
