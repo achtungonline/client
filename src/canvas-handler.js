@@ -1,9 +1,9 @@
 module.exports = function CanvasHandler(canvasContext) {
-	return {
-			: function(shape) {
-			if (shape.type === "rectangle") {
+    return {
+        create: function (shape) {
+            if (shape.type === "rectangle") {
 
-			}
-		}
-	}
+            }
+        }
+    }
 }
