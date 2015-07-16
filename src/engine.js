@@ -1,16 +1,16 @@
 var GameFactory = require("../node_modules/core/src/game-factory.js");
 var ShapeFactory = require("../node_modules/core/src/geometry/shape-factory.js");
-var renderer = require("./renderer/renderer.js");
+var RenderFactory = require("./render/render-factory.js");
 
 module.exports = function Engine() {
     var game = GameFactory().create();
-    var circle = ShapeFactory().createCircle(15, 100, 100, 0, 0);
+    var circle = ShapeFactory().createCircle(30, 100, 100);
+
 
     function render(canvasContext) {
-        game.map.shapes.forEach(function (shape) {
-            renderer.renderShape(canvasContext, shape, "black");
-        });
-        renderer.renderShape(canvasContext, circle, "red");
+        var renderHandler = RenderFactory().createRenderHandler(canvasContext);
+        renderHandler.renderMap(game.map);
+        renderHandler.renderShape(circle, "red");
     }
 
     return {
