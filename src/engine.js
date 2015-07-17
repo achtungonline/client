@@ -15,19 +15,17 @@ module.exports = function Engine() {
                 renderHandler.renderShape(worm.head, "yellow");
             });
         });
-
-        window.requestAnimationFrame(function () {
-            render(renderHandler);
-        });
     }
 
     return {
         start: function (canvasContext) {
             var renderHandler = RenderFactory().createRenderHandler(canvasContext);
-
-            window.requestAnimationFrame(function () {
+            
+            game.on("updated", function onUpdated() {
                 render(renderHandler);
             });
+
+            game.start();
         }
     }
 };
