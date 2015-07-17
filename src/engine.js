@@ -9,7 +9,12 @@ module.exports = function Engine() {
 
     function render(renderHandler) {
         renderHandler.renderMap(game.map);
-        renderHandler.renderShape(circle, "red");
+
+        game.players.forEach(function (player) {
+            player.worms.forEach(function (worm) {
+                renderHandler.renderShape(worm.head, "yellow");
+            });
+        });
 
         window.requestAnimationFrame(function () {
             render(renderHandler);
