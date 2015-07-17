@@ -1,19 +1,27 @@
 var ShapeRenderer = require("./shape-renderer.js");
-var contourFunctions = require("./contour-functions.js");
+
+var renderers = [
+    require("./circle-renderer.js"),
+    require("./rectangle-renderer.js")
+];
 
 module.exports = function ShapeRendererFactory() {
 
-    var createContourFunctions = function () {
-        var contourFunctionsMap = {};
-        contourFunctionsMap["circle"] = contourFunctions.circle;
-        contourFunctionsMap["rectangle"] = contourFunctions.rectangle;
+    var createRenderersFunctionMap = function (fn) {
+        var map = {};
 
-        return contourFunctionsMap;
+        renderers.forEach(function addRendererToMap(renderer) {
+            map[renderer.type] = renderer[fn];
+        });
+
+        return map;
     };
+
+    var contourRendererFunctions = createRenderersFunctionMap("renderContour");
 
     return {
         createShapeRenderer: function () {
-            return ShapeRenderer(createContourFunctions())
+            return ShapeRenderer(contourRendererFunctions)
         }
     };
 };
