@@ -1,9 +1,10 @@
 var GameFactory = require("core/src/game-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var RenderFactory = require("./render/render-factory.js");
+var nextFrameProvider = require("./next-frame-provider.js");
 
 module.exports = function Engine() {
-    var game = GameFactory().create();
+    var game = GameFactory().createLocal(nextFrameProvider);
     var circle = ShapeFactory().createCircle(30, 100, 100);
 
 
