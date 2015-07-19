@@ -5,9 +5,8 @@ var RenderFactory = require("./render/render-factory.js");
 var nextFrameProvider = require("./next-frame-provider.js");
 
 module.exports = function Engine() {
-    var game = GameFactory().createLocal(UpdateFactory().createUpdateHandler(nextFrameProvider));
+    var game = GameFactory(nextFrameProvider).create();
     var circle = ShapeFactory().createCircle(30, 100, 100);
-
 
     function render(renderHandler) {
         renderHandler.renderMap(game.map);
