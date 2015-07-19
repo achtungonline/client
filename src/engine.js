@@ -1,10 +1,11 @@
 var GameFactory = require("core/src/game-factory.js");
+var UpdateFactory = require("core/src/update/update-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var RenderFactory = require("./render/render-factory.js");
 var nextFrameProvider = require("./next-frame-provider.js");
 
 module.exports = function Engine() {
-    var game = GameFactory().createLocal(nextFrameProvider);
+    var game = GameFactory().createLocal(UpdateFactory().createUpdateHandler(nextFrameProvider));
     var circle = ShapeFactory().createCircle(30, 100, 100);
 
 
