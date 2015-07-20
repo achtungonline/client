@@ -1,5 +1,4 @@
 var GameFactory = require("core/src/game-factory.js");
-var UpdateFactory = require("core/src/update/update-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var RenderFactory = require("./render/render-factory.js");
 var requestFrame = require("./request-frame.js");
