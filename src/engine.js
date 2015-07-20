@@ -12,6 +12,10 @@ module.exports = function Engine() {
 
         game.players.forEach(function (player) {
             player.worms.forEach(function (worm) {
+                worm.body.forEach(function (shape) {
+                    renderHandler.renderShape(shape, "red");
+                });
+
                 renderHandler.renderShape(worm.head, "yellow");
             });
         });
