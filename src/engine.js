@@ -1,10 +1,12 @@
 var GameFactory = require("core/src/game-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var RenderFactory = require("./render/render-factory.js");
+var PlayerSteeringFactory = require("./player-steering-factory.js");
 var requestFrame = require("./request-frame.js");
 
 module.exports = function Engine() {
     var game = GameFactory(requestFrame).create();
+    var playerSteeringHandler = PlayerSteeringFactory(game).createHandler();
     var circle = ShapeFactory().createCircle(30, 100, 100);
 
     function render(renderHandler) {
@@ -24,6 +26,9 @@ module.exports = function Engine() {
     return {
         start: function (canvasContext) {
             var renderHandler = RenderFactory().createRenderHandler(canvasContext);
+
+            playerSteeringHandler.addSteering(game.players[0], 37, 39);
+
             
             game.on("updated", function onUpdated() {
                 render(renderHandler);
