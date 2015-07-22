@@ -28,8 +28,9 @@ module.exports = function Engine() {
             var renderHandler = RenderFactory().createRenderHandler(canvasContext);
 
             playerSteeringHandler.addSteering(game.players[0], 37, 39);
+            playerSteeringHandler.addSteering(game.players[1], 65, 83);
 
-            
+
             game.on("updated", function onUpdated() {
                 render(renderHandler);
             });
