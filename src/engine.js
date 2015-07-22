@@ -1,32 +1,40 @@
 var GameFactory = require("core/src/game-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
-var RenderFactory = require("./render/render-factory.js");
+var mapUtils = require("core/src/map-utils.js");
+
+var GameRendererFactory = require("./game-renderer-factory.js");
 var requestFrame = require("./request-frame.js");
 
 module.exports = function Engine() {
+    function createCanvas(name, boundingBox) {
+        var canvas = document.createElement("canvas");
+        canvas.className = "map";
+        canvas.width = boundingBox.width;
+        canvas.height = boundingBox.height;
+        return canvas;
+    }
+
     var game = GameFactory(requestFrame).create();
     var circle = ShapeFactory().createCircle(30, 100, 100);
 
-    function render(renderHandler) {
-        renderHandler.renderMap(game.map);
+    var canvasContainer = document.createElement("div");
+    canvasContainer.className = "canvas-container";
 
-        game.players.forEach(function (player) {
-            player.worms.forEach(function (worm) {
-                worm.body.forEach(function (shape) {
-                    renderHandler.renderShape(shape, "red");
-                });
+    var mapBoundingBox = mapUtils.getBoundingBox(game.map);
+    var mapCanvas = createCanvas("map", mapBoundingBox);
+    var wormsCanvas = createCanvas("worms", mapBoundingBox);
 
-                renderHandler.renderShape(worm.head, "yellow");
-            });
-        });
-    }
+    canvasContainer.appendChild(mapCanvas);
+    canvasContainer.appendChild(wormsCanvas);
+
+    document.getElementById("game-container").appendChild(canvasContainer);
+
+    var gameRenderer = GameRendererFactory().createLayeredCanvasRenderer(mapCanvas, wormsCanvas);
 
     return {
-        start: function (canvasContext) {
-            var renderHandler = RenderFactory().createRenderHandler(canvasContext);
-            
+        start: function () {
             game.on("updated", function onUpdated() {
-                render(renderHandler);
+                gameRenderer.render(game);
             });
 
             game.start();
