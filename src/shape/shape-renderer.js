@@ -1,6 +1,6 @@
-module.exports = function ShapeRenderer(canvasContext, contourRenderers) {
+module.exports = function ShapeRenderer(contourRenderers) {
 
-    var render = function (shape, fillColor, strokeColor) {
+    var render = function (canvasContext, shape, fillColor, strokeColor) {
         var contourRenderer = contourRenderers[shape.type];
         contourRenderer(canvasContext, shape);
 

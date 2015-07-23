@@ -1,9 +1,16 @@
-module.exports = function MapRenderer(shapeRenderer) {
+module.exports = function MapRenderer(map, shapeRenderer, mapContext) {
+    var rendered = false;
 
-    var render = function (map) {
+    var render = function () {
+        if (rendered) {
+            return;
+        }
+
         map.shapes.forEach(function (shape) {
-            shapeRenderer.render(shape, "black", "yellow");
+            shapeRenderer.render(mapContext, shape, "black", "yellow");
         });
+
+        rendered = true;
     };
 
     return {

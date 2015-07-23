@@ -43,20 +43,22 @@ module.exports = function Engine(gameContainer) {
 
     var mapBoundingBox = mapUtils.getBoundingBox(game.map);
     var mapCanvas = createCanvas("map", mapBoundingBox);
-    var wormsCanvas = createCanvas("worms", mapBoundingBox);
+    var wormBodiesCanvas = createCanvas("wormBodies", mapBoundingBox);
+    var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
 
     canvasContainer.appendChild(mapCanvas);
-    canvasContainer.appendChild(wormsCanvas);
+    canvasContainer.appendChild(wormBodiesCanvas);
+    canvasContainer.appendChild(wormHeadsCanvas);
 
     gameContainer.appendChild(canvasContainer);
 
-    var gameRenderer = GameRendererFactory().createLayeredCanvasRenderer(mapCanvas, wormsCanvas);
+    var gameRenderer = GameRendererFactory().createLayeredCanvasRenderer(game, mapCanvas, wormBodiesCanvas, wormHeadsCanvas);
 
     return {
 
         start: function () {
             game.on("updated", function onUpdated() {
-                gameRenderer.render(game);
+                gameRenderer.render();
             });
 
             game.start();

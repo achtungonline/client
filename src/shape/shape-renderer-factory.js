@@ -19,8 +19,8 @@ var contourRendererFunctions = createRenderersFunctionMap("renderContour");
 
 module.exports = function ShapeRendererFactory() {
     return {
-        create: function (canvasContext) {
-            return ShapeRenderer(canvasContext, contourRendererFunctions)
+        create: function () {
+            return ShapeRenderer(contourRendererFunctions);
         }
     };
 };

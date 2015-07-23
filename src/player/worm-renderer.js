@@ -1,10 +1,13 @@
-module.exports = function WormRenderer(shapeRenderer) {
-    function render(worm) {
-        worm.body.forEach(function (shape) {
-            shapeRenderer.render(shape, "red");
-        });
+module.exports = function WormRenderer(worm, shapeRenderer, wormBodiesContext, wormHeadsContext) {
+    var lastBodyIndexRendered = -1;
 
-        shapeRenderer.render(worm.head, "yellow");
+    function render() {
+        while(lastBodyIndexRendered < worm.body.length - 1) {
+            lastBodyIndexRendered++;
+            shapeRenderer.render(wormBodiesContext, worm.body[lastBodyIndexRendered], "red");
+        }
+
+        shapeRenderer.render(wormHeadsContext, worm.head, "yellow");
     }
 
     return {
