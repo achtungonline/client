@@ -5,23 +5,22 @@ var renderers = [
     require("./rectangle-renderer.js")
 ];
 
+var createRenderersFunctionMap = function (fn) {
+    var map = {};
+
+    renderers.forEach(function addRendererToMap(renderer) {
+        map[renderer.type] = renderer[fn];
+    });
+
+    return map;
+};
+
+var contourRendererFunctions = createRenderersFunctionMap("renderContour");
+
 module.exports = function ShapeRendererFactory() {
-
-    var createRenderersFunctionMap = function (fn) {
-        var map = {};
-
-        renderers.forEach(function addRendererToMap(renderer) {
-            map[renderer.type] = renderer[fn];
-        });
-
-        return map;
-    };
-
-    var contourRendererFunctions = createRenderersFunctionMap("renderContour");
-
     return {
-        createShapeRenderer: function () {
-            return ShapeRenderer(contourRendererFunctions)
+        create: function (canvasContext) {
+            return ShapeRenderer(canvasContext, contourRendererFunctions)
         }
     };
 };
