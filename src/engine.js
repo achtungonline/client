@@ -6,10 +6,10 @@ var mapUtils = require("core/src/map-utils.js");
 var GameRendererFactory = require("./game-renderer-factory.js");
 var requestFrame = require("./request-frame.js");
 
-module.exports = function Engine() {
+module.exports = function Engine(gameContainer) {
     function createCanvas(name, boundingBox) {
         var canvas = document.createElement("canvas");
-        canvas.className = "map";
+        canvas.className = name;
         canvas.width = boundingBox.width;
         canvas.height = boundingBox.height;
         return canvas;
@@ -29,7 +29,7 @@ module.exports = function Engine() {
     canvasContainer.appendChild(mapCanvas);
     canvasContainer.appendChild(wormsCanvas);
 
-    document.getElementById("game-container").appendChild(canvasContainer);
+    gameContainer.appendChild(canvasContainer);
 
     var gameRenderer = GameRendererFactory().createLayeredCanvasRenderer(mapCanvas, wormsCanvas);
 
