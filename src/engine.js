@@ -7,6 +7,7 @@ var PlayerSteeringListenerFactory = require("./player/player-steering-listener-f
 var GameRendererFactory = require("./game-renderer-factory.js");
 var requestFrame = require("./request-frame.js");
 var KEY_BINDINGS = require("./default-values.js").player.KEY_BINDINGS;
+var FpsHandler = require("./fps-handler.js");
 
 
 module.exports = function Engine(gameContainer) {
@@ -35,32 +36,45 @@ module.exports = function Engine(gameContainer) {
         }
     }
 
-    var canvasContainer = document.createElement("div");
-    canvasContainer.className = "canvas-container";
+    function setupGameRenderer(game) {
+        var mapBoundingBox = mapUtils.getBoundingBox(game.map);
+
+        var canvasContainer = document.createElement("div");
+        canvasContainer.className = "canvas-container";
+        canvasContainer.style.width = mapBoundingBox.width;
+        canvasContainer.style.height = mapBoundingBox.height;
+
+        var mapCanvas = createCanvas("map", mapBoundingBox);
+        var wormBodiesCanvas = createCanvas("wormBodies", mapBoundingBox);
+        var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
+
+        canvasContainer.appendChild(mapCanvas);
+        canvasContainer.appendChild(wormBodiesCanvas);
+        canvasContainer.appendChild(wormHeadsCanvas);
+
+        gameContainer.appendChild(canvasContainer);
+
+        return GameRendererFactory().createLayeredCanvasRenderer(game, mapCanvas, wormBodiesCanvas, wormHeadsCanvas);
+    }
 
     var game = createGame(3);
     setupSteeringListenerEvents(game);
 
-    var mapBoundingBox = mapUtils.getBoundingBox(game.map);
-    var mapCanvas = createCanvas("map", mapBoundingBox);
-    var wormBodiesCanvas = createCanvas("wormBodies", mapBoundingBox);
-    var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
+    var gameRenderer = setupGameRenderer(game);
 
-    canvasContainer.appendChild(mapCanvas);
-    canvasContainer.appendChild(wormBodiesCanvas);
-    canvasContainer.appendChild(wormHeadsCanvas);
+    var fpsHandler = FpsHandler();
+    fpsHandler.on("fpsChanged", function (fps) {
+        document.getElementById("fps").innerHTML = fps;
+    });
 
-    gameContainer.appendChild(canvasContainer);
-
-    var gameRenderer = GameRendererFactory().createLayeredCanvasRenderer(game, mapCanvas, wormBodiesCanvas, wormHeadsCanvas);
+    game.on("updated", function onUpdated(deltaTime) {
+        gameRenderer.render();
+        fpsHandler.update();
+    });
 
     return {
-
         start: function () {
-            game.on("updated", function onUpdated() {
-                gameRenderer.render();
-            });
-
+            fpsHandler.start();
             game.start();
         }
     }

@@ -7,12 +7,12 @@
             }
 
             #game-container {
-                width: 100%;
-                height: 100%;
+                float: left;
             }
 
             .canvas-container {
                 position: relative;
+                display: inline-block;
             }
 
             .canvas-container canvas {
@@ -21,12 +21,26 @@
                 top: 0;
             }
 
+            .right-column {
+                float: left;
+                margin-left: 10px;
+            }
+
+            .fps-container h4 {
+                margin-top: 0px;
+            }
+
 
         </style>
     </head>
     <body>
         <div id="game-container">
             
+        </div>
+        <div class="right-column">
+            <div class="fps-container">
+                <h4>FPS: <span id="fps"></span></h4>
+            </div>    
         </div>
 
         <script src="../build/engine.js"></script>
