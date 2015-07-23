@@ -1,6 +1,6 @@
 var steering = require("core/src/player/player.js").steering;
 
-module.exports = function PlayerSteeringHandler(keyListenerHandler, game) {
+module.exports = function PlayerSteeringListener(keyListenerHandler, game) {
 
     function addListener(player, leftKey, rightKey) {
         var leftKeyPressed = false;
