@@ -1,5 +1,5 @@
 var PlayerSteeringHandler = require("./player-steering-handler.js");
-var KeyListenerFactory = require("./key-listener-factory.js");
+var KeyListenerFactory = require("./../key-listener-factory.js");
 
 module.exports = function PlayerSteeringHandlerFactory(game) {
 

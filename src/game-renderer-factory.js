@@ -1,5 +1,5 @@
 var GameRenderer = require("./game-renderer.js");
-var ShapeRendererFactory = require("./render/shape/shape-renderer-factory.js");
+var ShapeRendererFactory = require("./shape/shape-renderer-factory.js");
 var MapRenderer = require("./map/map-renderer.js");
 var WormRenderer = require("./player/worm-renderer.js");
 

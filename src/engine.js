@@ -1,6 +1,6 @@
 var GameFactory = require("core/src/game-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
-var PlayerSteeringFactory = require("./player-steering-handler-factory.js");
+var PlayerSteeringFactory = require("./player/player-steering-handler-factory.js");
 var mapUtils = require("core/src/map-utils.js");
 
 var GameRendererFactory = require("./game-renderer-factory.js");
@@ -17,7 +17,6 @@ module.exports = function Engine(gameContainer) {
 
     var game = GameFactory(requestFrame).create();
     var playerSteeringHandler = PlayerSteeringFactory(game).create();
-    var circle = ShapeFactory().createCircle(30, 100, 100);
 
     var canvasContainer = document.createElement("div");
     canvasContainer.className = "canvas-container";
