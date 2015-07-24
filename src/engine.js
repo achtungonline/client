@@ -72,6 +72,10 @@ module.exports = function Engine(gameContainer) {
         fpsHandler.update();
     });
 
+    game.on("gameOver", function onGameOver() {
+        console.log("game over");
+    });
+
     return {
         start: function () {
             fpsHandler.start();
