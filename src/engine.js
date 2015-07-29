@@ -1,7 +1,6 @@
 var GameFactory = require("core/src/game-factory.js");
 var PlayerFactory = require("core/src/player/player-factory.js");
 var idGenerator = require("core/src/util/id-generator.js");
-var mapUtils = require("core/src/map-utils.js");
 
 var PlayerSteeringListenerFactory = require("./player/player-steering-listener-factory.js");
 var GameRendererFactory = require("./game-renderer-factory.js");

@@ -6,8 +6,8 @@ module.exports = function MapRenderer(map, shapeRenderer, mapContext) {
             return;
         }
 
-        map.shapes.forEach(function (shape) {
-            shapeRenderer.render(mapContext, shape, "black", "yellow");
+        map.zones.forEach(function (zone) {
+            shapeRenderer.render(mapContext, zone.shape, "black", "yellow");
         });
 
         rendered = true;
