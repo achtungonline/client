@@ -36,7 +36,7 @@ module.exports = function Engine(gameContainer) {
     }
 
     function setupGameRenderer(game) {
-        var mapBoundingBox = game.map.boundingBox;
+        var mapBoundingBox = game.map.shape.boundingBox;
 
         var canvasContainer = document.createElement("div");
         canvasContainer.className = "canvas-container";
