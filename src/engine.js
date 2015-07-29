@@ -1,5 +1,7 @@
 var GameFactory = require("core/src/game-factory.js");
 var PlayerFactory = require("core/src/player/player-factory.js");
+var MapFactory = require("core/src/map/map-factory.js");
+var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var idGenerator = require("core/src/util/id-generator.js");
 
 var PlayerSteeringListenerFactory = require("./player/player-steering-listener-factory.js");
@@ -19,8 +21,14 @@ module.exports = function Engine(gameContainer) {
     }
 
     function createGame(numberOfPlayers) {
+        var sf = ShapeFactory();
+        var mapShape = sf.createSquare(800, 0, 0);
+        var mapObstaclesShapes = [sf.createCircle(100, 100, 300), sf.createRectangle(200, 300, 500, 250)];
+        var map = MapFactory().create(mapShape, mapObstaclesShapes);
+
         var players = PlayerFactory(idGenerator.indexCounterId(0)).createPlayers(numberOfPlayers);
-        var game = GameFactory(requestFrame).create(players);
+
+        var game = GameFactory(requestFrame).create(players, map);
         return game;
     }
 

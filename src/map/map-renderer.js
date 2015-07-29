@@ -8,6 +8,10 @@ module.exports = function MapRenderer(map, shapeRenderer, mapContext) {
 
         shapeRenderer.render(mapContext, map.shape, "black", "yellow");
 
+        map.blockingShapes.forEach(function (blockingShape) {
+            shapeRenderer.render(mapContext, blockingShape, "yellow");
+        });
+
         rendered = true;
     };
 
