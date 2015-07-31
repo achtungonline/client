@@ -76,7 +76,7 @@ module.exports = function Engine(gameContainer) {
         document.getElementById("fps").innerHTML = fps;
     });
 
-    game.on("updated", function onUpdated(deltaTime) {
+    game.on("gameUpdated", function onUpdated(deltaTime) {
         gameRenderer.render();
         fpsHandler.update();
     });
