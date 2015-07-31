@@ -1,5 +1,6 @@
 var GameFactory = require("core/src/game-factory.js");
 var PlayerFactory = require("core/src/player/player-factory.js");
+var WormFactory = require("core/src/player/worm/worm-factory.js");
 var MapFactory = require("core/src/map/map-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var idGenerator = require("core/src/util/id-generator.js");
@@ -26,7 +27,8 @@ module.exports = function Engine(gameContainer) {
         var mapObstaclesShapes = [sf.createCircle(100, 100, 300), sf.createRectangle(200, 300, 500, 250)];
         var map = MapFactory().create(mapShape, mapObstaclesShapes);
 
-        var players = PlayerFactory(idGenerator.indexCounterId(0)).createPlayers(numberOfPlayers);
+        var wormFactory = WormFactory(idGenerator.indexCounterId(0));
+        var players = PlayerFactory(idGenerator.indexCounterId(0), wormFactory).createPlayers(numberOfPlayers);
 
         var game = GameFactory(requestFrame).create(players, map);
         return game;
