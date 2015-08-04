@@ -1,14 +1,14 @@
 var WormRenderer = require("./worm-renderer.js");
 var forEach = require("core/src/util/for-each.js");
 
-module.exports = function WormsRenderer(game, shapeRenderer, wormBodiesContext, wormHeadsContext) {
+module.exports = function WormsRenderer(game, shapeRenderer, wormBodiesContext, wormHeadsContext, shapeModifierImmutable) {
     var wormRenderers = {};
 
     //TODO: Need to listen to game for events that remove/add worms to update the wormRenderers map.
 
     game.players.forEach(function (player) {
         player.worms.forEach(function (worm) {
-            wormRenderers[worm.id] = WormRenderer(worm, shapeRenderer, wormBodiesContext, wormHeadsContext);
+            wormRenderers[worm.id] = WormRenderer(worm, shapeRenderer, wormBodiesContext, wormHeadsContext, shapeModifierImmutable);
         });
     });
 

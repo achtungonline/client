@@ -2,6 +2,8 @@ var GameRenderer = require("./game-renderer.js");
 var ShapeRendererFactory = require("./shape/shape-renderer-factory.js");
 var MapRenderer = require("./map/map-renderer.js");
 var WormsRenderer = require("./player/worms-renderer.js");
+var ShapeModifierImmutable = require("core/src/geometry/shape-modifier-immutable.js");
+var ShapeFactory = require("core/src/geometry/shape-factory.js");
 
 module.exports = function GameRendererFactory() {
     var shapeRendererFactory = ShapeRendererFactory();
@@ -13,7 +15,8 @@ module.exports = function GameRendererFactory() {
 
         var shapeRenderer = shapeRendererFactory.create();
         var mapRenderer = MapRenderer(game.map, shapeRenderer, mapCanvasContext);
-        var wormsRenderer = WormsRenderer(game, shapeRenderer, wormBodiesContext, wormHeadsContext);
+        var shapeModifierImmutable = ShapeModifierImmutable(ShapeFactory());
+        var wormsRenderer = WormsRenderer(game, shapeRenderer, wormBodiesContext, wormHeadsContext, shapeModifierImmutable);
 
         return GameRenderer(mapRenderer, wormsRenderer);
     }

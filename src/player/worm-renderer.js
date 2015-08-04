@@ -1,4 +1,4 @@
-module.exports = function WormRenderer(worm, shapeRenderer, wormBodiesContext, wormHeadsContext) {
+module.exports = function WormRenderer(worm, shapeRenderer, wormBodiesContext, wormHeadsContext, shapeModifierImmutable) {
     var lastBodyIndexRendered = -1;
 
     function render() {
@@ -7,7 +7,8 @@ module.exports = function WormRenderer(worm, shapeRenderer, wormBodiesContext, w
             shapeRenderer.render(wormBodiesContext, worm.body[lastBodyIndexRendered], "red");
         }
 
-        shapeRenderer.render(wormHeadsContext, worm.head, "yellow");
+        var largerHead = shapeModifierImmutable.changeSize(worm.head, 2);
+        shapeRenderer.render(wormHeadsContext, largerHead, "yellow");
     }
 
     return {
