@@ -4,6 +4,7 @@ var WormFactory = require("core/src/player/worm/worm-factory.js");
 var MapFactory = require("core/src/map/map-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var idGenerator = require("core/src/util/id-generator.js");
+var RandomAI = require("core/src/player/ai/random-ai.js");
 
 var PlayerSteeringListenerFactory = require("./player/player-steering-listener-factory.js");
 var GameRendererFactory = require("./game-renderer-factory.js");
@@ -68,6 +69,8 @@ module.exports = function Engine(gameContainer) {
 
     var game = createGame(3);
     setupSteeringListenerEvents(game);
+    game.setAIPlayer(game.players[1], RandomAI(game.players[1]));
+    game.setAIPlayer(game.players[2], RandomAI(game.players[2]));
 
     var gameRenderer = setupGameRenderer(game);
 
