@@ -22,16 +22,18 @@ module.exports = function Engine(gameContainer) {
         return canvas;
     }
 
-    function createGame(numberOfPlayers) {
+    function createGame(numberOfHumanPlayers, numberOfAIPlayers) {
         var sf = ShapeFactory();
         var mapShape = sf.createSquare(800, 0, 0);
         var mapObstaclesShapes = [sf.createCircle(100, 100, 300), sf.createRectangle(200, 300, 500, 250)];
         var map = MapFactory().create(mapShape, mapObstaclesShapes);
 
         var wormFactory = WormFactory(idGenerator.indexCounterId(0));
-        var players = PlayerFactory(idGenerator.indexCounterId(0), wormFactory).createPlayers(numberOfPlayers);
-
-        var game = GameFactory(requestFrame).create(players, map);
+        var playerFactory = PlayerFactory(idGenerator.indexCounterId(0), wormFactory);
+        var playerSetup = {};
+        playerSetup.humanPlayers = playerFactory.createPlayers(numberOfHumanPlayers);
+        playerSetup.AIPlayers = playerFactory.createPlayers(numberOfAIPlayers);
+        var game = GameFactory(requestFrame).create(playerSetup, map);
         return game;
     }
 
@@ -67,10 +69,8 @@ module.exports = function Engine(gameContainer) {
         return GameRendererFactory().createLayeredCanvasRenderer(game, mapCanvas, wormBodiesCanvas, wormHeadsCanvas);
     }
 
-    var game = createGame(3);
+    var game = createGame(1, 4);
     setupSteeringListenerEvents(game);
-    game.setAIPlayer(game.players[1], RandomAI(game.players[1]));
-    game.setAIPlayer(game.players[2], RandomAI(game.players[2]));
 
     var gameRenderer = setupGameRenderer(game);
 
