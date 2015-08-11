@@ -39,7 +39,7 @@ module.exports = function Engine(gameContainer) {
 
     function setupSteeringListenerEvents(game) {
         var playerSteeringListener = PlayerSteeringListenerFactory(game).create();
-        var players = game.players;
+        var players = game.gameState.players;
         for (var i = 0; i < players.length; i++) {
             var keyBindings = KEY_BINDINGS[i];
             var leftKey = keyBindings[0];
@@ -49,7 +49,7 @@ module.exports = function Engine(gameContainer) {
     }
 
     function setupGameRenderer(game) {
-        var mapBoundingBox = game.map.shape.boundingBox;
+        var mapBoundingBox = game.gameState.map.shape.boundingBox;
 
         var canvasContainer = document.createElement("div");
         canvasContainer.className = "canvas-container";

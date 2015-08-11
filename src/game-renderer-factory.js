@@ -14,7 +14,7 @@ module.exports = function GameRendererFactory() {
         var wormHeadsContext = wormHeadsCanvas.getContext("2d");
 
         var shapeRenderer = shapeRendererFactory.create();
-        var mapRenderer = MapRenderer(game.map, shapeRenderer, mapCanvasContext);
+        var mapRenderer = MapRenderer(game.gameState.map, shapeRenderer, mapCanvasContext);
         var shapeModifierImmutable = ShapeModifierImmutable(ShapeFactory());
         var wormsRenderer = WormsRenderer(game, shapeRenderer, wormBodiesContext, wormHeadsContext, shapeModifierImmutable);
 
