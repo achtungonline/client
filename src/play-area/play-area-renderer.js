@@ -1,10 +1,13 @@
+var PlayArea = require("core/src/play-area/play-area.js");
+var COLORS = require("./../default-values.js").player.COLORS;
+
 module.exports = function PlayAreaRenderer(game, playAreaContext) {
 
     var playAreaHandler = game.gameState.playAreaHandler;
     var mapBoundingBox = game.gameState.map.shape.boundingBox;
 
     playAreaContext.rect(0, 0, mapBoundingBox.width, mapBoundingBox.height);
-    playAreaContext.fillStyle = "grey";
+    playAreaContext.fillStyle = "black";
     playAreaContext.fill();
 
     var render = function () {
@@ -17,9 +20,15 @@ module.exports = function PlayAreaRenderer(game, playAreaContext) {
         updatedPixels.forEach(function (pixel) {
             var index = pixel[0];
             var wormId = pixel[1];
-            data[4*index] = 0; // R
-            data[4*index+1] = 0; // G
-            data[4*index+2] = 255; // B
+            var color = [0,0,0];
+            if (wormId === PlayArea.OBSTACLE) {
+                color = [50,50,50];
+            } else {
+                color = COLORS[wormId];
+            }
+            data[4*index] = color[0]; // R
+            data[4*index+1] = color[1]; // G
+            data[4*index+2] = color[2]; // B
             data[4*index+3] = 255; // A
         });
 

@@ -77,7 +77,7 @@ module.exports = function Engine(gameContainer) {
 
         return GameRendererFactory().createLayeredCanvasRenderer(game, mapCanvas, wormBodiesCanvas, wormHeadsCanvas, playAreaCanvas);
     }
-    var game = createGame(1, 4);
+    var game = createGame(1, 9);
     setupSteeringListenerEvents(game);
 
     var gameRenderer = setupGameRenderer(game);
