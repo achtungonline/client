@@ -11,8 +11,6 @@ module.exports = function PlayAreaRenderer(game, playAreaContext) {
         var updatedPixels = playAreaHandler.getUpdateBuffer();
         playAreaHandler.resetUpdateBuffer();
 
-        console.log("Pixels to render: " + updatedPixels.length);
-
         var image = playAreaContext.getImageData(0, 0, mapBoundingBox.width, mapBoundingBox.height);
         var data = image.data;
 
