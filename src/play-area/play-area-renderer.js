@@ -10,11 +10,12 @@ module.exports = function PlayAreaRenderer(game, playAreaContext) {
     playAreaContext.fillStyle = "black";
     playAreaContext.fill();
 
+    var image = playAreaContext.getImageData(0, 0, mapBoundingBox.width, mapBoundingBox.height);;
+
     var render = function () {
         var updatedPixels = playAreaHandler.getUpdateBuffer();
         playAreaHandler.resetUpdateBuffer();
 
-        var image = playAreaContext.getImageData(0, 0, mapBoundingBox.width, mapBoundingBox.height);
         var data = image.data;
 
         updatedPixels.forEach(function (pixel) {
