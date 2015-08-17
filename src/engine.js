@@ -23,7 +23,7 @@ module.exports = function Engine(gameContainer) {
 
     function createGame(numberOfHumanPlayers, numberOfAIPlayers) {
         var sf = ShapeFactory();
-        var mapShape = sf.createSquare(800, 0, 0);
+        var mapShape = sf.createRectangle(800, 1000, 0, 0);
         var mapObstaclesShapes = [sf.createCircle(100, 100, 300), sf.createRectangle(200, 300, 500, 250)];
         var map = MapFactory().create(mapShape, mapObstaclesShapes);
 
