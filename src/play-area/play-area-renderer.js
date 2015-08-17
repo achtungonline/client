@@ -1,5 +1,6 @@
 var PlayArea = require("core/src/play-area/play-area.js");
 var COLORS = require("./../default-values.js").player.COLORS;
+var canvasImageDataUtils = require("./canvas-image-data-utils.js");
 
 module.exports = function PlayAreaRenderer(game, playAreaContext) {
 
@@ -10,7 +11,7 @@ module.exports = function PlayAreaRenderer(game, playAreaContext) {
     playAreaContext.fillStyle = "black";
     playAreaContext.fill();
 
-    var image = playAreaContext.getImageData(0, 0, mapBoundingBox.width, mapBoundingBox.height);;
+    var image = playAreaContext.getImageData(0, 0, mapBoundingBox.width, mapBoundingBox.height);
 
     var render = function () {
         var updatedPixels = playAreaHandler.getUpdateBuffer();
@@ -21,16 +22,14 @@ module.exports = function PlayAreaRenderer(game, playAreaContext) {
         updatedPixels.forEach(function (pixel) {
             var index = pixel[0];
             var wormId = pixel[1];
-            var color = [0,0,0];
+            var color = [0, 0, 0];
             if (wormId === PlayArea.OBSTACLE) {
-                color = [50,50,50];
+                color = [50, 50, 50];
             } else {
                 color = COLORS[wormId];
             }
-            data[4*index] = color[0]; // R
-            data[4*index+1] = color[1]; // G
-            data[4*index+2] = color[2]; // B
-            data[4*index+3] = 255; // A
+            canvasImageDataUtils.setColorByIndex(data, index, color);
+
         });
 
         playAreaContext.putImageData(image, 0, 0);
