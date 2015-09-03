@@ -1,11 +1,17 @@
-module.exports = function GameRenderer(mapRenderer, wormsRenderer, playAreaRenderer) {
+module.exports = function GameRenderer(mapRenderer, wormsRenderer, playAreaRenderer, renderProperties) {
+
     function render() {
         mapRenderer.render();
         wormsRenderer.render();
         playAreaRenderer.render();
     }
 
+    function setRenderProperty(property, value) {
+        renderProperties[property] = value;
+    }
+
     return {
-        render: render
+        render: render,
+        setRenderProperty: setRenderProperty
     };
 };

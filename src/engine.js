@@ -4,6 +4,8 @@ var WormFactory = require("core/src/player/worm/worm-factory.js");
 var MapFactory = require("core/src/map/map-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var idGenerator = require("core/src/util/id-generator.js");
+var startPhaseType = require("core/src/round/phase/start-phase.js").type;
+var playPhaseType = require("core/src/round/phase/play-phase.js").type;
 
 var PlayerSteeringListenerFactory = require("./player/player-steering-listener-factory.js");
 var GameRendererFactory = require("./game-renderer-factory.js");
@@ -55,27 +57,17 @@ module.exports = function Engine(gameContainer) {
         canvasContainer.style.width = mapBoundingBox.width;
         canvasContainer.style.height = mapBoundingBox.height;
 
-        var canvasContainer2 = document.createElement("div");
-        canvasContainer2.className = "canvas-container2";
-        canvasContainer2.style.width = mapBoundingBox.width;
-        canvasContainer2.style.height = mapBoundingBox.height;
-
         var mapCanvas = createCanvas("map", mapBoundingBox);
         var wormBodiesCanvas = createCanvas("wormBodies", mapBoundingBox);
         var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
-        var playAreaCanvas = createCanvas("playArea", mapBoundingBox);
 
         canvasContainer.appendChild(mapCanvas);
         canvasContainer.appendChild(wormBodiesCanvas);
         canvasContainer.appendChild(wormHeadsCanvas);
 
-        canvasContainer2.appendChild(playAreaCanvas);
-
         gameContainer.appendChild(canvasContainer);
-        var testContainer = document.getElementById("test");
-        testContainer.appendChild(canvasContainer2);
 
-        return GameRendererFactory().createLayeredCanvasRenderer(game, mapCanvas, wormBodiesCanvas, wormHeadsCanvas, playAreaCanvas);
+        return GameRendererFactory().createLayeredCanvasRenderer(game, mapCanvas, wormBodiesCanvas, wormHeadsCanvas);
     }
     var game = createGame(1, 9);
     setupSteeringListenerEvents(game);
@@ -90,6 +82,16 @@ module.exports = function Engine(gameContainer) {
     game.on("gameUpdated", function onUpdated(deltaTime) {
         gameRenderer.render();
         fpsHandler.update();
+    });
+
+    game.on("newPhaseStarted", function onNewPhaseStarted(phaseType) {
+        // TODO We need a more convenient way to handle render properties for different rounds
+        console.log("New phase started: " + phaseType);
+        if (phaseType === startPhaseType) {
+            gameRenderer.setRenderProperty("drawArrows", true);
+        } else {
+            gameRenderer.setRenderProperty("drawArrows", false);
+        }
     });
 
     game.on("gameOver", function onGameOver() {

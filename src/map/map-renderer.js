@@ -1,4 +1,4 @@
-module.exports = function MapRenderer(map, shapeRenderer, mapContext) {
+module.exports = function MapRenderer(map, shapeRenderer, mapContext, renderProperties) {
     var rendered = false;
 
     var render = function () {
@@ -9,7 +9,7 @@ module.exports = function MapRenderer(map, shapeRenderer, mapContext) {
         shapeRenderer.render(mapContext, map.shape, "black", "yellow");
 
         map.blockingShapes.forEach(function (blockingShape) {
-            shapeRenderer.render(mapContext, blockingShape, "yellow");
+            shapeRenderer.render(mapContext, blockingShape, "grey");
         });
 
         rendered = true;
