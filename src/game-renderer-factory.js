@@ -11,7 +11,8 @@ module.exports = function GameRendererFactory() {
 
     function createRenderProperties() {
         return {
-            drawArrows: false
+            drawArrows: false,
+            showTrajectories: false
         }
     }
 

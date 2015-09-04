@@ -89,9 +89,15 @@ module.exports = function Engine(gameContainer) {
         console.log("New phase started: " + phaseType);
         if (phaseType === startPhaseType) {
             gameRenderer.setRenderProperty("drawArrows", true);
+            gameRenderer.setRenderProperty("showTrajectories", false);
+        } else if (phaseType === playPhaseType) {
+            gameRenderer.setRenderProperty("drawArrows", false);
+            gameRenderer.setRenderProperty("showTrajectories", true);
         } else {
+            gameRenderer.setRenderProperty("showTrajectories", false);
             gameRenderer.setRenderProperty("drawArrows", false);
         }
+
     });
 
     game.on("gameOver", function onGameOver() {
