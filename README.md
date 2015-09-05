@@ -14,7 +14,7 @@ npm install <client directory location> --save
 
 ## Dependencies
 
-- [core](https://github.com/git+https:/): Core functionality shared between client and server. Basically all the logic.
+- [core](https://github.com/achtungonline/core): Core functionality shared between client and server. Basically all the logic.
 
 ## Dev Dependencies
 
