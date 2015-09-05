@@ -14,8 +14,12 @@ module.exports = function PlayAreaRenderer(game, playAreaContext, renderProperti
         var data = image.data;
 
         updatedPixels.forEach(function (pixel) {
-            var color = [0, 0, 0, 0];
-            if (pixel.value !== PlayArea.FREE && pixel.value !== PlayArea.OBSTACLE) {
+            var color;
+            if (pixel.value === PlayArea.FREE) {
+                color = [0, 0, 0, 0];
+            } else if (pixel.value === PlayArea.OBSTACLE) {
+                color = [100, 100, 100];
+            } else {
                 var wormId = pixel.value;
                 color = COLORS[wormId];
             }
