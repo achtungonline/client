@@ -22,17 +22,18 @@ module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, sh
         wormHeadsContext.beginPath();
         wormHeadsContext.translate(worm.head.centerX, worm.head.centerY);
         wormHeadsContext.rotate(worm.direction - Math.PI/2);
-
-        var turnRadius = worm.speed / worm.turningSpeed;
         trajectory.forEach(function (move) {
+            if (move.turningSpeed !== 0) {
+                var turnRadius = Math.abs(move.speed / move.turningSpeed);
+            }
             wormHeadsContext.moveTo(0, 0);
-            var distanceTravelled = worm.speed * move.time;
-            var angleTurned = worm.turningSpeed * move.time;
-            if (move.steering === STEERING.LEFT) {
-                wormHeadsContext.arc(turnRadius, 0, turnRadius, Math.PI, Math.PI - angleTurned, true);
-                wormHeadsContext.translate(-turnRadius*(Math.cos(angleTurned) -  1), turnRadius*Math.sin(angleTurned));
-                wormHeadsContext.rotate(-angleTurned);
-            } else if (move.steering == STEERING.RIGHT) {
+            var distanceTravelled = move.speed * move.duration;
+            var angleTurned = move.turningSpeed * move.duration;
+            if (move.turningSpeed < 0) {
+                wormHeadsContext.arc(turnRadius, 0, turnRadius, Math.PI, Math.PI + angleTurned, true);
+                wormHeadsContext.translate(-turnRadius*(Math.cos(angleTurned) -  1), -turnRadius*Math.sin(angleTurned));
+                wormHeadsContext.rotate(angleTurned);
+            } else if (move.turningSpeed > 0) {
                 wormHeadsContext.arc(-turnRadius, 0, turnRadius, 0, angleTurned);
                 wormHeadsContext.translate(turnRadius*(Math.cos(angleTurned) - 1), turnRadius*Math.sin(angleTurned));
                 wormHeadsContext.rotate(angleTurned);
