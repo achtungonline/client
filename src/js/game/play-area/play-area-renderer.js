@@ -2,14 +2,14 @@ var PlayArea = require("core/src/play-area/play-area.js");
 var COLORS = require("./../default-values.js").player.COLORS;
 var canvasImageDataUtils = require("./canvas-image-data-utils.js");
 
-module.exports = function PlayAreaRenderer(game, playAreaContext, renderProperties) {
+module.exports = function PlayAreaRenderer(gameState, playAreaContext, renderProperties) {
 
-    var mapBoundingBox = game.gameState.map.shape.boundingBox;
+    var mapBoundingBox = gameState.map.shape.boundingBox;
 
     var image = playAreaContext.getImageData(0, 0, mapBoundingBox.width, mapBoundingBox.height);
 
     var render = function () {
-        var updatedPixels = game.getPlayAreaUpdateBuffer();
+        var updatedPixels = gameState.playAreaUpdateBuffer;
 
         var data = image.data;
 

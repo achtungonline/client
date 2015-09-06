@@ -4,7 +4,7 @@
     </head>
     <body>
         <div id="game-container">
-            
+        
         </div>
         <div id="test" class="right-column">
 
@@ -15,12 +15,12 @@
             </div>    
         </div>
 
-        <script src="../build/engine.js"></script>
+        <script src="../build/game-engine.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function(event) {
                 var container = document.getElementById("game-container");
-                var engine = Engine(container);
-                engine.start();
+                var gameEngine = GameEngine(container);
+                gameEngine.start();
             });
         </script>
     </body>

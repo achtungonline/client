@@ -2,6 +2,14 @@ module.exports = function(grunt) {
     require("load-grunt-tasks")(grunt);
 
     var config = {
+        jshint: {
+            files: ["Gruntfile.js", "src/**/*.js"],
+            options: {
+                globals: {
+                    jQuery: false
+                }
+            }
+        },
         less: {
             development: {
                 options: {
@@ -22,14 +30,20 @@ module.exports = function(grunt) {
                     nospawn: true
                 }
             }
+            // Will not work well when using IntelliJ because of autosave. 
+            // ,
+            // js: {
+            //     files: ["<%= jshint.files %>"],
+            //     tasks: ["jshint"]
+            // }
         },
         browserify: {
             dev: {
-                src: ["src/engine.js"],
-                dest: "build/engine.js",
+                src: ["src/game-engine.js"],
+                dest: "build/game-engine.js",
                 options: {
                     browserifyOptions: {
-                        standalone: "Engine",
+                        standalone: "GameEngine",
                         debug: true
                     }
                 }
@@ -41,10 +55,11 @@ module.exports = function(grunt) {
 
     grunt.registerTask("build:dev", ["browserify:dev"]);
 
-    grunt.registerTask("build", ["build:dev", "less"]);
+    grunt.registerTask("build", ["build:dev", "less", "jshint"]);
 
     grunt.registerTask("default", ["build", "watch"]);
 
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('assemble-less');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 };

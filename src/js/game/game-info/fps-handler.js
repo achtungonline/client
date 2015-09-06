@@ -11,7 +11,7 @@ module.exports = function FpsHandler() {
 
     function update() {
         numUpdates++;
-    };
+    }
 
     function start() {
         numUpdates = 0;

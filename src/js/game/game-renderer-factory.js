@@ -16,7 +16,7 @@ module.exports = function GameRendererFactory() {
         }
     }
 
-    function createLayeredCanvasRenderer(game, mapCanvas, wormBodiesCanvas, wormHeadsCanvas) {
+    function createLayeredCanvasRenderer(gameState, mapCanvas, wormBodiesCanvas, wormHeadsCanvas) {
         var mapCanvasContext = mapCanvas.getContext("2d");
         var wormBodiesContext = wormBodiesCanvas.getContext("2d");
         var wormHeadsContext = wormHeadsCanvas.getContext("2d");
@@ -24,12 +24,12 @@ module.exports = function GameRendererFactory() {
         var renderProperties = createRenderProperties();
 
         var shapeRenderer = shapeRendererFactory.create();
-        var mapRenderer = MapRenderer(game.gameState.map, shapeRenderer, mapCanvasContext, renderProperties);
+        var mapRenderer = MapRenderer(gameState.map, shapeRenderer, mapCanvasContext, renderProperties);
 
-        var playAreaRenderer = PlayAreaRenderer(game, wormBodiesContext, renderProperties);
+        var playAreaRenderer = PlayAreaRenderer(gameState, wormBodiesContext, renderProperties);
 
         var shapeModifierImmutable = ShapeModifierImmutable(ShapeFactory());
-        var wormsRenderer = WormsRenderer(game, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties);
+        var wormsRenderer = WormsRenderer(gameState, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties);
 
         return GameRenderer(mapRenderer, wormsRenderer, playAreaRenderer, renderProperties);
     }
