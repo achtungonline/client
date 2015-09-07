@@ -31,5 +31,5 @@ module.exports = function LocalGameHandler(game) {
         on: game.on.bind(game),
         events: game.events,
         gameState: game.gameState
-    }
+    };
 };

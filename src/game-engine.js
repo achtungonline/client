@@ -24,5 +24,5 @@ module.exports = function GameEngine(gameContainer) {
             gameHandler.start();
             fpsHandler.start();
         }
-    }
+    };
 };

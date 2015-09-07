@@ -19,5 +19,5 @@ module.exports = function KeyListener(addKeyPressedEventFunction, addKeyReleased
     return {
         onKeyPressed: onKeyPressed,
         onKeyReleased: onKeyReleased
-    }
+    };
 };

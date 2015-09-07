@@ -34,5 +34,5 @@ module.exports = function LocalGameFactory() {
 
     return {
         create: create
-    }
+    };
 };

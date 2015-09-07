@@ -9,5 +9,5 @@ module.exports = function PlayerSteeringListenerFactory(game) {
 
     return {
         create: create
-    }
-}
+    };
+};

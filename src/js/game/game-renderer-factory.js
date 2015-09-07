@@ -13,7 +13,7 @@ module.exports = function GameRendererFactory() {
         return {
             drawArrows: false,
             showTrajectories: false
-        }
+        };
     }
 
     function createLayeredCanvasRenderer(gameState, mapCanvas, wormBodiesCanvas, wormHeadsCanvas) {

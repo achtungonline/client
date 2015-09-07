@@ -32,5 +32,5 @@ module.exports = function PlayAreaRenderer(gameState, playAreaContext, renderPro
 
     return {
         render: render
-    }
+    };
 };

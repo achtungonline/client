@@ -32,5 +32,5 @@ module.exports = function PlayerSteeringListener(keyListenerHandler, game) {
     }
     return {
         addListener: addListener
-    }
+    };
 };

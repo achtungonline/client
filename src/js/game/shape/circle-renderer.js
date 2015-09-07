@@ -6,5 +6,5 @@ renderer.type = circleShape.type;
 
 renderer.renderContour = function (canvasContext, circle) {
     canvasContext.beginPath();
-    canvasContext.arc(circle.centerX, circle.centerY, circle.radius, 0, 2 * Math.PI)
+    canvasContext.arc(circle.centerX, circle.centerY, circle.radius, 0, 2 * Math.PI);
 };

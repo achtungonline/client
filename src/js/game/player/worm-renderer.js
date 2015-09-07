@@ -23,8 +23,9 @@ module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, sh
         wormHeadsContext.translate(worm.head.centerX, worm.head.centerY);
         wormHeadsContext.rotate(worm.direction - Math.PI/2);
         trajectory.forEach(function (move) {
+            var turnRadius;
             if (move.turningSpeed !== 0) {
-                var turnRadius = Math.abs(move.speed / move.turningSpeed);
+                turnRadius = Math.abs(move.speed / move.turningSpeed);
             }
             wormHeadsContext.moveTo(0, 0);
             var distanceTravelled = move.speed * move.duration;

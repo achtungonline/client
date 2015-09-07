@@ -13,5 +13,5 @@ module.exports = function MapRenderer(map, shapeRenderer, mapContext, renderProp
 
     return {
         render: render
-    }
+    };
 };
