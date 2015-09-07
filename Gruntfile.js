@@ -39,11 +39,11 @@ module.exports = function(grunt) {
         },
         browserify: {
             dev: {
-                src: ["src/game-engine.js"],
-                dest: "build/game-engine.js",
+                src: ["src/js/game/client-game-engine.js"],
+                dest: "build/client-game-engine.js",
                 options: {
                     browserifyOptions: {
-                        standalone: "GameEngine",
+                        standalone: "ClientGameEngine",
                         debug: true
                     }
                 }

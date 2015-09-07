@@ -6,20 +6,11 @@
         <div id="game-container">
         
         </div>
-        <div id="test" class="right-column">
-
-        </div>
-        <div class="right-column">
-            <div class="fps-container">
-                <h4>FPS: <span id="fps"></span></h4>
-            </div>    
-        </div>
-
-        <script src="../build/game-engine.js"></script>
+        <script src="../build/client-game-engine.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function(event) {
                 var container = document.getElementById("game-container");
-                var gameEngine = GameEngine(container);
+                var gameEngine = ClientGameEngine(container);
                 gameEngine.start();
             });
         </script>

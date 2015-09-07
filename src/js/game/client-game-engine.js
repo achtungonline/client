@@ -1,7 +1,7 @@
-var LocalGameHandler = require("./js/game/local-game/local-game-handler.js");
-var LocalGameFactory = require("./js/game/local-game/local-game-factory.js");
-var GameContainerHandler = require("./js/game/game-container-handler.js");
-var FpsHandler = require("./js/game/game-info/fps-handler.js");
+var LocalGameHandler = require("./local-game/local-game-handler.js");
+var LocalGameFactory = require("./local-game/local-game-factory.js");
+var GameContainerHandler = require("./game-container-handler.js");
+var FpsHandler = require("./game-info/fps-handler.js");
 
 var NUMBER_HUMAN_PLAYERS = 1;
 var NUMBER_AI_PLAYERS = 9;
@@ -11,11 +11,12 @@ var NUMBER_AI_PLAYERS = 9;
  * @returns {{start: Function}}
  * @constructor
  */
-module.exports = function GameEngine(gameContainer) {
-    var fpsHandler = FpsHandler();
+module.exports = function ClientGameEngine(gameContainer) {
 
     var game = LocalGameFactory().create(NUMBER_HUMAN_PLAYERS, NUMBER_AI_PLAYERS);
     var gameHandler = LocalGameHandler(game);
+    var fpsHandler = FpsHandler(gameHandler);
+
 
     var gameContainerHandler = GameContainerHandler(gameContainer, gameHandler, fpsHandler);
 

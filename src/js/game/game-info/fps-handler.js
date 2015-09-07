@@ -3,11 +3,15 @@ var EventEmitter = require("events").EventEmitter;
 var EVENT_FPS_CHANGED = "fpsChanged";
 var events = [EVENT_FPS_CHANGED];
 
-module.exports = function FpsHandler() {
+module.exports = function FpsHandler(gameHandler) {
     var eventEmitter = new EventEmitter();
     var numUpdates;
     var fps;
     var intervalId;
+
+    gameHandler.on("gameUpdated", function updateFps() {
+        update();
+    });
 
     function update() {
         numUpdates++;

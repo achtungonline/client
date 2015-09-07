@@ -5,11 +5,18 @@
  */
 module.exports = function GameInfoContainerHandler(gameInfoContainer, fpsHandler) {
     var fpsContainer = document.createElement('div');
-    fpsContainer.className = 'fps-container';
+    var fpsHeader = document.createElement('h4');
+    var p = document.createElement('p');
 
     gameInfoContainer.appendChild(fpsContainer);
+    fpsContainer.appendChild(fpsHeader);
+    fpsContainer.appendChild(p);
 
+    fpsContainer.className = 'fps-container';
+    fpsHeader.setAttribute('id', 'fps');
+    fpsHeader.innerHTML = "FPS: ";
+    
     fpsHandler.on("fpsChanged", function (fps) {
-        fpsContainer.innerHTML = fps;
+        p.innerHTML = fps;
     });
 };
