@@ -53,9 +53,9 @@ module.exports = function(grunt) {
 
     grunt.initConfig(config);
 
-    grunt.registerTask("build:dev", ["browserify:dev"]);
+    grunt.registerTask("build:dev", ["browserify:dev", "less"]);
 
-    grunt.registerTask("build", ["build:dev", "less", "jshint"]);
+    grunt.registerTask("build", ["build:dev", "jshint"]);
 
     grunt.registerTask("default", ["build", "watch"]);
 
