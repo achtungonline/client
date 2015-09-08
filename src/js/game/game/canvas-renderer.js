@@ -1,4 +1,4 @@
-module.exports = function GameRenderer(mapRenderer, wormsRenderer, playAreaRenderer, renderProperties) {
+module.exports = function CanvasRenderer(mapRenderer, wormsRenderer, playAreaRenderer, renderProperties) {
 
     function render() {
         mapRenderer.render();

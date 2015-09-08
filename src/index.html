@@ -6,12 +6,12 @@
         <div id="game-container">
         
         </div>
-        <script src="../build/client-game-engine.js"></script>
+        <script src="../build/client-game-engine-factory.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function(event) {
                 var container = document.getElementById("game-container");
-                var gameEngine = ClientGameEngine(container);
-                gameEngine.start();
+                var clientGameEngine = ClientGameEngineFactory().create();
+                clientGameEngine.start(container);
             });
         </script>
     </body>

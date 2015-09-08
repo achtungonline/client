@@ -1,6 +1,6 @@
 var PlayArea = require("core/src/play-area/play-area.js");
 var COLORS = require("./../default-values.js").player.COLORS;
-var canvasImageDataUtils = require("./canvas-image-data-utils.js");
+var canvasImageDataUtils = require("./../game/canvas-image-data-utils.js");
 
 module.exports = function PlayAreaRenderer(gameState, playAreaContext, renderProperties) {
 

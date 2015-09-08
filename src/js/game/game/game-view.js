@@ -1,15 +1,12 @@
 var startPhaseType = require("core/src/round/phase/start-phase.js").type;
 var playPhaseType = require("core/src/round/phase/play-phase.js").type;
 
-var GameRendererFactory = require("./../game-renderer-factory.js");
+var CanvasRendererFactory = require("./canvas-renderer-factory.js");
 
-/**
- * Takes care of appending the play area of the game.
- * @param playAreaContainer
- * @param gameHandler
- * @constructor
- */
-module.exports = function PlayAreaContainerHandler(playAreaContainer, gameHandler) {
+module.exports = function PlayAreaView(gameHandler) {
+    var playAreaContainer = document.createElement("div");
+    playAreaContainer.className = "play-area-container";
+
     function createCanvas(name, boundingBox) {
         var canvas = document.createElement("canvas");
         canvas.className = name;
@@ -36,27 +33,33 @@ module.exports = function PlayAreaContainerHandler(playAreaContainer, gameHandle
 
         playAreaContainer.appendChild(canvasContainer);
 
-        return GameRendererFactory().createLayeredCanvasRenderer(gameHandler.gameState, mapCanvas, wormBodiesCanvas, wormHeadsCanvas);
+        return CanvasRendererFactory().createLayeredCanvasRenderer(gameState, mapCanvas, wormBodiesCanvas, wormHeadsCanvas);
     }
 
-    var gameRenderer = setupGameRenderer(gameHandler.gameState);
-
-    gameHandler.on("gameUpdated", function onUpdated(deltaTime) {
-        gameRenderer.render();
-    });
+    var canvasRenderer = setupGameRenderer(gameHandler.gameState);
 
     gameHandler.on("newPhaseStarted", function onNewPhaseStarted(phaseType) {
         // TODO We need a more convenient way to handle render properties for different rounds
         console.log("New phase started: " + phaseType);
         if (phaseType === startPhaseType) {
-            gameRenderer.setRenderProperty("drawArrows", true);
-            gameRenderer.setRenderProperty("showTrajectories", false);
+            canvasRenderer.setRenderProperty("drawArrows", true);
+            canvasRenderer.setRenderProperty("showTrajectories", false);
         } else if (phaseType === playPhaseType) {
-            gameRenderer.setRenderProperty("drawArrows", false);
-            gameRenderer.setRenderProperty("showTrajectories", true);
+            canvasRenderer.setRenderProperty("drawArrows", false);
+            canvasRenderer.setRenderProperty("showTrajectories", true);
         } else {
-            gameRenderer.setRenderProperty("showTrajectories", false);
-            gameRenderer.setRenderProperty("drawArrows", false);
+            canvasRenderer.setRenderProperty("showTrajectories", false);
+            canvasRenderer.setRenderProperty("drawArrows", false);
         }
     });
+
+
+    function render() {
+        canvasRenderer.render();
+    }
+
+    return {
+        render: render,
+        content: playAreaContainer
+    }
 };
