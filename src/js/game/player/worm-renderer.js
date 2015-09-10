@@ -1,16 +1,24 @@
 var COLOR_STRINGS = require("./../default-values.js").player.COLOR_STRINGS;
-var STEERING = require("core/src/player/player.js").steering;
 
 module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties) {
+
+    var lastRenderedHead;
 
     function render() {
         var largerHead = shapeModifierImmutable.changeSize(worm.head, 2);
         shapeRenderer.render(wormHeadsContext, largerHead, "yellow");
+        lastRenderedHead = largerHead;
         if (renderProperties.drawArrows) {
             drawArrow(worm);
         }
         if (renderProperties.showTrajectories && worm.alive && worm.trajectory) {
             drawTrajectory(worm, worm.trajectory);
+        }
+    }
+
+    function clearHead() {
+        if (lastRenderedHead) {
+            wormHeadsContext.clearRect(lastRenderedHead.x - 5, lastRenderedHead.y - 5, lastRenderedHead.boundingBox.width + 10, lastRenderedHead.boundingBox.height + 10);
         }
     }
 
@@ -68,6 +76,7 @@ module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, sh
     }
 
     return {
-        render: render
+        render: render,
+        clearHead: clearHead
     };
 };
