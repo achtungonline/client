@@ -4,9 +4,8 @@ var WormFactory = require("core/src/player/worm/worm-factory.js");
 var MapFactory = require("core/src/map/map-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var idGenerator = require("core/src/util/id-generator.js");
+var Random = require("core/src/util/random.js");
 var requestFrame = require("./request-frame.js");
-
-
 
 /**
  * Creates game instances on the client using core
@@ -28,8 +27,10 @@ module.exports = function LocalGameFactory() {
         var playerSetup = {};
         playerSetup.humanPlayers = playerFactory.createPlayers(numberOfHumanPlayers);
         playerSetup.AIPlayers = playerFactory.createPlayers(numberOfAIPlayers);
-        var game = GameFactory(requestFrame).create(playerSetup, map);
-        return game;
+
+        var random = Random();
+
+        return GameFactory(requestFrame).create(playerSetup, map, random);
     }
 
     return {
