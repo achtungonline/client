@@ -61,5 +61,5 @@ module.exports = function PlayAreaView(gameHandler) {
     return {
         render: render,
         content: playAreaContainer
-    }
+    };
 };

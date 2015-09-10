@@ -14,5 +14,5 @@ module.exports = function GameContainerControllerFactory(gameHandler) {
 
     return {
         create: create
-    }
+    };
 };

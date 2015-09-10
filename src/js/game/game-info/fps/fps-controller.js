@@ -9,5 +9,5 @@ module.exports = function FpsController(fpsView, fpsHandler) {
             fpsHandler.start();
         },
         view: fpsView
-    }
+    };
 };

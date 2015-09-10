@@ -8,5 +8,5 @@ module.exports = function ClientGameEngine(gameController, gameHandler) {
 
     return {
         start: start
-    }
+    };
 };

@@ -15,5 +15,5 @@ module.exports = function GameInfoControllerFactory(gameHandler) {
 
     return {
         create: create
-    }
+    };
 };

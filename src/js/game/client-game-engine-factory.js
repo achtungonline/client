@@ -16,5 +16,5 @@ module.exports = function ClientGameEngineFactory() {
 
     return {
         create: create
-    }
+    };
 };

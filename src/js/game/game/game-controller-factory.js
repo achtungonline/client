@@ -9,5 +9,5 @@ module.exports = function GameControllerFactory(gameHandler) {
 
     return {
         create: create
-    }
+    };
 };
