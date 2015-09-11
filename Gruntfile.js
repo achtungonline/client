@@ -29,13 +29,11 @@ module.exports = function(grunt) {
                 options: {
                     nospawn: true
                 }
-            }
-            // Will not work well when using IntelliJ because of autosave. 
-            // ,
-            // js: {
-            //     files: ["<%= jshint.files %>"],
-            //     tasks: ["jshint"]
-            // }
+            },
+             js: {
+                 files: ["<%= jshint.files %>"],
+                 tasks: ["browserify:dev"]
+             }
         },
         browserify: {
             dev: {
