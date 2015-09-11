@@ -48,18 +48,23 @@ module.exports = function(grunt) {
                     }
                 }
             }
+        },
+        open : {
+            dev : {
+                path: 'src/index.html',
+                app: 'Google Chrome'
+            }
         }
     };
 
     grunt.initConfig(config);
 
-    grunt.registerTask("build:dev", ["browserify:dev", "less"]);
-
-    grunt.registerTask("build", ["build:dev", "jshint"]);
-
-    grunt.registerTask("default", ["build", "watch"]);
-
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('assemble-less');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-open');
+
+    grunt.registerTask("build:dev", ["browserify:dev", "less"]);
+    grunt.registerTask("build", ["build:dev", "jshint"]);
+    grunt.registerTask("default", ["build", "open:dev", "watch"]);
 };
