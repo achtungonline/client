@@ -49,8 +49,7 @@ module.exports = function(grunt) {
         },
         open : {
             dev : {
-                path: 'src/index.html',
-                app: 'Google Chrome'
+                path: 'src/index.html'
             }
         }
     };
