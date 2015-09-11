@@ -1,11 +1,13 @@
 var PlayerSteeringListenerFactory = require("./../player/player-steering-listener-factory.js");
 var KEY_BINDINGS = require("./../default-values.js").player.KEY_BINDINGS;
+var GameHistory = require("core/src/history/game-history.js");
+
 /**
  * GameWrapper responsible of handling the game on the client. Other can listen on the LocalGameHandler for events and get the current state.
  * @returns {{start: Function, on: (*|function(this:*)), events: *, gameState: *}}
  * @constructor
  */
-module.exports = function LocalGameHandler(game) {
+module.exports = function LocalGameHandler(game, gameHistoryHandler) {
 
     function setupSteeringListenerEvents(game) {
         var playerSteeringListener = PlayerSteeringListenerFactory(game).create();
@@ -24,10 +26,17 @@ module.exports = function LocalGameHandler(game) {
         console.log("game over");
     });
 
+    function startGameHistoryRecording() {
+        var gameHistory = GameHistory(game.gameState.map, game.gameState.players.length, game.seed);
+        gameHistoryHandler.recordGameHistory(game, gameHistory);
+        return gameHistory;
+    }
+
     return {
         start: function () {
             game.start();
         },
+        startGameHistoryRecording: startGameHistoryRecording,
         on: game.on.bind(game),
         events: game.events,
         gameState: game.gameState

@@ -6,6 +6,7 @@ var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var idGenerator = require("core/src/util/id-generator.js");
 var Random = require("core/src/util/random.js");
 var requestFrame = require("./request-frame.js");
+var DeltaTimeHandler = require("./delta-time-handler.js");
 
 /**
  * Creates game instances on the client using core
@@ -14,7 +15,7 @@ var requestFrame = require("./request-frame.js");
  */
 module.exports = function LocalGameFactory() {
 
-    function create(numberOfHumanPlayers, numberOfAIPlayers, map) {
+    function create(numberOfHumanPlayers, numberOfAIPlayers, map, seed) {
         var sf = ShapeFactory();
         if (map === undefined) {
             var mapShape = sf.createRectangle(800, 1000, 0, 0);
@@ -28,9 +29,13 @@ module.exports = function LocalGameFactory() {
         playerSetup.humanPlayers = playerFactory.createPlayers(numberOfHumanPlayers);
         playerSetup.AIPlayers = playerFactory.createPlayers(numberOfAIPlayers);
 
-        var random = Random();
+        var deltaTimeHandler = DeltaTimeHandler(requestFrame);
 
-        return GameFactory(requestFrame).create(playerSetup, map, random);
+        var random = Random(seed);
+        var game = GameFactory(deltaTimeHandler).create(playerSetup, map, random);
+        game.seed = random.getSeed();
+
+        return game;
     }
 
     return {

@@ -7,6 +7,8 @@ module.exports = function ClientGameEngine(gameController, gameHandler) {
     }
 
     return {
-        start: start
+        start: start,
+        on: gameHandler.on.bind(gameHandler),
+        startGameHistoryRecording: gameHandler.startGameHistoryRecording
     };
 };

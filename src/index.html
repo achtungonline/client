@@ -6,12 +6,25 @@
         <div id="game-container">
         
         </div>
+        <div id="replay-container">
+
+        </div>
         <script src="../build/client-game-engine-factory.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function(event) {
-                var container = document.getElementById("game-container");
-                var clientGameEngine = ClientGameEngineFactory().create();
-                clientGameEngine.start(container);
+                var gameContainer = document.getElementById("game-container");
+                var replayContainer = document.getElementById("replay-container");
+                var clientGameEngineFactory = ClientGameEngineFactory();
+                var clientGameEngine = clientGameEngineFactory.createGame();
+                var gameHistory = clientGameEngine.startGameHistoryRecording();
+                clientGameEngine.start(gameContainer);
+                // Not very pretty, but temporary solution to start a replay after the game
+                clientGameEngine.on("newPhaseStarted", function (phaseType) {
+                    if (phaseType === "roundOverPhase") {
+                        var clientReplayEngine = clientGameEngineFactory.createReplay(gameHistory);
+                        clientReplayEngine.start(replayContainer);
+                    }
+                });
             });
         </script>
     </body>
