@@ -3,7 +3,7 @@ module.exports = function(grunt) {
 
     var config = {
         jshint: {
-            files: ["Gruntfile.js", "src/**/*.js", "node_modules/core/src/*.js"],
+            files: ["Gruntfile.js", "src/**/*.js", "node_modules/core/src/**/*.js"],
             options: {
                 globals: {
                     jQuery: false
