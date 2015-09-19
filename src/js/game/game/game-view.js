@@ -24,16 +24,18 @@ module.exports = function PlayAreaView(gameHandler) {
         canvasContainer.style.height = mapBoundingBox.height;
 
         var mapCanvas = createCanvas("map", mapBoundingBox);
-        var wormBodiesCanvas = createCanvas("wormBodies", mapBoundingBox);
         var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
+        var powerUpCanvas = createCanvas("powerups", mapBoundingBox);
+        var playAreaCanvas = createCanvas("wormBodies", mapBoundingBox);
 
         canvasContainer.appendChild(mapCanvas);
-        canvasContainer.appendChild(wormBodiesCanvas);
+        canvasContainer.appendChild(playAreaCanvas);
         canvasContainer.appendChild(wormHeadsCanvas);
+        canvasContainer.appendChild(powerUpCanvas);
 
         playAreaContainer.appendChild(canvasContainer);
 
-        return CanvasRendererFactory().createLayeredCanvasRenderer(gameState, mapCanvas, wormBodiesCanvas, wormHeadsCanvas);
+        return CanvasRendererFactory().createLayeredCanvasRenderer(gameState, mapCanvas, wormHeadsCanvas, powerUpCanvas, playAreaCanvas);
     }
 
     var canvasRenderer = setupGameRenderer(gameHandler.gameState);
