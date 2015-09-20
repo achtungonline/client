@@ -33,9 +33,9 @@ module.exports = function LocalGameHandler(game, gameHistoryHandler) {
     }
 
     return {
-        start: function () {
-            game.start();
-        },
+        start: game.start,
+        pause: game.pause,
+        resume: game.resume,
         startGameHistoryRecording: startGameHistoryRecording,
         on: game.on.bind(game),
         events: game.events,
