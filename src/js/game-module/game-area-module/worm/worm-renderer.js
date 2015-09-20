@@ -1,4 +1,4 @@
-var COLOR_STRINGS = require("./../default-values.js").player.COLOR_STRINGS;
+var COLOR_STRINGS = require("./../../default-values.js").player.COLOR_STRINGS;
 
 module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties) {
 

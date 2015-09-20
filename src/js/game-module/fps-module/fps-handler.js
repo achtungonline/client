@@ -1,7 +1,7 @@
 var EventEmitter = require("events").EventEmitter;
 
-var EVENT_FPS_CHANGED = "fpsChanged";
-var events = [EVENT_FPS_CHANGED];
+var events = {};
+events.FPS_CHANGED = "fpsChanged";
 
 module.exports = function FpsHandler(gameHandler) {
     var eventEmitter = new EventEmitter();
@@ -9,7 +9,7 @@ module.exports = function FpsHandler(gameHandler) {
     var fps;
     var intervalId;
 
-    gameHandler.on("gameUpdated", function updateFps() {
+    gameHandler.on(gameHandler.events.GAME_UPDATED, function updateFps() {
         update();
     });
 
@@ -23,7 +23,7 @@ module.exports = function FpsHandler(gameHandler) {
         intervalId = setInterval(function updateFps() {
             fps = numUpdates;
             numUpdates = 0;
-            eventEmitter.emit(EVENT_FPS_CHANGED, fps);
+            eventEmitter.emit(events.FPS_CHANGED, fps);
         }, 1000);
     }
 
@@ -35,6 +35,7 @@ module.exports = function FpsHandler(gameHandler) {
         update: update,
         start: start,
         stop: stop,
-        on: eventEmitter.on.bind(eventEmitter)
+        on: eventEmitter.on.bind(eventEmitter),
+        events: events
     };
 };

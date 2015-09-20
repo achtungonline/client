@@ -1,4 +1,4 @@
-var PlayerSteeringListenerFactory = require("./../player/player-steering-listener-factory.js");
+var PlayerSteeringListenerFactory = require("./player-steering-listener-factory.js");
 var KEY_BINDINGS = require("./../default-values.js").player.KEY_BINDINGS;
 var GameHistory = require("core/src/history/game-history.js");
 
@@ -22,7 +22,7 @@ module.exports = function LocalGameHandler(game, gameHistoryHandler) {
 
     setupSteeringListenerEvents(game);
 
-    game.on("gameOver", function onGameOver() {
+    game.on(game.events.GAME_OVER, function onGameOver() {
         console.log("game over");
     });
 

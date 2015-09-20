@@ -1,8 +1,7 @@
 module.exports = function ClientGameEngine(gameController, gameHandler) {
 
     function start(container) {
-        gameController.activate();
-        container.appendChild(gameController.view.content);
+        container.appendChild(gameController.view.render());
         gameHandler.start();
     }
 

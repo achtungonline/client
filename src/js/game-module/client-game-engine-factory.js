@@ -1,8 +1,8 @@
 var LocalGameHandler = require("./local-game/local-game-handler.js");
 var LocalGameFactory = require("./local-game/local-game-factory.js");
-var ReplayFactory = require("./replay/replay-factory.js");
+var ReplayFactory = require("./replay-module/replay-factory.js");
 var ClientGameEngine = require("./client-game-engine.js");
-var GameContainerControllerFactory = require("./game-container-controller-factory.js");
+var GameControllerFactory = require("./game-controller-factory.js");
 var GameHistoryHandler = require("core/src/history/game-history-handler.js");
 
 var NUMBER_HUMAN_PLAYERS = 1;
@@ -15,7 +15,7 @@ module.exports = function ClientGameEngineFactory() {
         var game = LocalGameFactory().create(NUMBER_HUMAN_PLAYERS, NUMBER_AI_PLAYERS, undefined, seed);
 
         var gameHandler = LocalGameHandler(game, gameHistoryHandler);
-        var gameController = GameContainerControllerFactory(gameHandler).create();
+        var gameController = GameControllerFactory(gameHandler).create();
         return ClientGameEngine(gameController, gameHandler);
     }
 
@@ -24,7 +24,7 @@ module.exports = function ClientGameEngineFactory() {
         gameHistoryHandler.replayGameHistory(game, gameHistory);
 
         var gameHandler = LocalGameHandler(game, gameHistoryHandler);
-        var gameController = GameContainerControllerFactory(gameHandler).create();
+        var gameController = GameControllerFactory(gameHandler).create();
         return ClientGameEngine(gameController, gameHandler);
     }
 

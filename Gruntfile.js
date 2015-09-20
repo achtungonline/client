@@ -37,7 +37,7 @@ module.exports = function(grunt) {
         },
         browserify: {
             dev: {
-                src: ["src/js/game/client-game-engine-factory.js"],
+                src: ["src/js/game-module/client-game-engine-factory.js"],
                 dest: "build/client-game-engine-factory.js",
                 options: {
                     browserifyOptions: {

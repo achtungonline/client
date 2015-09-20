@@ -3,9 +3,29 @@ var playPhaseType = require("core/src/round/phase/play-phase.js").type;
 
 var CanvasRendererFactory = require("./canvas-renderer-factory.js");
 
-module.exports = function PlayAreaView(gameHandler) {
+module.exports = function GameAreaView(gameHandler) {
+    gameHandler.on("newPhaseStarted", function onNewPhaseStarted(phaseType) {
+        // TODO We need a more convenient way to handle render properties for different rounds
+        console.log("New phase started: " + phaseType);
+        if (phaseType === startPhaseType) {
+            canvasRenderer.setRenderProperty("drawArrows", true);
+            canvasRenderer.setRenderProperty("showTrajectories", false);
+        } else if (phaseType === playPhaseType) {
+            canvasRenderer.setRenderProperty("drawArrows", false);
+            canvasRenderer.setRenderProperty("showTrajectories", true);
+        } else {
+            canvasRenderer.setRenderProperty("showTrajectories", false);
+            canvasRenderer.setRenderProperty("drawArrows", false);
+        }
+    });
+
+    gameHandler.on(gameHandler.events.GAME_UPDATED, function onUpdated(deltaTime) {
+        canvasRenderer.render();
+    });
+
+
     var playAreaContainer = document.createElement("div");
-    playAreaContainer.className = "play-area-container";
+    playAreaContainer.className = "ao-game-area";
 
     function createCanvas(name, boundingBox) {
         var canvas = document.createElement("canvas");
@@ -25,7 +45,7 @@ module.exports = function PlayAreaView(gameHandler) {
 
         var mapCanvas = createCanvas("map", mapBoundingBox);
         var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
-        var powerUpCanvas = createCanvas("powerups", mapBoundingBox);
+        var powerUpCanvas = createCanvas("powerUps", mapBoundingBox);
         var playAreaCanvas = createCanvas("wormBodies", mapBoundingBox);
 
         canvasContainer.appendChild(mapCanvas);
@@ -40,28 +60,12 @@ module.exports = function PlayAreaView(gameHandler) {
 
     var canvasRenderer = setupGameRenderer(gameHandler.gameState);
 
-    gameHandler.on("newPhaseStarted", function onNewPhaseStarted(phaseType) {
-        // TODO We need a more convenient way to handle render properties for different rounds
-        console.log("New phase started: " + phaseType);
-        if (phaseType === startPhaseType) {
-            canvasRenderer.setRenderProperty("drawArrows", true);
-            canvasRenderer.setRenderProperty("showTrajectories", false);
-        } else if (phaseType === playPhaseType) {
-            canvasRenderer.setRenderProperty("drawArrows", false);
-            canvasRenderer.setRenderProperty("showTrajectories", true);
-        } else {
-            canvasRenderer.setRenderProperty("showTrajectories", false);
-            canvasRenderer.setRenderProperty("drawArrows", false);
-        }
-    });
-
 
     function render() {
-        canvasRenderer.render();
+        return playAreaContainer;
     }
 
     return {
-        render: render,
-        content: playAreaContainer
+        render: render
     };
 };
