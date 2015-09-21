@@ -1,22 +1,21 @@
 module.exports = function DeltaTimeHandler(requestAnimationFrame) {
 
-    function start() {
-        var previousTime = Date.now();
 
-        function deltaTimeCall(callBack) {
-            requestAnimationFrame(function () {
-                var currentTime = Date.now();
-                var deltaTime = (currentTime - previousTime) / 1000;
-                previousTime = currentTime;
-                callBack(deltaTime);
-            });
-        }
+    function start(gameState) {
+        gameState.previousUpdateTime = Date.now();
+    }
 
-        return deltaTimeCall;
+    function update(gameState, callBack) {
+        requestAnimationFrame(function () {
+            var currentTime = Date.now();
+            var deltaTime = (currentTime - gameState.previousUpdateTime) / 1000;
+            gameState.previousUpdateTime = currentTime;
+            callBack(deltaTime);
+        });
     }
 
     return {
-        start: start
+        start: start,
+        update: update
     };
-
 };

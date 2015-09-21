@@ -1,6 +1,6 @@
 var LocalGameHandler = require("./local-game/local-game-handler.js");
 var LocalGameFactory = require("./local-game/local-game-factory.js");
-var ReplayFactory = require("./replay-module/replay-factory.js");
+var ReplayFactory = require("./local-game/replay/replay-factory.js");
 var ClientGameEngine = require("./client-game-engine.js");
 var GameControllerFactory = require("./game-controller-factory.js");
 var GameHistoryHandler = require("core/src/history/game-history-handler.js");

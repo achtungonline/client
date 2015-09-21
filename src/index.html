@@ -19,11 +19,9 @@
                 var gameHistory = clientGameEngine.startGameHistoryRecording();
                 clientGameEngine.start(gameContainer);
                 // Not very pretty, but temporary solution to start a replay after the game
-                clientGameEngine.on("newPhaseStarted", function (phaseType) {
-                    if (phaseType === "roundOverPhase") {
-                        var clientReplayEngine = clientGameEngineFactory.createReplay(gameHistory);
-                        clientReplayEngine.start(replayContainer);
-                    }
+                clientGameEngine.on("gameOver", function (phaseType) {
+                    var clientReplayEngine = clientGameEngineFactory.createReplay(gameHistory);
+                    clientReplayEngine.start(replayContainer);
                 });
             });
         </script>

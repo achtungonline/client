@@ -4,7 +4,7 @@ var WormFactory = require("core/src/player/worm/worm-factory.js");
 var ShapeFactory = require("core/src/geometry/shape-factory.js");
 var idGenerator = require("core/src/util/id-generator.js");
 var Random = require("core/src/util/random.js");
-var requestFrame = require("../local-game/request-frame.js");
+var requestFrame = require("./../request-frame.js");
 var ReplayDeltaTimeHandler = require("./replay-delta-time-handler.js");
 
 
