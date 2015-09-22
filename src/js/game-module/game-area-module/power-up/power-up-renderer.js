@@ -1,13 +1,19 @@
+var speedEffectType = require("core/src/power-up/effect-handlers/speed-effect-handler.js").type;
+var fatEffectType = require("core/src/power-up/effect-handlers/fat-effect-handler.js").type;
+
 module.exports = function PowerUpRenderer(gameState, powerUpContext, shapeRenderer, renderProperties) {
 
     var render = function () {
-        // TODO Remove if statement when things are tested
-        if (gameState.powerUps) {
-            powerUpContext.clearRect(0, 0, powerUpContext.canvas.width, powerUpContext.canvas.height);
-            gameState.powerUps.forEach(function renderPowerUp(powerUp) {
-                shapeRenderer.render(powerUpContext, powerUp.shape, "pink");
-            });
-        }
+        powerUpContext.clearRect(0, 0, powerUpContext.canvas.width, powerUpContext.canvas.height);
+        gameState.powerUps.forEach(function renderPowerUp(powerUp) {
+            var color = "pink";
+            if (powerUp.effectType === speedEffectType) {
+                color = "aqua";
+            } else if (powerUp.effectType === fatEffectType) {
+                color = "orange";
+            }
+            shapeRenderer.render(powerUpContext, powerUp.shape, color);
+        });
     };
 
     return {
