@@ -49,9 +49,9 @@ module.exports = function GameAreaView(gameHandler) {
         var playAreaCanvas = createCanvas("wormBodies", mapBoundingBox);
 
         canvasContainer.appendChild(mapCanvas);
+        canvasContainer.appendChild(powerUpCanvas);
         canvasContainer.appendChild(playAreaCanvas);
         canvasContainer.appendChild(wormHeadsCanvas);
-        canvasContainer.appendChild(powerUpCanvas);
 
         playAreaContainer.appendChild(canvasContainer);
 
