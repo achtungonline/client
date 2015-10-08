@@ -5,15 +5,13 @@ module.exports = function WormsRenderer(gameState, shapeRenderer, wormHeadsConte
     var wormRenderers = {};
     var clearWholeCanvas = false;
 
-    //TODO: Need to listen to game for events that remove/add worms to update the wormRenderers map.
-
-    gameState.players.forEach(function (player) {
-        player.worms.forEach(function (worm) {
-            wormRenderers[worm.id] = WormRenderer(worm, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties);
-        });
-    });
-
     function render() {
+        gameState.worms.forEach(function(worm) {
+           if(!wormRenderers[worm.id]) {
+               wormRenderers[worm.id] = WormRenderer(worm, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties);
+           }
+        });
+
         if (clearWholeCanvas) {
             wormHeadsContext.clearRect(0, 0, wormHeadsContext.canvas.width, wormHeadsContext.canvas.height);
         } else {
