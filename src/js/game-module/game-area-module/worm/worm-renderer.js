@@ -24,7 +24,7 @@ module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, sh
 
     function drawTrajectory(worm, trajectory) {
         wormHeadsContext.save();
-        wormHeadsContext.strokeStyle = COLOR_STRINGS[worm.id];
+        wormHeadsContext.strokeStyle = COLOR_STRINGS[worm.playerId];
         wormHeadsContext.setLineDash([2,5]);
         wormHeadsContext.lineWidth = 2;
         wormHeadsContext.beginPath();
@@ -57,8 +57,8 @@ module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, sh
 
     function drawArrow(worm) {
         wormHeadsContext.save();
-        wormHeadsContext.fillStyle = COLOR_STRINGS[worm.id];
-        wormHeadsContext.strokeStyle = COLOR_STRINGS[worm.id];
+        wormHeadsContext.fillStyle = COLOR_STRINGS[worm.playerId];
+        wormHeadsContext.strokeStyle = COLOR_STRINGS[worm.playerId];
         wormHeadsContext.lineWidth = 5;
         wormHeadsContext.beginPath();
         wormHeadsContext.translate(worm.head.centerX, worm.head.centerY);
