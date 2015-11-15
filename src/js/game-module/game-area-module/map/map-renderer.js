@@ -6,7 +6,7 @@ module.exports = function MapRenderer(map, shapeRenderer, mapContext, renderProp
             return;
         }
 
-        shapeRenderer.render(mapContext, map.shape, "black", "yellow");
+        shapeRenderer.render(mapContext, map.shape, "#faf7ed", "black");
 
         rendered = true;
     };
