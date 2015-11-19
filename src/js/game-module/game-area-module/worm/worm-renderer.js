@@ -6,7 +6,7 @@ module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, sh
 
     function render() {
         var largerHead = shapeModifierImmutable.changeSize(worm.head, 2);
-        shapeRenderer.render(wormHeadsContext, largerHead, "yellow");
+        shapeRenderer.render(wormHeadsContext, largerHead, "#FF9800");
         lastRenderedHead = largerHead;
         if (renderProperties.drawArrows) {
             drawArrow(worm);
