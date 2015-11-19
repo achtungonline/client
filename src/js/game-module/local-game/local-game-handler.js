@@ -1,6 +1,6 @@
 var PlayerSteeringListenerFactory = require("./player-steering-listener-factory.js");
 var KEY_BINDINGS = require("./../default-values.js").player.KEY_BINDINGS;
-var GameHistory = require("core/src/history/game-history.js");
+var GameHistory = require("core/src/core/history/game-history.js");
 
 /**
  * GameWrapper responsible of handling the game on the client. Other can listen on the LocalGameHandler for events and get the current state.

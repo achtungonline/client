@@ -1,5 +1,5 @@
 var WormRenderer = require("./worm-renderer.js");
-var forEach = require("core/src/util/for-each.js");
+var forEach = require("core/src/core/util/for-each.js");
 
 module.exports = function WormsRenderer(gameState, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties) {
     var wormRenderers = {};

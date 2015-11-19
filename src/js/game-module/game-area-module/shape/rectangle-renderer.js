@@ -1,4 +1,4 @@
-var rectangleShape = require("core/src/geometry/shape/rectangle.js");
+var rectangleShape = require("core/src/core/geometry/shape/rectangle.js");
 
 var renderer = module.exports = {};
 

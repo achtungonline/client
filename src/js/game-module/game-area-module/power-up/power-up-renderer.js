@@ -1,7 +1,7 @@
-var speedEffectType = require("core/src/power-up/effect-handlers/speed-effect-handler.js").type;
-var fatEffectType = require("core/src/power-up/effect-handlers/fat-effect-handler.js").type;
-var wormSwitchEffectType = require("core/src/power-up/effect-handlers/worm-switch-effect-handler.js").type;
-var fastTurnSpeedEffectType = require("core/src/power-up/effect-handlers/fast-turn-speed-effect-handler.js").type;
+var speedEffectType = require("core/src/core/power-up/effect-handlers/speed-effect-handler.js").type;
+var fatEffectType = require("core/src/core/power-up/effect-handlers/fat-effect-handler.js").type;
+var wormSwitchEffectType = require("core/src/core/power-up/effect-handlers/worm-switch-effect-handler.js").type;
+var fastTurnSpeedEffectType = require("core/src/core/power-up/effect-handlers/fast-turn-speed-effect-handler.js").type;
 
 module.exports = function PowerUpRenderer(gameState, powerUpContext, shapeRenderer, renderProperties) {
 

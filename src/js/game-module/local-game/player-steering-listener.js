@@ -1,4 +1,4 @@
-var steering = require("core/src/player/player.js").steering;
+var steering = require("core/src/core/player/player.js").steering;
 
 module.exports = function PlayerSteeringListener(keyListenerHandler, game) {
 

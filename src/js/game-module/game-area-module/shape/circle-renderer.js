@@ -1,4 +1,4 @@
-var circleShape = require("core/src/geometry/shape/circle.js");
+var circleShape = require("core/src/core/geometry/shape/circle.js");
 
 var renderer = module.exports = {};
 

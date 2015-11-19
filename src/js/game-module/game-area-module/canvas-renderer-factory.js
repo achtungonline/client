@@ -2,8 +2,8 @@ var CanvasRenderer = require("./canvas-renderer.js");
 var ShapeRendererFactory = require("./shape/shape-renderer-factory.js");
 var MapRenderer = require("./map/map-renderer.js");
 var WormsRenderer = require("./worm/worms-renderer.js");
-var ShapeModifierImmutable = require("core/src/geometry/shape-modifier-immutable.js");
-var ShapeFactory = require("core/src/geometry/shape-factory.js");
+var ShapeModifierImmutable = require("core/src/core/geometry/shape-modifier-immutable.js");
+var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
 var PlayAreaRenderer = require("./play-area/play-area-renderer.js");
 var PowerUpRenderer = require("./power-up/power-up-renderer.js");
 

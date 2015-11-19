@@ -1,9 +1,9 @@
 var GameFactory = require("core/src/game-factory.js");
-var PlayerFactory = require("core/src/player/player-factory.js");
-var WormFactory = require("core/src/player/worm/worm-factory.js");
-var ShapeFactory = require("core/src/geometry/shape-factory.js");
-var idGenerator = require("core/src/util/id-generator.js");
-var Random = require("core/src/util/random.js");
+var PlayerFactory = require("core/src/core/player/player-factory.js");
+var WormFactory = require("core/src/core/player/worm/worm-factory.js");
+var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
+var idGenerator = require("core/src/core/util/id-generator.js");
+var Random = require("core/src/core/util/random.js");
 var requestFrame = require("./../request-frame.js");
 var ReplayDeltaTimeHandler = require("./replay-delta-time-handler.js");
 

@@ -1,5 +1,5 @@
-var PlayArea = require("core/src/play-area/play-area.js");
-var playerUtils = require("core/src/player/player-utils.js");
+var PlayArea = require("core/src/core/play-area/play-area.js");
+var playerUtils = require("core/src/core/player/player-utils.js");
 var COLORS = require("./../../default-values.js").player.COLORS;
 var canvasImageDataUtils = require("./../canvas-image-data-utils.js");
 
