@@ -1,15 +1,14 @@
 module.exports = function DeltaTimeHandler(requestAnimationFrame) {
 
-
-    function start(gameState) {
-        gameState.previousUpdateTime = Date.now();
+    function start(state) {
+        state.previousUpdateTime = Date.now();
     }
 
-    function update(gameState, callBack) {
+    function update(state, callBack) {
         requestAnimationFrame(function () {
             var currentTime = Date.now();
-            var deltaTime = (currentTime - gameState.previousUpdateTime) / 1000;
-            gameState.previousUpdateTime = currentTime;
+            var deltaTime = (currentTime - state.previousUpdateTime) / 1000;
+            state.previousUpdateTime = currentTime;
             callBack(deltaTime);
         });
     }

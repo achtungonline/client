@@ -6,12 +6,11 @@ var FpsHandler = require("./fps-module/fps-handler.js");
 var PauseView = require("./views/pause-view.js");
 var StopView= require("./views/stop-view.js");
 
-module.exports = function GameControllerFactory(gameHandler) {
+module.exports = function GameControllerFactory(game) {
     function create() {
-
-        var gameAreaController = GameAreaControllerFactory(gameHandler).create();
-        var fpsView = FpsView(FpsHandler(gameHandler));
-        var gameView = GameView(gameAreaController.view, fpsView, PauseView(gameHandler), StopView(gameHandler));
+        var gameAreaController = GameAreaControllerFactory(game).create();
+        var fpsView = FpsView(FpsHandler(game));
+        var gameView = GameView(gameAreaController.view, fpsView, PauseView(game), StopView(game));
         return GameController(gameView, gameAreaController);
     }
 

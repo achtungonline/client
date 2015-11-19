@@ -1,16 +1,18 @@
 module.exports = function ReplayDeltaTimeHandler(requestAnimationFrame, gameHistory) {
-    function start(gameState) {
-        gameState.previousUpdateTime = Date.now();
+    function start(state) {
+        state.previousUpdateTime = Date.now();
     }
 
-    function update(gameState, callBack) {
+    function update(state, callBack) {
+        var gameState = this.gameState; // NO NO!!!
+
         if (gameState.replayUpdateIndex < gameHistory.updates.length) {
 
             var deltaTime = gameHistory.updates[gameState.replayUpdateIndex].deltaTime;
             var currentTime = Date.now();
-            var sleepTime = Math.max(gameState.previousUpdateTime + deltaTime * 1000 - currentTime, 0);
+            var sleepTime = Math.max(state.previousUpdateTime + deltaTime * 1000 - currentTime, 0);
             if(!gameState.gamePaused) {
-                gameState.previousUpdateTime = currentTime;
+                state.previousUpdateTime = currentTime;
             }
 
             setTimeout(function() {
