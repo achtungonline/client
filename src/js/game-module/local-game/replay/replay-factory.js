@@ -1,18 +1,17 @@
-var LocalGameFactory = require("../local-game-factory.js");
+var GameFactory = require("../game-factory.js");
 var requestFrame = require("./../request-frame.js");
-var ReplayDeltaTimeHandler = require("./replay-delta-time-handler.js");
+var DeltaTimeHandler = require("./../delta-time-handler.js");
+var Replay = require("./replay.js");
 
 
 module.exports = function ReplayFactory() {
+    var gameFactory = GameFactory();
+    var deltaTimeHandler = DeltaTimeHandler(requestFrame);
 
     function create(gameHistory) {
-        var map = gameHistory.map;
-
-        var deltaTimeHandler = ReplayDeltaTimeHandler(requestFrame, gameHistory);
-
-        var game = LocalGameFactory({ deltaTimeHandler: deltaTimeHandler }).create(gameHistory.numberOfPlayers, 0, map, gameHistory.seed);
-        deltaTimeHandler.gameState = game.gameState; //TODO: NO NO NO!!
-        return game;
+        var game = gameFactory.create(gameHistory.numberOfPlayers, 0, gameHistory.map, gameHistory.seed);
+        var replay = Replay(game, gameHistory, deltaTimeHandler);
+        return replay;
     }
 
     return {

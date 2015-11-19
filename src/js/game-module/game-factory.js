@@ -13,9 +13,7 @@ module.exports = function GameFactory() {
     }
 
     function createReplay(gameHistory) {
-        var gameHistoryHandler = GameHistoryHandler();
         var game = ReplayFactory().create(gameHistory);
-        gameHistoryHandler.replayGameHistory(game, gameHistory);
 
         return game;
     }
