@@ -1,6 +1,6 @@
 var GameFactory = require("core/src/game-factory.js");
 var PlayerFactory = require("core/src/core/player/player-factory.js");
-var WormFactory = require("core/src/core/player/worm/worm-factory.js");
+var WormFactory = require("core/src/core/worm/worm-factory.js");
 var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
 var idGenerator = require("core/src/core/util/id-generator.js");
 var Random = require("core/src/core/util/random.js");
