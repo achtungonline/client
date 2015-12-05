@@ -1,14 +1,12 @@
 var GameFactory = require("core/src/game-factory.js");
-var PlayerFactory = require("core/src/core/player/player-factory.js");
 var MapFactory = require("core/src/core/map/map-factory.js");
 var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
-var idGenerator = require("core/src/core/util/id-generator.js");
+var idGenerators = require("core/src/core/util/id-generator.js");
 var Random = require("core/src/core/util/random.js");
 var requestFrame = require("./request-frame.js");
 var DeltaTimeHandler = require("./delta-time-handler.js");
 var LocalGame = require("./local-game.js");
 var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");
-
 
 /**
  * Creates game instances on the client using core
@@ -16,6 +14,7 @@ var GameHistoryHandler = require("core/src/core/history/game-history-handler.js"
  * @constructor
  */
 module.exports = function LocalGameFactory() {
+    var idGenerator = idGenerators.indexCounterId(0);
 
     function create(numberOfHumanPlayers, numberOfAIPlayers, map, seed) {
         var sf = ShapeFactory();
@@ -25,15 +24,26 @@ module.exports = function LocalGameFactory() {
             map = MapFactory().create(mapShape, mapObstaclesShapes);
         }
 
-        var playerFactory = PlayerFactory(idGenerator.indexCounterId(0));
-        var playerSetup = {};
-        playerSetup.humanPlayers = playerFactory.createPlayers(numberOfHumanPlayers);
-        playerSetup.AIPlayers = playerFactory.createPlayers(numberOfAIPlayers);
+        function generatePlayers(n, type) {
+            var config = [];
+            for (var i = 0; i < n; i++) {
+                config.push({
+                    id: idGenerator(),
+                    type: type
+                });
+            }
+            return config;
+        }
 
+        var playerConfigs = generatePlayers(numberOfHumanPlayers, 'human').concat(generatePlayers(numberOfAIPlayers, 'bot'));
 
         var random = Random(seed);
-        var game = GameFactory().create(playerSetup, map, random);
-        game.seed = random.getSeed();
+        var game = GameFactory().create({
+            playerConfigs: playerConfigs,
+            map: map,
+            random: random
+        });
+        game.seed = random.getSeed(); //TODO Not like this
         return game;
     }
 

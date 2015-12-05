@@ -15,6 +15,7 @@ module.exports = function LocalGameFactory() {
     var deltaTimeHandler = DeltaTimeHandler(requestFrame);
 
     function create(numberOfHumanPlayers, numberOfAIPlayers, map, seed) {
+
         var game = gameFactory.create(numberOfHumanPlayers, numberOfAIPlayers, map, seed);
         var gameHistoryHandler = GameHistoryHandler();
         var localGame = LocalGame(game, gameHistoryHandler, deltaTimeHandler);
