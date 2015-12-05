@@ -6,7 +6,7 @@ var GameHistory = require("core/src/core/history/game-history.js");
  * Game wrapper responsible of handling the game on the client. Other can listen on the LocalGameHandler for events and get the current state.
  * @constructor
  */
-module.exports = function LocalGameHandler(game, gameHistoryHandler, deltaTimeHandler) {
+module.exports = function LocalGameHandler(game, gameHistoryHandler, deltaTimeHandler, seed) {
     var localGameState = {
         paused: false
     };
@@ -30,7 +30,7 @@ module.exports = function LocalGameHandler(game, gameHistoryHandler, deltaTimeHa
 
     // TODO: History stuff should not be in this "class".
     function startGameHistoryRecording() {
-        var gameHistory = GameHistory(game.gameState.map, game.gameState.players.length, game.seed);
+        var gameHistory = GameHistory(game.gameState.map, game.gameState.players.length, seed);
         gameHistoryHandler.recordGameHistory(game, gameHistory);
         return gameHistory;
     }

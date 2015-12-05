@@ -18,7 +18,7 @@ module.exports = function LocalGameFactory() {
 
         var game = gameFactory.create(numberOfHumanPlayers, numberOfAIPlayers, map, seed);
         var gameHistoryHandler = GameHistoryHandler();
-        var localGame = LocalGame(game, gameHistoryHandler, deltaTimeHandler);
+        var localGame = LocalGame(game, gameHistoryHandler, deltaTimeHandler, seed);
         return localGame;
     }
 
