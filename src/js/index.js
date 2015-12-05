@@ -1,4 +1,4 @@
-var GameFactory = require('./game-module/game-factory.js');
+var MatchFactory = require('./game-module/local-game/local-match-factory.js');
 var GameControllerFactory = require('./game-module/game-controller-factory.js');
 
 function WindowFocusHandler() {
@@ -86,34 +86,35 @@ function WindowFocusHandler() {
 
 document.addEventListener("DOMContentLoaded", function(event) {
     var gameContainer = document.getElementById("game-container");
-    var replayContainer = document.getElementById("replay-container");
-    var gameFactory = GameFactory();
-    var game = gameFactory.createGame();
-    var gameHistory = game.startGameHistoryRecording();
+    //var replayContainer = document.getElementById("replay-container");
+    var matchFactory = MatchFactory();
+    var match = matchFactory.create(1, 9);
+    //var gameHistory = game.startGameHistoryRecording();
 
-    var gameController = GameControllerFactory(game).create();
+
+    var gameController = GameControllerFactory(match.getCurrentGame()).create();
     gameContainer.innerHTML = "";
     gameContainer.appendChild(gameController.view.render());
 
     var windowFocusHandler = WindowFocusHandler();
 
-    game.start(gameContainer);
+    match.startNextGame(gameContainer);
 
     windowFocusHandler.onFocus(function () {
         setTimeout(function () {
-            game.resume();
+            match.resume();
         }, 1000);
     });
     windowFocusHandler.onBlur(function () {
-        game.pause();
+        match.pause();
     });
 
     // Not very pretty, but temporary solution to start a replay after the game
-    game.on("gameOver", function (phaseType) {
-        var gameReplay = gameFactory.createReplay(gameHistory);
-        var gameReplayController = GameControllerFactory(gameReplay).create();
-        replayContainer.innerHTML = "";
-        replayContainer.appendChild(gameReplayController.view.render());
-        gameReplay.start(replayContainer);
-    });
+    //match.on("gameOver", function (phaseType) {
+    //    var gameReplay = gameFactory.createReplay(gameHistory);
+    //    var gameReplayController = GameControllerFactory(gameReplay).create();
+    //    replayContainer.innerHTML = "";
+    //    replayContainer.appendChild(gameReplayController.view.render());
+    //    gameReplay.start(replayContainer);
+    //});
 });

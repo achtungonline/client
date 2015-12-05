@@ -40,6 +40,11 @@ module.exports = function(grunt) {
                 src: ["src/js/index.js"],
                 dest: "build/index.js",
                 options: {
+                    transform: [
+                        ["babelify", {
+                            presets: ["react", "es2015"]
+                        }]
+                    ],
                     browserifyOptions: {
                         debug: true
                     }
