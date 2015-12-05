@@ -15,6 +15,9 @@ module.exports = function LocalGameFactory() {
     var deltaTimeHandler = DeltaTimeHandler(requestFrame);
 
     function create(numberOfHumanPlayers, numberOfAIPlayers, map, seed) {
+        if(seed === undefined) {
+            seed = Math.random();
+        }
 
         var game = gameFactory.create(numberOfHumanPlayers, numberOfAIPlayers, map, seed);
         var gameHistoryHandler = GameHistoryHandler();
