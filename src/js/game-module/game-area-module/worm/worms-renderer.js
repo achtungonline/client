@@ -6,10 +6,10 @@ module.exports = function WormsRenderer(gameState, shapeRenderer, wormHeadsConte
     var clearWholeCanvas = false;
 
     function render() {
-        gameState.worms.forEach(function(worm) {
-           if(!wormRenderers[worm.id]) {
-               wormRenderers[worm.id] = WormRenderer(worm, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties);
-           }
+        gameState.worms.forEach(function (worm) {
+            if (!wormRenderers[worm.id]) {
+                wormRenderers[worm.id] = WormRenderer(worm, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties);
+            }
         });
 
         if (clearWholeCanvas) {

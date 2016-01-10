@@ -21,8 +21,12 @@ module.exports = function FpsHandler(gameHandler) {
             scores[Math.floor(Math.random()*3)].score++;
             scores.sort(function (a, b) {
                 var scoreDiff = b.score - a.score;
-                if (scoreDiff < 0) return -1;
-                if (scoreDiff > 0) return 1;
+                if (scoreDiff < 0) {
+                    return -1;
+                }
+                if (scoreDiff > 0)  {
+                    return 1;
+                }
                 return a.name.localeCompare(b.name);
             });
             eventEmitter.emit(events.SCORE_CHANGED, scores);

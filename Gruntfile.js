@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     require("load-grunt-tasks")(grunt);
 
     var config = {
@@ -8,6 +8,12 @@ module.exports = function(grunt) {
                 globals: {
                     jQuery: false
                 }
+            }
+        },
+        eslint: {
+            target: ["Gruntfile.js", "src/**/*.js"],
+            options: {
+                configFile: './.eslintrc'
             }
         },
         less: {
@@ -30,10 +36,10 @@ module.exports = function(grunt) {
                     nospawn: true
                 }
             },
-             js: {
-                 files: ["<%= jshint.files %>"],
-                 tasks: ["browserify:dev"]
-             }
+            js: {
+                files: ["<%= jshint.files %>"],
+                tasks: ["browserify:dev"]
+            }
         },
         browserify: {
             dev: {
@@ -51,8 +57,8 @@ module.exports = function(grunt) {
                 }
             }
         },
-        open : {
-            dev : {
+        open: {
+            dev: {
                 path: 'src/index.html'
             }
         }
@@ -62,10 +68,10 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('assemble-less');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-open');
 
+    grunt.registerTask("lint", ["eslint"]);
     grunt.registerTask("build:dev", ["browserify:dev", "less"]);
-    grunt.registerTask("build", ["build:dev", "jshint"]);
+    grunt.registerTask("build", ["build:dev", "lint"]);
     grunt.registerTask("default", ["build", "open:dev", "watch"]);
 };

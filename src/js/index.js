@@ -1,5 +1,9 @@
 var MatchFactory = require('./game-module/local-game/local-match-factory.js');
 var GameControllerFactory = require('./game-module/game-controller-factory.js');
+var NewGameComponent = require('./newGameComponent.js');
+var ReactDOM = require('react-dom');
+var React = require('react');
+
 
 function WindowFocusHandler() {
     var focusListeners = [];
@@ -22,50 +26,57 @@ function WindowFocusHandler() {
 
         // This code is super ugly! Want to rewrite it. Cluttering the document body className and stuff :(
         // Taken from http://stackoverflow.com/questions/1060008/is-there-a-way-to-detect-if-a-browser-window-is-not-currently-active
-        (function() {
-            var hidden = "hidden";
+        var hidden = "hidden";
 
-            // Standards:
-            if (hidden in document)
-                document.addEventListener("visibilitychange", onchange);
-            else if ((hidden = "mozHidden") in document)
-                document.addEventListener("mozvisibilitychange", onchange);
-            else if ((hidden = "webkitHidden") in document)
-                document.addEventListener("webkitvisibilitychange", onchange);
-            else if ((hidden = "msHidden") in document)
-                document.addEventListener("msvisibilitychange", onchange);
-            // IE 9 and lower:
-            else if ("onfocusin" in document)
-                document.onfocusin = document.onfocusout = onchange;
-            // All others:
-            else
-                window.onpageshow = window.onpagehide = window.onfocus = window.onblur = onchange;
+        // Standards:
+        if (hidden in document) {
+            document.addEventListener("visibilitychange", onchange);
+        }
+        else if ((hidden = "mozHidden") in document) {
+            document.addEventListener("mozvisibilitychange", onchange);
+        }
+        else if ((hidden = "webkitHidden") in document) {
+            document.addEventListener("webkitvisibilitychange", onchange);
+        }
+        else if ((hidden = "msHidden") in document) {
+            document.addEventListener("msvisibilitychange", onchange);
+        }
+        // IE 9 and lower:
+        else if ("onfocusin" in document) {
+            document.onfocusin = document.onfocusout = onchange;
+        }
+        // All others:
+        else {
+            window.onpageshow = window.onpagehide = window.onfocus = window.onblur = onchange;
+        }
 
-            function onchange (evt) {
-                var v = "visible", h = "hidden",
-                    evtMap = {
-                      focus:v, focusin:v, pageshow:v, blur:h, focusout:h, pagehide:h
-                    };
+        function onchange(evt) {
+            var v = "visible", h = "hidden",
+                evtMap = {
+                    focus: v, focusin: v, pageshow: v, blur: h, focusout: h, pagehide: h
+                };
 
-                evt = evt || window.event;
-                if (evt.type in evtMap) {
-                    if (evtMap[evt.type] === v) {
-                        onWindowFocus();
-                    } else {
-                        onWindowBlur();
-                    }
+            evt = evt || window.event;
+            if (evt.type in evtMap) {
+                if (evtMap[evt.type] === v) {
+                    onWindowFocus();
                 } else {
-                    if (this[hidden]) {
-                        onWindowBlur();
-                    } else {
-                        onWindowFocus();
-                    }
+                    onWindowBlur();
+                }
+            } else {
+                if (this[hidden]) {
+                    onWindowBlur();
+                } else {
+                    onWindowFocus();
                 }
             }
+        }
 
-            // set the initial state (but only if browser supports the Page Visibility API)
-            if( document[hidden] !== undefined ) onchange({type: document[hidden] ? "blur" : "focus"});
-        })();
+        // set the initial state (but only if browser supports the Page Visibility API)
+        if (document[hidden] !== undefined) {
+            onchange({type: document[hidden] ? "blur" : "focus"});
+        }
+
     }
 
     init();
@@ -84,12 +95,13 @@ function WindowFocusHandler() {
     };
 }
 
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function (event) {
     var gameContainer = document.getElementById("game-container");
     //var replayContainer = document.getElementById("replay-container");
     var matchFactory = MatchFactory();
     var match = matchFactory.create(1, 9);
     //var gameHistory = game.startGameHistoryRecording();
+    var newGameContainer = document.getElementById("new-game-container");
 
 
     var gameController = GameControllerFactory(match.getCurrentGame()).create();
@@ -99,6 +111,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var windowFocusHandler = WindowFocusHandler();
 
     match.startNextGame(gameContainer);
+
+
+    ReactDOM.render(React.createElement(NewGameComponent, {}), newGameContainer);
 
     windowFocusHandler.onFocus(function () {
         setTimeout(function () {
