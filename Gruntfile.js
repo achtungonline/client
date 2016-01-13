@@ -38,7 +38,7 @@ module.exports = function (grunt) {
             },
             js: {
                 files: ["<%= jshint.files %>"],
-                tasks: ["browserify:dev"]
+                tasks: ["browserify:start"]
             }
         },
         browserify: {
@@ -48,7 +48,21 @@ module.exports = function (grunt) {
                 options: {
                     transform: [
                         ["babelify", {
-                            presets: ["react", "es2015"]
+                            presets: ["react"]
+                        }]
+                    ],
+                    browserifyOptions: {
+                        debug: true
+                    }
+                }
+            },
+            start: {
+                src: ["src/js/start.js"],
+                dest: "build/start.js",
+                options: {
+                    transform: [
+                        ["babelify", {
+                            presets: ["react"]
                         }]
                     ],
                     browserifyOptions: {
@@ -71,7 +85,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-open');
 
     grunt.registerTask("lint", ["eslint"]);
-    grunt.registerTask("build:dev", ["browserify:dev", "less"]);
+    grunt.registerTask("build:dev", ["browserify:dev", "browserify:start", "less"]);
     grunt.registerTask("build", ["build:dev", "lint"]);
     grunt.registerTask("default", ["build", "open:dev", "watch"]);
 };
