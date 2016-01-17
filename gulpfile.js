@@ -40,7 +40,7 @@ gulp.task('sass', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch(ALL_JS_FILES, ['lint']);
+    gulp.watch(ALL_JS_FILES, ['lint']); //TODO Only lint the file that actually got changed, like with entries in watchify
     gulp.watch(path.SASS + '/**/*.scss', ['sass']);
 
     var entryFiles = [
