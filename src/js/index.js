@@ -1,6 +1,5 @@
 var MatchFactory = require('./game-module/local-game/local-match-factory.js');
 var GameControllerFactory = require('./game-module/game-controller-factory.js');
-var NewGameComponent = require('./newGameComponent.js');
 var ReactDOM = require('react-dom');
 var React = require('react');
 
@@ -113,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     match.startNextGame(gameContainer);
 
 
-    ReactDOM.render(React.createElement(NewGameComponent, {}), newGameContainer);
 
     windowFocusHandler.onFocus(function () {
         setTimeout(function () {
