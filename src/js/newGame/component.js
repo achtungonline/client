@@ -1,6 +1,19 @@
 var React = require('react');
 
 var availableColorIds = ["black", "yellow", "orange", "red", "pink", "purple", "indigo", "blue", "turquoise", "green"];
+var availableNames = [
+    "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
+    "Adolf Hitler", "Donald Trump", "Vladimir Putin", "Osama bin Laden", "Kim Jong-un", "Mao Zedong", "Joseph Stalin", "Prophet Muhammad", "Steve Jobs", "Benito Mussolini"];
+
+function getUnusedNames(players) {
+    var usedNames = players.map(p => p.name);
+    return availableNames.filter(n => usedNames.indexOf(n) === -1);
+}
+
+function getRandomUnusedName(players) {
+    var unusedNames = getUnusedNames(players);
+    return unusedNames[Math.floor(Math.random() * unusedNames.length)];
+}
 
 function getPlayer(players, playerId) {
     return players.find(function (player) {
@@ -74,7 +87,7 @@ var Table = React.createClass({
                     <td>
                         <input type="checkbox" checked={bot} onChange={this.onBotChange.bind(this, player.id)}/>
                     </td>
-                    <td><ColorPicker colorId={colorId} availableColorIds={availableColorIds} onColorSelected={this.onPlayerColorChange.bind(this, player.id)} /></td>
+                    <td><ColorPicker colorId={colorId} availableColorIds={availableColorIds} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/></td>
                     <td>
                         <input type="text" onChange={this.onNameChange.bind(this, player.id)} value={name}/>
                     </td>
@@ -122,13 +135,15 @@ var Table = React.createClass({
 module.exports = React.createClass({
     displayName: 'NewGame',
     getInitialState: function () {
+        var firstName = getRandomUnusedName([]);
+        var secondName = getRandomUnusedName([{name: firstName}]);
         return {
             nextId: 2,
             players: [
                 {
                     bot: false,
                     colorId: "blue",
-                    name: "Bajs",
+                    name: firstName,
                     left: "A",
                     right: "B",
                     id: 0
@@ -136,7 +151,7 @@ module.exports = React.createClass({
                 {
                     bot: true,
                     colorId: "red",
-                    name: "SuperBot",
+                    name: secondName,
                     left: "K",
                     right: "L",
                     id: 1
@@ -156,7 +171,7 @@ module.exports = React.createClass({
                        onNameChange={this.onNameChange}
                        onBotChange={this.onBotChange}
                        onRemoveClick={this.onRemoveClick}
-                       onPlayerColorChange={this.onPlayerColorChange} />
+                       onPlayerColorChange={this.onPlayerColorChange}/>
                 {addPlayerButton}
                 <button>Play</button>
             </div>
@@ -164,11 +179,12 @@ module.exports = React.createClass({
     },
     onAddPlayerClick: function () {
         this.setState(function (prevState) {
+            var name = getRandomUnusedName(prevState.players);
             return {
                 players: prevState.players.concat([{
                     bot: false,
                     colorId: getUnusedColorIds(prevState.players)[0],
-                    name: "New player",
+                    name: name,
                     left: "A",
                     right: "B",
                     id: prevState.nextId
