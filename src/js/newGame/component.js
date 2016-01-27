@@ -1,10 +1,70 @@
 var React = require('react');
 
+var availableColorIds = ["black", "yellow", "orange", "red", "pink", "purple", "indigo", "blue", "turquoise", "green"];
+
+function getPlayer(players, playerId) {
+    return players.find(function (player) {
+        return player.id === playerId;
+    });
+}
+
+function getUnusedColorIds(players) {
+    var usedColors = players.map(p => p.colorId);
+    return availableColorIds.filter(c => usedColors.indexOf(c) === -1);
+}
+
+var ColorPicker = React.createClass({
+    propTypes: {
+        colorId: React.PropTypes.any.isRequired,
+        availableColorIds: React.PropTypes.array.isRequired,
+        onColorSelected: React.PropTypes.func.isRequired
+    },
+    getInitialState: function () {
+        return {expanded: false};
+    },
+    render: function () {
+        var thisComponent = this;
+
+        function getColorElements(colorIds) {
+            return colorIds.map(function (colorId) {
+                return (<div key={colorId} className={"color-picker bg-" + colorId} onClick={thisComponent.onAvailableColorClick.bind(thisComponent, colorId)}></div>);
+            });
+        }
+
+        var selectionList;
+        if (this.state.expanded) {
+            selectionList = (
+                <div className="color-picker-list">
+                    {getColorElements(this.props.availableColorIds)}
+                </div>
+            );
+        }
+
+        return (
+            <div className="color-picker">
+                <div className={"color-picker-selected bg-" + this.props.colorId} onClick={this.onSelectedColorClick}></div>
+                {selectionList}
+            </div>
+        )
+    },
+    onSelectedColorClick: function () {
+        this.setState({
+            expanded: !this.state.expanded
+        });
+    },
+    onAvailableColorClick: function (colorId) {
+        this.setState({
+            expanded: false
+        });
+        this.props.onColorSelected(colorId);
+    }
+});
+
 var Table = React.createClass({
     render: function () {
         var rows = this.props.players.map(function (player) {
             var bot = player.bot;
-            var color = player.color;
+            var colorId = player.colorId;
             var name = player.name;
             var left = bot ? null : player.left;
             var right = bot ? null : player.right;
@@ -14,7 +74,7 @@ var Table = React.createClass({
                     <td>
                         <input type="checkbox" checked={bot} onChange={this.onBotChange.bind(this, player.id)}/>
                     </td>
-                    <td>{color}</td>
+                    <td><ColorPicker colorId={colorId} availableColorIds={availableColorIds} onColorSelected={this.onPlayerColorChange.bind(this, player.id)} /></td>
                     <td>
                         <input type="text" onChange={this.onNameChange.bind(this, player.id)} value={name}/>
                     </td>
@@ -53,15 +113,11 @@ var Table = React.createClass({
     },
     onRemoveClick: function (playerId) {
         this.props.onRemoveClick(playerId);
+    },
+    onPlayerColorChange: function (playerId, colorId) {
+        this.props.onPlayerColorChange(playerId, colorId);
     }
 });
-
-function getPlayer(players, playerId) {
-    return players.find(function (player) {
-        return player.id === playerId;
-    });
-}
-
 
 module.exports = React.createClass({
     displayName: 'NewGame',
@@ -71,7 +127,7 @@ module.exports = React.createClass({
             players: [
                 {
                     bot: false,
-                    color: "blue",
+                    colorId: "blue",
                     name: "Bajs",
                     left: "A",
                     right: "B",
@@ -79,7 +135,7 @@ module.exports = React.createClass({
                 },
                 {
                     bot: true,
-                    color: "blue",
+                    colorId: "red",
                     name: "SuperBot",
                     left: "K",
                     right: "L",
@@ -89,13 +145,19 @@ module.exports = React.createClass({
         };
     },
     render: function () {
+        var addPlayerButton;
+        if (this.state.players.length < availableColorIds.length) {
+            addPlayerButton = <button onClick={this.onAddPlayerClick}>Add player</button>;
+        }
+
         return (
             <div>
                 <Table players={this.state.players}
                        onNameChange={this.onNameChange}
                        onBotChange={this.onBotChange}
-                       onRemoveClick={this.onRemoveClick}/>
-                <button onClick={this.onAddPlayerClick}>Add player</button>
+                       onRemoveClick={this.onRemoveClick}
+                       onPlayerColorChange={this.onPlayerColorChange} />
+                {addPlayerButton}
                 <button>Play</button>
             </div>
         );
@@ -105,7 +167,7 @@ module.exports = React.createClass({
             return {
                 players: prevState.players.concat([{
                     bot: false,
-                    color: "blue",
+                    colorId: getUnusedColorIds(prevState.players)[0],
                     name: "New player",
                     left: "A",
                     right: "B",
@@ -115,7 +177,6 @@ module.exports = React.createClass({
             };
         });
     },
-
     onNameChange: function (playerId, name) {
         this.setState(function (oldState) {
             var player = getPlayer(oldState.players, playerId);
@@ -136,5 +197,25 @@ module.exports = React.createClass({
             return player.id !== playerId;
         });
         this.setState({players: players});
+    },
+    onPlayerColorChange: function (playerId, colorId) {
+        this.setState(function (oldState) {
+            var oldPlayerWithColor = oldState.players.find(function (p) {
+                return p.colorId === colorId;
+            });
+
+            var newPlayerWithColor = getPlayer(oldState.players, playerId);
+
+            if (oldPlayerWithColor) {
+                // The picked color is occupied, so the players need to swap colors.
+                oldPlayerWithColor.colorId = newPlayerWithColor.colorId;
+            }
+
+            newPlayerWithColor.colorId = colorId;
+
+            return {
+                players: oldState.players
+            };
+        });
     }
 });

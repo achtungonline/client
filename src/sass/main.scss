@@ -1,30 +1,91 @@
 // General styling
 
 body {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  background-color: #faf7ed;
 }
 
 #game-container {
-    float: left;
+  float: left;
 }
 
 .canvas-container {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .canvas-container canvas {
-    position: absolute;
-    left: 0;
-    top: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .right-column {
-    float: left;
-    margin-left: 10px;
+  float: left;
+  margin-left: 10px;
 }
 
 .fps-container h4 {
-    margin-top: 0px;
+  margin-top: 0px;
+}
+
+.color-picker {
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.color-picker-selected {
+  width: 20px;
+  height: 20px;
+}
+
+.color-picker-list {
+  position: absolute;
+  z-index: 1;
+}
+
+.bg-white {
+ background-color: #FFF;
+}
+
+.bg-black {
+  background-color: #444;
+}
+
+.bg-yellow {
+  background-color: #FDD835;
+}
+
+.bg-orange {
+  background-color: #FF9800;
+}
+
+.bg-red {
+  background-color: #F44336;
+}
+
+.bg-pink {
+  background-color: #E91E63;
+}
+
+.bg-purple {
+  background-color: #9C27B0;
+}
+
+.bg-indigo {
+  background-color: #3F51B5;
+}
+
+.bg-blue {
+  background-color: #03A9F4;
+}
+
+.bg-turquoise {
+  background-color: #009688;
+}
+
+.bg-green {
+  background-color: #8BC34A;
 }
