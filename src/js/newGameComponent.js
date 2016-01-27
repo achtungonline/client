@@ -56,6 +56,12 @@ var Table = React.createClass({
     }
 });
 
+function getPlayer(players, playerId) {
+    return players.find(function (player) {
+        return player.id === playerId;
+    });
+}
+
 
 module.exports = React.createClass({
     displayName: 'NewGame',
@@ -66,7 +72,7 @@ module.exports = React.createClass({
                 {
                     bot: false,
                     color: "blue",
-                    name: "Olle",
+                    name: "Bajs",
                     left: "A",
                     right: "B",
                     id: 0
@@ -109,20 +115,21 @@ module.exports = React.createClass({
             };
         });
     },
-    getPlayer: function (playerId) {
-        return this.state.players.find(function (player) {
-            return player.id === playerId;
-        });
-    },
+
     onNameChange: function (playerId, name) {
-        var player = this.getPlayer(playerId);
-        player.name = name.substring(0, 15);
-        this.forceUpdate();
+        this.setState(function (oldState) {
+            var player = getPlayer(oldState.players, playerId);
+            player.name = name.substring(0, 15);
+            return {players: oldState.players};
+        });
+
     },
     onBotChange: function (playerId, isBot) {
-        var player = this.getPlayer(playerId);
-        player.bot = isBot;
-        this.forceUpdate();
+        this.setState(function (oldState) {
+            var player = getPlayer(oldState.players, playerId);
+            player.bot = isBot;
+            return {players: oldState.players};
+        });
     },
     onRemoveClick: function (playerId) {
         var players = this.state.players.filter(function (player) {
