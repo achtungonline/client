@@ -4,7 +4,6 @@ var htmlReplace = require('gulp-html-replace');
 var source = require('vinyl-source-stream');
 var browserify = require('browserify');
 var watchify = require('watchify');
-var reactify = require('reactify');
 var streamify = require('gulp-streamify');
 var duration = require('gulp-duration');
 var eslint = require('gulp-eslint');
@@ -52,8 +51,8 @@ gulp.task('watch', function () {
     entryFiles.forEach(function (entry) {
         var watcher = watchify(browserify({
             entries: [path.JS + '/' + entry],
-            transform: [reactify, babelify.configure({
-                presets: ["es2015"]})],
+            transform: [babelify.configure({
+                presets: ["react", "es2015"]})],
             debug: true,
             cache: {}, packageCache: {}, fullPaths: true
         }));
