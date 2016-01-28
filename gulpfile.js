@@ -52,7 +52,8 @@ gulp.task('watch', function () {
     entryFiles.forEach(function (entry) {
         var watcher = watchify(browserify({
             entries: [path.JS + '/' + entry],
-            transform: [reactify, babelify],
+            transform: [reactify, babelify.configure({
+                presets: ["es2015"]})],
             debug: true,
             cache: {}, packageCache: {}, fullPaths: true
         }));
