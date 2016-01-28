@@ -51,7 +51,7 @@ var ColorPicker = React.createClass({
         if (this.state.expanded) {
             selectionList = (
                 <div className="color-picker-list">
-                    {getColorElements(this.props.availableColorIds)}
+                    {getColorElements(this.props.availableColorIds.filter(c => c !== thisComponent.props.colorId))}
                 </div>
             );
         }
