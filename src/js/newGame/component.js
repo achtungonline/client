@@ -35,6 +35,9 @@ var ColorPicker = React.createClass({
     getInitialState: function () {
         return {expanded: false};
     },
+    componentDidMount: function () {
+        document.addEventListener("click", this.onDocumentClick);
+    },
     render: function () {
         var thisComponent = this;
 
@@ -54,11 +57,14 @@ var ColorPicker = React.createClass({
         }
 
         return (
-            <div className="color-picker">
+            <div ref="colorPicker" className="color-picker">
                 <div className={"color-picker-selected bg-" + this.props.colorId} onClick={this.onSelectedColorClick}></div>
                 {selectionList}
             </div>
         )
+    },
+    componentWillUnmount: function () {
+        document.removeEventListener("click", this.onDocumentClick);
     },
     onSelectedColorClick: function () {
         this.setState({
@@ -70,6 +76,24 @@ var ColorPicker = React.createClass({
             expanded: false
         });
         this.props.onColorSelected(colorId);
+    },
+    onDocumentClick: function (e) {
+        function isDescendant(child, parent) {
+            var node = child.parentNode;
+            while (node) {
+                if (node === parent) {
+                    return true;
+                }
+                node = node.parentNode;
+            }
+            return false;
+        }
+
+        if (!isDescendant(e.target, this.refs.colorPicker)) {
+            this.setState({
+                expanded: false
+            });
+        }
     }
 });
 
