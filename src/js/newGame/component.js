@@ -184,15 +184,18 @@ module.exports = React.createClass({
         };
     },
     render: function () {
+        var maxPlayersReached = this.state.players.length >= availableColorIds.length;
+        var maxPlayersReachedText = maxPlayersReached ? <p>Stop pretending, we know you don't have that many friends to play with.</p> : null;
         return (
             <div>
-                <button disabled={this.state.players.length >= availableColorIds.length} onClick={this.onAddPlayerClick}>Add player</button>
+                <button disabled={maxPlayersReached} onClick={this.onAddPlayerClick}>Add player</button>
                 <button>Play</button>
                 <Table players={this.state.players}
                        onNameChange={this.onNameChange}
                        onBotChange={this.onBotChange}
                        onRemoveClick={this.onRemoveClick}
                        onPlayerColorChange={this.onPlayerColorChange}/>
+                {maxPlayersReachedText}
             </div>
         );
     },
