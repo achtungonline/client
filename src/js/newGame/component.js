@@ -133,7 +133,7 @@ var Table = React.createClass({
                     <th>Name</th>
                     <th>Left</th>
                     <th>Right</th>
-                    <th>X</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -184,20 +184,15 @@ module.exports = React.createClass({
         };
     },
     render: function () {
-        var addPlayerButton;
-        if (this.state.players.length < availableColorIds.length) {
-            addPlayerButton = <button onClick={this.onAddPlayerClick}>Add player</button>;
-        }
-
         return (
             <div>
+                <button disabled={this.state.players.length >= availableColorIds.length} onClick={this.onAddPlayerClick}>Add player</button>
+                <button>Play</button>
                 <Table players={this.state.players}
                        onNameChange={this.onNameChange}
                        onBotChange={this.onBotChange}
                        onRemoveClick={this.onRemoveClick}
                        onPlayerColorChange={this.onPlayerColorChange}/>
-                {addPlayerButton}
-                <button>Play</button>
             </div>
         );
     },
@@ -220,7 +215,7 @@ module.exports = React.createClass({
     onNameChange: function (playerId, name) {
         this.setState(function (oldState) {
             var player = getPlayer(oldState.players, playerId);
-            player.name = name.substring(0, 15);
+            player.name = name.substring(0, 20);
             return {players: oldState.players};
         });
 
