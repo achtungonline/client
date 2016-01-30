@@ -5,6 +5,49 @@ var availableNames = [
     "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
     "Adolf Hitler", "Donald Trump", "Vladimir Putin", "Osama bin Laden", "Kim Jong-un", "Mao Zedong", "Joseph Stalin", "Prophet Muhammad", "Steve Jobs", "Benito Mussolini"];
 
+var availableKeyBindings = [
+    {
+        left: "A",
+        right: "S"
+    },
+    {
+        left: "DOWN",
+        right: "RIGHT"
+    },
+    {
+        left: "Y",
+        right: "U"
+    },
+    {
+        left: "C",
+        right: "V"
+    },
+    {
+        left: "Z",
+        right: "X"
+    },
+    {
+        left: "K",
+        right: "L"
+    },
+    {
+        left: "B",
+        right: "N"
+    },
+    {
+        left: "Q",
+        right: "W"
+    },
+    {
+        left: "H",
+        right: "J"
+    },
+    {
+        left: "D",
+        right: "F"
+    }
+];
+
 function getUnusedNames(players) {
     var usedNames = players.map(p => p.name);
     return availableNames.filter(n => usedNames.indexOf(n) === -1);
@@ -24,6 +67,11 @@ function getPlayer(players, playerId) {
 function getUnusedColorIds(players) {
     var usedColors = players.map(p => p.colorId);
     return availableColorIds.filter(c => usedColors.indexOf(c) === -1);
+}
+
+function getUnusedKeyBindings(players) {
+    var usedLeftKeys = players.map(p => p.left);
+    return availableKeyBindings.filter(k => usedLeftKeys.indexOf(k.left) === -1);
 }
 
 var ColorPicker = React.createClass({
@@ -168,16 +216,16 @@ module.exports = React.createClass({
                     bot: false,
                     colorId: "blue",
                     name: firstName,
-                    left: "A",
-                    right: "B",
+                    left: availableKeyBindings[0].left,
+                    right: availableKeyBindings[0].right,
                     id: 0
                 },
                 {
                     bot: true,
                     colorId: "red",
                     name: secondName,
-                    left: "K",
-                    right: "L",
+                    left: availableKeyBindings[1].left,
+                    right: availableKeyBindings[1].right,
                     id: 1
                 }
             ]
@@ -202,13 +250,14 @@ module.exports = React.createClass({
     onAddPlayerClick: function () {
         this.setState(function (prevState) {
             var name = getRandomUnusedName(prevState.players);
+            var keyBinding = getUnusedKeyBindings(prevState.players)[0];
             return {
                 players: prevState.players.concat([{
                     bot: false,
                     colorId: getUnusedColorIds(prevState.players)[0],
                     name: name,
-                    left: "A",
-                    right: "B",
+                    left: keyBinding.left,
+                    right: keyBinding.right,
                     id: prevState.nextId
                 }]),
                 nextId: prevState.nextId + 1
