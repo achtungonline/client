@@ -237,7 +237,7 @@ module.exports = React.createClass({
         return (
             <div>
                 <button disabled={maxPlayersReached} onClick={this.onAddPlayerClick}>Add player</button>
-                <button>Play</button>
+                <button onClick={this.onPlayGameClick}>Play</button>
                 <Table players={this.state.players}
                        onNameChange={this.onNameChange}
                        onBotChange={this.onBotChange}
@@ -246,6 +246,9 @@ module.exports = React.createClass({
                 {maxPlayersReachedText}
             </div>
         );
+    },
+    onPlayGameClick: function() {
+        this.props.playGameAction(this.state.players);
     },
     onAddPlayerClick: function () {
         this.setState(function (prevState) {
