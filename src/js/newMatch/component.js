@@ -205,7 +205,7 @@ var Table = React.createClass({
 });
 
 module.exports = React.createClass({
-    displayName: 'NewGame',
+    displayName: 'NewMatch',
     getInitialState: function () {
         var firstName = getRandomUnusedName([]);
         var secondName = getRandomUnusedName([{name: firstName}]);
@@ -237,7 +237,7 @@ module.exports = React.createClass({
         return (
             <div>
                 <button disabled={maxPlayersReached} onClick={this.onAddPlayerClick}>Add player</button>
-                <button onClick={this.onPlayGameClick}>Play</button>
+                <button onClick={this.onStartMatchClick}>Play</button>
                 <Table players={this.state.players}
                        onNameChange={this.onNameChange}
                        onBotChange={this.onBotChange}
@@ -247,8 +247,8 @@ module.exports = React.createClass({
             </div>
         );
     },
-    onPlayGameClick: function() {
-        this.props.playGameAction(this.state.players);
+    onStartMatchClick: function() {
+        this.props.startMatchAction(this.state.players);
     },
     onAddPlayerClick: function () {
         this.setState(function (prevState) {

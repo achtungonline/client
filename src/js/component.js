@@ -1,21 +1,25 @@
 var React = require('react');
 
-var NewGameComponent = require('./newGame/component.js');
-var PlayGameComponent = require('./playGame/component.js');
+var NewMatchComponent = require('./newMatch/component.js');
+var PlayMatchComponent = require('./match/component.js');
 
 module.exports = React.createClass({
-    displayName: "PlayGame",
+    displayName: "TopComponent",
     getInitialState: function () {
-        return {gameState: this.props.initialGameState || "newGame"}
-    },
-    render: function () {
-        if (this.state.gameState === "newGame") {
-            return <NewGameComponent playGameAction={this.playGameAction}/>
-        } else {
-            return <PlayGameComponent/>
+        return {
+            matchState: this.props.initialMatchState || "newMatch",
+            players: []
         }
     },
-    playGameAction() {
-        this.setState({gameState: "playGame"});
+    render: function () {
+        if (this.state.matchState === "newMatch") {
+            return <NewMatchComponent startMatchAction={this.startMatchAction}/>
+        } else {
+            return <PlayMatchComponent players={this.state.players}/>
+        }
+    },
+    startMatchAction: function(players) {
+        this.setState({players: players}); //TODO: Discuss, should all player changing logic be in the component? Or maybe a playersChange(players) function to NewMatchComponent?
+        this.setState({matchState: "match"});
     }
 });
