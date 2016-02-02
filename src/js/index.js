@@ -102,10 +102,11 @@ document.addEventListener("DOMContentLoaded", function (event) {
     //var gameHistory = game.startGameHistoryRecording();
     var newGameContainer = document.getElementById("new-game-container");
 
-    match.startNextGame();
+    match.startNextGame(); // TODO: Should this be before or after GameControllerFactory.create?
     var gameController = GameControllerFactory(match).create();
     gameContainer.innerHTML = "";
     gameContainer.appendChild(gameController.view.render());
+
 
     var windowFocusHandler = WindowFocusHandler();
 
