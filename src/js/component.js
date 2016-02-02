@@ -83,7 +83,7 @@ module.exports = React.createClass({
         var firstName = getRandomUnusedName([]);
         var secondName = getRandomUnusedName([{name: firstName}]);
         return {
-            matchState: this.props.initialMatchState || "newMatch",
+            view: this.props.initialView || "newMatch",
             nextId: 2,
             players: [
                 {
@@ -107,7 +107,7 @@ module.exports = React.createClass({
     },
     render: function () {
         //TODO Analyze how to seperate players state etc. from this component
-        if (this.state.matchState === "newMatch") {
+        if (this.state.view === "newMatch") {
             return <NewMatchComponent players={this.state.players}
                                       availableColorIds={availableColorIds}
                                       onStartMatchAction={this.startMatch}
@@ -122,7 +122,7 @@ module.exports = React.createClass({
         }
     },
     startMatch: function () {
-        this.setState({matchState: "match"});
+        this.setState({view: "match"});
     },
     addPlayer: function () {
         this.setState(function (prevState) {
@@ -183,4 +183,3 @@ module.exports = React.createClass({
         });
     }
 });
-
