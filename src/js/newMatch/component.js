@@ -1,79 +1,5 @@
 var React = require('react');
 
-var availableColorIds = ["black", "yellow", "orange", "red", "pink", "purple", "indigo", "blue", "turquoise", "green"];
-var availableNames = [
-    "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
-    "Adolf Hitler", "Donald Trump", "Vladimir Putin", "Osama bin Laden", "Kim Jong-un", "Mao Zedong", "Joseph Stalin", "Prophet Muhammad", "Steve Jobs", "Benito Mussolini"];
-
-var availableKeyBindings = [
-    {
-        left: "A",
-        right: "S"
-    },
-    {
-        left: "DOWN",
-        right: "RIGHT"
-    },
-    {
-        left: "Y",
-        right: "U"
-    },
-    {
-        left: "C",
-        right: "V"
-    },
-    {
-        left: "Z",
-        right: "X"
-    },
-    {
-        left: "K",
-        right: "L"
-    },
-    {
-        left: "B",
-        right: "N"
-    },
-    {
-        left: "Q",
-        right: "W"
-    },
-    {
-        left: "H",
-        right: "J"
-    },
-    {
-        left: "D",
-        right: "F"
-    }
-];
-
-function getUnusedNames(players) {
-    var usedNames = players.map(p => p.name);
-    return availableNames.filter(n => usedNames.indexOf(n) === -1);
-}
-
-function getRandomUnusedName(players) {
-    var unusedNames = getUnusedNames(players);
-    return unusedNames[Math.floor(Math.random() * unusedNames.length)];
-}
-
-function getPlayer(players, playerId) {
-    return players.find(function (player) {
-        return player.id === playerId;
-    });
-}
-
-function getUnusedColorIds(players) {
-    var usedColors = players.map(p => p.colorId);
-    return availableColorIds.filter(c => usedColors.indexOf(c) === -1);
-}
-
-function getUnusedKeyBindings(players) {
-    var usedLeftKeys = players.map(p => p.left);
-    return availableKeyBindings.filter(k => usedLeftKeys.indexOf(k.left) === -1);
-}
-
 var ColorPicker = React.createClass({
     propTypes: {
         colorId: React.PropTypes.any.isRequired,
@@ -145,7 +71,8 @@ var ColorPicker = React.createClass({
     }
 });
 
-var Table = React.createClass({
+module.exports = React.createClass({
+    displayName: 'NewMatch',
     render: function () {
         var rows = this.props.players.map(function (player) {
             var bot = player.bot;
@@ -159,7 +86,7 @@ var Table = React.createClass({
                     <td>
                         <input type="checkbox" checked={bot} onChange={this.onBotChange.bind(this, player.id)}/>
                     </td>
-                    <td><ColorPicker colorId={colorId} availableColorIds={availableColorIds} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/></td>
+                    <td><ColorPicker colorId={colorId} availableColorIds={this.props.availableColorIds} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/></td>
                     <td>
                         <input type="text" onChange={this.onNameChange.bind(this, player.id)} value={name}/>
                     </td>
@@ -172,140 +99,42 @@ var Table = React.createClass({
             );
         }, this);
 
-        return (
-            <table>
-                <thead>
-                <tr>
-                    <th>Bot</th>
-                    <th>Color</th>
-                    <th>Name</th>
-                    <th>Left</th>
-                    <th>Right</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                {rows}
-                </tbody>
-            </table>
-        );
-    },
-    onNameChange: function (playerId, event) {
-        this.props.onNameChange(playerId, event.target.value);
-    },
-    onBotChange: function (playerId, event) {
-        this.props.onBotChange(playerId, event.target.checked);
-    },
-    onRemoveClick: function (playerId) {
-        this.props.onRemoveClick(playerId);
-    },
-    onPlayerColorChange: function (playerId, colorId) {
-        this.props.onPlayerColorChange(playerId, colorId);
-    }
-});
-
-module.exports = React.createClass({
-    displayName: 'NewMatch',
-    getInitialState: function () {
-        var firstName = getRandomUnusedName([]);
-        var secondName = getRandomUnusedName([{name: firstName}]);
-        return {
-            nextId: 2,
-            players: [
-                {
-                    bot: false,
-                    colorId: "blue",
-                    name: firstName,
-                    left: availableKeyBindings[0].left,
-                    right: availableKeyBindings[0].right,
-                    id: 0
-                },
-                {
-                    bot: true,
-                    colorId: "red",
-                    name: secondName,
-                    left: availableKeyBindings[1].left,
-                    right: availableKeyBindings[1].right,
-                    id: 1
-                }
-            ]
-        };
-    },
-    render: function () {
-        var maxPlayersReached = this.state.players.length >= availableColorIds.length;
+        var maxPlayersReached = this.props.players.length >= this.props.availableColorIds.length;
         var maxPlayersReachedText = maxPlayersReached ? <p>Stop pretending, we know you don't have that many friends to play with.</p> : null;
+
         return (
             <div>
-                <button disabled={maxPlayersReached} onClick={this.onAddPlayerClick}>Add player</button>
-                <button onClick={this.onStartMatchClick}>Play</button>
-                <Table players={this.state.players}
-                       onNameChange={this.onNameChange}
-                       onBotChange={this.onBotChange}
-                       onRemoveClick={this.onRemoveClick}
-                       onPlayerColorChange={this.onPlayerColorChange}/>
+                <button disabled={maxPlayersReached} onClick={this.props.onAddPlayerAction}>Add player</button>
+                <button onClick={this.props.onStartMatchAction}>Play</button>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Bot</th>
+                        <th>Color</th>
+                        <th>Name</th>
+                        <th>Left</th>
+                        <th>Right</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {rows}
+                    </tbody>
+                </table>
                 {maxPlayersReachedText}
             </div>
         );
     },
-    onStartMatchClick: function() {
-        this.props.startMatchAction(this.state.players);
+    onNameChange: function (playerId, event) {
+        this.props.onNameChangeAction(playerId, event.target.value);
     },
-    onAddPlayerClick: function () {
-        this.setState(function (prevState) {
-            var name = getRandomUnusedName(prevState.players);
-            var keyBinding = getUnusedKeyBindings(prevState.players)[0];
-            return {
-                players: prevState.players.concat([{
-                    bot: false,
-                    colorId: getUnusedColorIds(prevState.players)[0],
-                    name: name,
-                    left: keyBinding.left,
-                    right: keyBinding.right,
-                    id: prevState.nextId
-                }]),
-                nextId: prevState.nextId + 1
-            };
-        });
-    },
-    onNameChange: function (playerId, name) {
-        this.setState(function (oldState) {
-            var player = getPlayer(oldState.players, playerId);
-            player.name = name.substring(0, 20);
-            return {players: oldState.players};
-        });
-
-    },
-    onBotChange: function (playerId, isBot) {
-        this.setState(function (oldState) {
-            var player = getPlayer(oldState.players, playerId);
-            player.bot = isBot;
-            return {players: oldState.players};
-        });
+    onBotChange: function (playerId, event) {
+        this.props.onIsBotChangeAction(playerId, event.target.checked);
     },
     onRemoveClick: function (playerId) {
-        var players = this.state.players.filter(function (player) {
-            return player.id !== playerId;
-        });
-        this.setState({players: players});
+        this.props.onRemovePlayerAction(playerId);
     },
     onPlayerColorChange: function (playerId, colorId) {
-        this.setState(function (oldState) {
-            var oldPlayerWithColor = oldState.players.find(function (p) {
-                return p.colorId === colorId;
-            });
-
-            var newPlayerWithColor = getPlayer(oldState.players, playerId);
-
-            if (oldPlayerWithColor) {
-                // The picked color is occupied, so the players need to swap colors.
-                oldPlayerWithColor.colorId = newPlayerWithColor.colorId;
-            }
-
-            newPlayerWithColor.colorId = colorId;
-
-            return {
-                players: oldState.players
-            };
-        });
+        this.props.onPlayerColorChangeAction(playerId, colorId);
     }
 });
