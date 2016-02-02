@@ -6,13 +6,13 @@ var localMatchFactory = LocalMatchFactory();
 
 module.exports = React.createClass({
     displayName: 'Match',
-    componentWillMount: function() {
+    componentWillMount: function () {
         var options = {};
-        options.playerConfigs = this.props.players.map(function(player) {
-             return {
-                 id: player.id,
-                 type: player.bot ? "bot" : "human"
-             }
+        options.playerConfigs = this.props.players.map(function (player) {
+            return {
+                id: player.id,
+                type: player.bot ? "bot" : "human"
+            }
         });
         options.map = this.props.map; //TODO
         options.seed = this.props.seed;
