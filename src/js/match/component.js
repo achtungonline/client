@@ -1,7 +1,6 @@
 var React = require('react');
 var LocalMatchFactory = require('./local-match-factory.js');
 
-
 var localMatchFactory = LocalMatchFactory();
 
 module.exports = React.createClass({
@@ -14,7 +13,6 @@ module.exports = React.createClass({
                 type: player.bot ? "bot" : "human"
             }
         });
-        options.map = this.props.map; //TODO
         options.seed = this.props.seed;
         var match = localMatchFactory.create(options);
     },

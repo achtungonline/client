@@ -1,7 +1,7 @@
 var React = require('react');
 
 var NewMatchComponent = require('./newMatch/component.js');
-var PlayMatchComponent = require('./match/component.js');
+var MatchComponent = require('./match/component.js');
 
 var availableColorIds = ["black", "yellow", "orange", "red", "pink", "purple", "indigo", "blue", "turquoise", "green"];
 var availableNames = [
@@ -116,9 +116,11 @@ module.exports = React.createClass({
                                       onIsBotChangeAction={this.changeIsBot}
                                       onRemovePlayerAction={this.removePlayer}
                                       onPlayerColorChangeAction={this.changePlayerColor}
-            />
+            />;
+        } else if(this.state.view === "match") {
+            return <MatchComponent players={this.state.players} />;
         } else {
-            return <PlayMatchComponent players={this.state.players}/>
+            throw new Error("Unknown view: " + this.state.view);
         }
     },
     startMatch: function () {
