@@ -1,4 +1,4 @@
-var MatchFactory = require('./game-module/local-game/local-match-factory.js');
+var MatchFactory = require('./match/local-match-factory.js');
 var GameControllerFactory = require('./game-module/game-controller-factory.js');
 var ReactDOM = require('react-dom');
 var React = require('react');
@@ -102,16 +102,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
     //var gameHistory = game.startGameHistoryRecording();
     var newGameContainer = document.getElementById("new-game-container");
 
-
-    var gameController = GameControllerFactory(match.getCurrentGame()).create();
+    match.startNextGame();
+    var gameController = GameControllerFactory(match).create();
     gameContainer.innerHTML = "";
     gameContainer.appendChild(gameController.view.render());
 
     var windowFocusHandler = WindowFocusHandler();
-
-    match.startNextGame(gameContainer);
-
-
 
     windowFocusHandler.onFocus(function () {
         setTimeout(function () {

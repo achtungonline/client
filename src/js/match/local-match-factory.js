@@ -33,34 +33,36 @@ module.exports = function LocalMatchFactory() {
 
         var matchFactory = CoreMatchFactory();
         return matchFactory.create({
-            map: map,
             random: random,
-            playerConfigs: playerConfigs
+            matchConfig: {
+                map: map,
+                playerConfigs: playerConfigs
+            }
         });
     }
 
-    function create(options) {
-        var playerConfigs = options.playerConfigs;      //required
-        var map = options.map || createDefaultMap();    //optional
-        var seed = options.seed;                        //optional
-
-        function createDefaultMap() {
-            var sf = ShapeFactory();
-            var mapShape = sf.createRectangle(800, 1000, 0, 0);
-            var mapObstaclesShapes = [sf.createCircle(100, 100, 300), sf.createRectangle(200, 300, 500, 250)];
-            return MapFactory().create(mapShape, mapObstaclesShapes);
-        }
-
-        var random = Random(seed);
-
-        var coreMatchFactory = CoreMatchFactory();
-        return coreMatchFactory.create({
-            map: map,
-            random: random,
-            playerConfigs: playerConfigs
-        });
-
-    }
+    // function create(options) {
+    //     var playerConfigs = options.playerConfigs;      //required
+    //     var map = options.map || createDefaultMap();    //optional
+    //     var seed = options.seed;                        //optional
+    //
+    //     function createDefaultMap() {
+    //         var sf = ShapeFactory();
+    //         var mapShape = sf.createRectangle(800, 1000, 0, 0);
+    //         var mapObstaclesShapes = [sf.createCircle(100, 100, 300), sf.createRectangle(200, 300, 500, 250)];
+    //         return MapFactory().create(mapShape, mapObstaclesShapes);
+    //     }
+    //
+    //     var random = Random(seed);
+    //
+    //     var coreMatchFactory = CoreMatchFactory();
+    //     return coreMatchFactory.create({
+    //         map: map,
+    //         random: random,
+    //         playerConfigs: playerConfigs
+    //     });
+    //
+    // }
 
     return {
         create: create

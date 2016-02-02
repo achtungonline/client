@@ -38,7 +38,7 @@ module.exports = function GameAreaView(game) {
     var playAreaContainer = document.createElement("div");
     playAreaContainer.className = "ao-game-area";
 
-    var canvasRenderer = setupGameRenderer(game.gameState, playAreaContainer);
+    var canvasRenderer = setupGameRenderer(game.getCurrentGameState(), playAreaContainer);
 
     game.on("newPhaseStarted", function onNewPhaseStarted(phaseType) {
         // TODO We need a more convenient way to handle render properties for different rounds

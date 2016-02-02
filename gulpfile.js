@@ -23,7 +23,7 @@ var path = {
     SASS: 'src/sass'
 };
 
-var ALL_JS_FILES = [path.GULP_FILE, path.JS + '/**/*.js'];
+var ALL_JS_FILES = [path.GULP_FILE, path.JS + '/**/*.js', 'node_modules/core/src/**/*.js'];
 
 gulp.task('lint', function () {
     return gulp.src(ALL_JS_FILES).pipe(eslint())
