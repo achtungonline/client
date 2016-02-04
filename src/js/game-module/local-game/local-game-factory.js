@@ -31,7 +31,7 @@ module.exports = function LocalGameFactory() {
     function create(options) {
         var playerConfigs = options.playerConfigs;      //required
         var map = options.map || createDefaultMap();    //optional
-        var seed = options.seed || Math.seedrandom();   //optional
+        var seed = options.seed || Math.random();   //optional
 
         function createDefaultMap() {
             var sf = ShapeFactory();
