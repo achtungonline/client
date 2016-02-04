@@ -2,6 +2,7 @@ var React = require('react');
 var LocalMatchFactory = require('./local-match-factory.js');
 var GameAreaView = require('../game-module/game-area-module/game-area-view.js');
 var LocalGameFactory = require('../game-module/local-game/local-game-factory.js');
+var GameFactory = require('../game-module/game-factory.js');
 
 var localMatchFactory = LocalMatchFactory();
 
@@ -14,11 +15,14 @@ module.exports = React.createClass({
         return (
             <div>
                 Play match component
-                <div id="game-area"></div>
+                <div ref="gameArea"></div>
+                <div ref="replayArea"></div>
             </div>
         );
     },
     componentDidMount: function () {
+        var thisComponent = this;
+
         var options = {};
         options.playerConfigs = this.props.players.map(function (player) {
             return {
@@ -30,8 +34,24 @@ module.exports = React.createClass({
         var game = LocalGameFactory().create(options);
 
         var gameAreaView = GameAreaView(game);
+        var gameHistory = game.startGameHistoryRecording();
+
         var area = gameAreaView.render();
-        document.getElementById("game-area").appendChild(area);
+        var container = this.refs.gameArea;
+        container.innerHTML = "";
+        container.appendChild(area);
         game.start();
+
+        game.on("gameOver", function (phaseType) {
+            var gameFactory = GameFactory();
+            var gameReplay = gameFactory.createReplay(gameHistory);
+            var gameAreaView = GameAreaView(gameReplay);
+
+            var area = gameAreaView.render();
+            var container = thisComponent.refs.replayArea;
+            container.innerHTML = "";
+            container.appendChild(area);
+            gameReplay.start();
+        });
     }
 });
