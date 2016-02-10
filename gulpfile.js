@@ -11,6 +11,7 @@ var babelify = require('babelify');
 var sass = require('gulp-sass');
 
 var path = {
+    CORE: 'node_modules/core',
     INDEX_HTML: 'src/index.html',
     START_HTML: 'src/start.html',
     DEST: 'dist',
@@ -58,7 +59,10 @@ gulp.task('watch', function () {
         }));
 
         function pipeBundle(bundle) {
-            bundle
+            bundle.on('error', function(err){
+                console.log(err.message);
+                this.end();
+            })
                 .pipe(duration('rebuilding files: ' + entry))
                 .pipe(source(entry))
                 .pipe(gulp.dest(path.DEST_BUILD));
@@ -73,9 +77,6 @@ gulp.task('watch', function () {
 
 
 gulp.task('default', ['lint', 'sass', 'watch']);
-
-
-
 
 
 //gulp.task('copy', function () {
