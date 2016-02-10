@@ -1,5 +1,5 @@
-var startPhaseType = require("core/src/core/round/phase/start-phase.js").type;
-var playPhaseType = require("core/src/core/round/phase/play-phase.js").type;
+var startPhaseType = require("core/src/core/phase/start-phase.js").type;
+var playPhaseType = require("core/src/core/phase/play-phase.js").type;
 
 var CanvasRendererFactory = require("./canvas-renderer-factory.js");
 
