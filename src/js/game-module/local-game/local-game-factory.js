@@ -3,7 +3,6 @@ var DeltaTimeHandler = require("./delta-time-handler.js");
 var LocalGame = require("./local-game.js");
 var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");
 var MapFactory = require("core/src/core/map/map-factory.js");
-var Random = require("core/src/core/util/random.js");
 var GameFactory = require("core/src/game-factory.js");
 var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
 
@@ -40,12 +39,10 @@ module.exports = function LocalGameFactory() {
             return MapFactory().create(mapShape, mapObstaclesShapes);
         }
 
-        var random = Random(seed);
-
         var game = GameFactory().create({
             playerConfigs: playerConfigs,
             map: map,
-            random: random
+            seed: seed
         });
         var gameHistoryHandler = GameHistoryHandler();
         var localGame = LocalGame(game, gameHistoryHandler, deltaTimeHandler, seed);

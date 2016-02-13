@@ -2,7 +2,6 @@ var CoreMatchFactory = require("core/src/match-factory.js");
 var MapFactory = require("core/src/core/map/map-factory.js");
 var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
 var idGenerators = require("core/src/core/util/id-generator.js");
-var Random = require("core/src/core/util/random.js");
 var LocalGame = require("./../game-module/local-game/local-game.js");
 
 module.exports = function LocalMatchFactory() {
@@ -53,12 +52,11 @@ module.exports = function LocalMatchFactory() {
             return MapFactory().create(mapShape, mapObstaclesShapes);
         }
 
-        var random = Random(seed);
 
         var coreMatchFactory = CoreMatchFactory();
         return coreMatchFactory.create({
             map: map,
-            random: random,
+            seed: seed,
             playerConfigs: playerConfigs
         });
 

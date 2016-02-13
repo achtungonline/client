@@ -2,7 +2,6 @@ var GameFactory = require("core/src/game-factory.js");
 var MapFactory = require("core/src/core/map/map-factory.js");
 var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
 var idGenerators = require("core/src/core/util/id-generator.js");
-var Random = require("core/src/core/util/random.js");
 
 /**
  * Creates game instances on the client using core
@@ -33,11 +32,10 @@ module.exports = function LocalGameFactory() {
 
         var playerConfigs = generatePlayers(numberOfHumanPlayers, 'human').concat(generatePlayers(numberOfAIPlayers, 'bot'));
 
-        var random = Random(seed);
         var game = GameFactory().create({
             playerConfigs: playerConfigs,
             map: map,
-            random: random
+            seed: seed
         });
         return game;
     }
