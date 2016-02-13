@@ -1,24 +1,20 @@
-var speedEffectType = require("core/src/core/power-up/effect-definitions/speed-effect.js").type;
-var fatEffectType = require("core/src/core/power-up/effect-definitions/fat-effect.js").type;
-var wormSwitchEffectType = require("core/src/core/power-up/effect-definitions/worm-switch-effect.js").type;
-var fastTurnSpeedEffectType = require("core/src/core/power-up/effect-definitions/fast-turn-speed-effect.js").type;
-
 module.exports = function PowerUpRenderer(gameState, powerUpContext, shapeRenderer, renderProperties) {
 
     var render = function () {
         powerUpContext.clearRect(0, 0, powerUpContext.canvas.width, powerUpContext.canvas.height);
         gameState.powerUps.forEach(function renderPowerUp(powerUp) {
-            var color = "pink";
-            if (powerUp.effectType === speedEffectType) {
-                color = "aqua";
-            } else if (powerUp.effectType === fatEffectType) {
-                color = "orange";
-            } else if (powerUp.effectType === wormSwitchEffectType) {
-                color = "black";
-            } else if (powerUp.effectType === fastTurnSpeedEffectType) {
+            var color = "black";
+            if (powerUp.name === "Speed") {
+                color = "green";
+            } else if (powerUp.name === "Slow") {
                 color = "red";
             }
             shapeRenderer.render(powerUpContext, powerUp.shape, color);
+            powerUpContext.font = "14px Arial";
+            powerUpContext.textAlign = 'center';
+            powerUpContext.textBaseline="middle";
+            powerUpContext.fillStyle = 'white';
+            powerUpContext.fillText(powerUp.name, powerUp.shape.centerX ,powerUp.shape.centerY);
         });
     };
 
