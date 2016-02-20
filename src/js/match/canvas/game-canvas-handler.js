@@ -1,7 +1,7 @@
 var startPhaseType = require("core/src/core/phase/start-phase.js").type;
 var playPhaseType = require("core/src/core/phase/play-phase.js").type;
 
-var CanvasRenderer = require("./../game-module/game-area-module/canvas-renderer.js");
+var CanvasRenderer = require("./canvas-renderer.js");
 
 module.exports = function GameCanvasHandler(options) {
     var game = options.game;

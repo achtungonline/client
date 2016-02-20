@@ -1,6 +1,6 @@
 var React = require('react');
 var CoreMatchFactory = require('core/src/match-factory.js');
-var GameCanvasHandler = require('./game-canvas-handler.js');
+var GameCanvasHandler = require('./canvas/game-canvas-handler.js');
 var LocalGameHandler = require('./local-game/local-game-handler.js');
 var ReplayGameHandler = require('./local-game/replay/replay-game-handler.js');
 var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");

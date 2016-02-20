@@ -1,4 +1,6 @@
-module.exports = function KeyListener(addKeyPressedEventFunction, addKeyReleasedEventFunction) {
+module.exports = function KeyListener() {
+    var addKeyPressedEventFunction = document.addEventListener.bind(null, "keydown");
+    var addKeyReleasedEventFunction = document.addEventListener.bind(null, "keyup");
 
     function onKeyPressed(keyCode, callback) {
         addKeyPressedEventFunction(function (event) {

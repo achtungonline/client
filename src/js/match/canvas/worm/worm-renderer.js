@@ -1,5 +1,3 @@
-
-
 module.exports = function WormRenderer(worm, playerConfigs, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties) {
 
     var lastRenderedHead;
