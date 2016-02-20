@@ -1,20 +1,38 @@
-var PlayerSteeringListenerFactory = require("./../player-steering-listener-factory.js");
-var KEY_BINDINGS = require("./../../default-values.js").player.KEY_BINDINGS;
-var GameHistory = require("core/src/core/history/game-history.js");
+var PlayerSteeringListenerFactory = require("./player-steering-listener-factory.js");
+var KEY_BINDINGS = require("./../../game-module/default-values.js").player.KEY_BINDINGS;
+var DeltaTimeHandler = require("./delta-time-handler.js");
+var requestFrame = require("./request-frame.js");
+
 
 /**
  * Game wrapper responsible of handling the game on the client. Other can listen on the LocalGameHandler for events and get the current state.
  * @constructor
  */
-module.exports = function Replay(game, gameHistory, deltaTimeHandler) {
+module.exports = function LocalGameHandler(options) {
+    var game = options.game;
+    var deltaTimeHandler = DeltaTimeHandler(requestFrame);
+
     var localGameState = {
-        paused: false,
-        replayUpdateIndex: 0
+        paused: false
     };
+
+    function setupSteeringListenerEvents(game) {
+        var playerSteeringListener = PlayerSteeringListenerFactory(game).create();
+        var players = game.gameState.players;
+        for (var i = 0; i < players.length; i++) {
+            var keyBindings = KEY_BINDINGS[i];
+            var leftKey = keyBindings[0];
+            var rightKey = keyBindings[1];
+            playerSteeringListener.addListener(players[i], leftKey, rightKey);
+        }
+    }
+
+    setupSteeringListenerEvents(game);
 
     game.on(game.events.GAME_OVER, function onGameOver() {
         console.log("game over");
     });
+
 
     function requestNextUpdate() {
         deltaTimeHandler.update(localGameState, function onUpdateTick(deltaTime) {
@@ -28,31 +46,15 @@ module.exports = function Replay(game, gameHistory, deltaTimeHandler) {
         requestNextUpdate();
     }
 
-    function update() {
-        function setPlayerSteering(update) {
-            update.steering.forEach(function ApplySteering(steering, index) {
-                game.setPlayerSteering(game.gameState.players[index], steering); //TODO should only update when player actually pressed key
-            });
-        }
-
+    function update(deltaTime) {
         if (!localGameState.paused) {
-            var replayUpdate = gameHistory.updates[localGameState.replayUpdateIndex];
-            var deltaTime = replayUpdate.deltaTime;
-            setPlayerSteering(replayUpdate);
-
             game.update(deltaTime);
-            localGameState.replayUpdateIndex++;
-
-            if (localGameState.replayUpdateIndex === gameHistory.updates.length) {
-                game.stop();
-            }
         }
 
         if (game.isActive()) {
             requestNextUpdate();
         }
     }
-
 
     function pause() {
         localGameState.paused = true;

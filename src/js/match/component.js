@@ -1,8 +1,11 @@
 var React = require('react');
 var CoreMatchFactory = require('core/src/match-factory.js');
 var GameCanvasHandler = require('./game-canvas-handler.js');
-var LocalGameHandler = require('./local-game-handler.js');
-//var GameFactory = require('../game-module/game-factory.js');
+var LocalGameHandler = require('./local-game/local-game-handler.js');
+var Replay = require('./local-game/replay/replay.js');
+var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");
+var GameHistory = require("core/src/core/history/game-history.js");
+
 
 module.exports = React.createClass({
     displayName: 'Match',
@@ -16,17 +19,20 @@ module.exports = React.createClass({
         });
         matchConfig.maxScore = 15;
         return {
-            match: CoreMatchFactory().create({matchConfig: matchConfig})
+            matchConfig: matchConfig,
+            match: CoreMatchFactory().create({matchConfig: matchConfig}),
+            gameHistory: null
         }
     },
     render: function () {
         var thisComponent = this;
         var currentGame = this.state.match.getCurrentGame();
         var startNextGameButton = currentGame && currentGame.isGameOver() ? <button onClick={this.startNextGame}>Start next game</button> : null;
+        var replayButton = currentGame && currentGame.isGameOver() && this.state.gameHistory ? <button onClick={this.startReplay}>Watch replay</button> : null;
 
         var scoreTableRows = this.props.players.map(function (player) {
             return (
-                <tr>
+                <tr key={player.id}>
                     <td>{player.name}</td>
                     <td>{thisComponent.state.match.matchState.score[player.id]}</td>
                 </tr>
@@ -36,12 +42,14 @@ module.exports = React.createClass({
         return (
             <div>
                 {startNextGameButton}
+                {replayButton}
                 <div ref="gameCanvas"></div>
                 <table>
+                    <tbody>
                     {scoreTableRows}
+                    </tbody>
                 </table>
                 <div>Max score: {this.state.match.matchState.maxScore}</div>
-                <div ref="replay"></div>
             </div>
         );
     },
@@ -60,10 +68,17 @@ module.exports = React.createClass({
         var seed = Math.random();
         var thisComponent = this;
         var game = this.state.match.prepareNextGame(seed);
-        var localGame = LocalGameHandler({game: game});
 
+        function startGameHistoryRecording(game) {
+            var gameHistory = GameHistory(game.gameState.map, thisComponent.state.matchConfig.playerConfigs, game.gameState.seed);
+            thisComponent.setState({gameHistory: gameHistory});
+            GameHistoryHandler().recordGameHistory(game, gameHistory);
+        }
+
+        startGameHistoryRecording(game);
+
+        var localGame = LocalGameHandler({game: game});
         var gameCanvasHandler = GameCanvasHandler(localGame);
-        var gameHistory = localGame.startGameHistoryRecording();
         var gameCanvasContainer = gameCanvasHandler.getGameCanvasContainer();
         var container = this.refs.gameCanvas;
         container.innerHTML = "";
@@ -73,18 +88,18 @@ module.exports = React.createClass({
         thisComponent.forceUpdate();
 
         localGame.on("gameOver", function (phaseType) {
-            //    // Replay stuff
-            //    var gameFactory = GameFactory();
-            //    var gameReplay = gameFactory.createReplay(gameHistory);
-            //    var gameAreaView = GameCanvasHandler(gameReplay);
-            //    var area = gameAreaView.render();
-            //    var container = thisComponent.refs.replay;
-            //    container.innerHTML = "";
-            //    container.appendChild(area);
-            //    gameReplay.start();
-            //
             // So that the startNextGameButton shows
-            thisComponent.forceUpdate()
+            thisComponent.forceUpdate();
         });
+    },
+    startReplay: function () {
+        // Replay stuff
+        var gameReplay = Replay(this.state.gameHistory);
+        var gameCanvasHandler = GameCanvasHandler(gameReplay);
+        var gameCanvasContainer = gameCanvasHandler.getGameCanvasContainer();
+        var container = this.refs.gameCanvas;
+        container.innerHTML = "";
+        container.appendChild(gameCanvasContainer);
+        gameReplay.start();
     }
 });
