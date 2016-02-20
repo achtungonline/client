@@ -1,6 +1,6 @@
-var COLOR_STRINGS = require("./../../default-values.js").player.COLOR_STRINGS;
 
-module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties) {
+
+module.exports = function WormRenderer(worm, playerConfigs, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties) {
 
     var lastRenderedHead;
 
@@ -22,9 +22,14 @@ module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, sh
         }
     }
 
+    function getPlayerHexColor(playerId) {
+        return playerConfigs.find(pc => pc.id === playerId).color.hexCode;
+    }
+
+
     function drawTrajectory(worm, trajectory) {
         wormHeadsContext.save();
-        wormHeadsContext.strokeStyle = COLOR_STRINGS[worm.playerId];
+        wormHeadsContext.strokeStyle = getPlayerHexColor(worm.playerId);
         wormHeadsContext.setLineDash([2,5]);
         wormHeadsContext.lineWidth = 2;
         wormHeadsContext.beginPath();
@@ -57,8 +62,8 @@ module.exports = function WormRenderer(worm, shapeRenderer, wormHeadsContext, sh
 
     function drawArrow(worm) {
         wormHeadsContext.save();
-        wormHeadsContext.fillStyle = COLOR_STRINGS[worm.playerId];
-        wormHeadsContext.strokeStyle = COLOR_STRINGS[worm.playerId];
+        wormHeadsContext.fillStyle = getPlayerHexColor(worm.playerId);
+        wormHeadsContext.strokeStyle = getPlayerHexColor(worm.playerId);
         wormHeadsContext.lineWidth = 5;
         wormHeadsContext.beginPath();
         wormHeadsContext.translate(worm.head.centerX, worm.head.centerY);

@@ -1,9 +1,10 @@
 var PlayArea = require("core/src/core/play-area/play-area.js");
 var playerUtils = require("core/src/core/player/player-utils.js");
 var COLORS = require("./../../default-values.js").player.COLORS;
+var colorConverter = require("./../../../util/color-converter.js");
 var canvasImageDataUtils = require("./../canvas-image-data-utils.js");
 
-module.exports = function PlayAreaRenderer(gameState, playAreaContext, renderProperties) {
+module.exports = function PlayAreaRenderer(gameState, playerConfigs, playAreaContext, renderProperties) {
 
     var UPDATE_GRANULARITY = 50; // Assuming map width and height is a multiple of the granularity
 
@@ -24,22 +25,23 @@ module.exports = function PlayAreaRenderer(gameState, playAreaContext, renderPro
         var data = image.data;
 
         updatedPixels.forEach(function (pixel) {
-            var color;
+            var rgbColor;
             if (pixel.value === PlayArea.FREE) {
-                color = [0, 0, 0, 0];
+                rgbColor = [0, 0, 0, 0];
             } else if (pixel.value === PlayArea.OBSTACLE) {
-                color = [100, 100, 100];
+                rgbColor = [100, 100, 100];
             } else {
                 var wormId = pixel.value;
                 var worm = playerUtils.getWormById(gameState.worms, wormId);
-                color = COLORS[worm.playerId];
+                var hexColor = playerConfigs.find(pc => pc.id === worm.playerId).color.hexCode;
+                rgbColor = colorConverter.hexToRgb(hexColor);
             }
             var row = Math.floor(pixel.index / playAreaWidth);
             var col = pixel.index - row * playAreaWidth;
             row = Math.floor(row / UPDATE_GRANULARITY);
             col = Math.floor(col / UPDATE_GRANULARITY);
             updatedSquare[row * updateCols + col] = true;
-            canvasImageDataUtils.setColorByIndex(data, pixel.index, color);
+            canvasImageDataUtils.setColorByIndex(data, pixel.index, rgbColor);
         });
 
         for (var row = 0; row < updateRows; row++) {

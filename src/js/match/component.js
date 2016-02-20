@@ -95,7 +95,7 @@ module.exports = React.createClass({
         this.forceUpdate();
     },
     prepareGameForCanvas: function (game) {
-        var gameCanvasHandler = GameCanvasHandler(game);
+        var gameCanvasHandler = GameCanvasHandler({game: game, playerConfigs: this.props.players});
         var gameCanvasContainer = gameCanvasHandler.getGameCanvasContainer();
         var container = this.refs.gameCanvas;
         container.innerHTML = "";

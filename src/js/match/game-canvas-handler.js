@@ -1,9 +1,12 @@
 var startPhaseType = require("core/src/core/phase/start-phase.js").type;
 var playPhaseType = require("core/src/core/phase/play-phase.js").type;
 
-var CanvasRendererFactory = require("./../game-module/game-area-module/canvas-renderer-factory.js");
+var CanvasRenderer = require("./../game-module/game-area-module/canvas-renderer.js");
 
-module.exports = function GameAreaView(game) {
+module.exports = function GameCanvasHandler(options) {
+    var game = options.game;
+    var playerConfigs = options.playerConfigs;
+
     function createCanvas(name, boundingBox) {
         var canvas = document.createElement("canvas");
         canvas.className = name;
@@ -23,7 +26,7 @@ module.exports = function GameAreaView(game) {
         var mapCanvas = createCanvas("map", mapBoundingBox);
         var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
         var powerUpCanvas = createCanvas("powerUps", mapBoundingBox);
-        var playAreaCanvas = createCanvas("wormBodies", mapBoundingBox);
+        var playAreaCanvas = createCanvas("playAreaCanvas", mapBoundingBox);
 
         canvasContainer.appendChild(mapCanvas);
         canvasContainer.appendChild(powerUpCanvas);
@@ -32,7 +35,13 @@ module.exports = function GameAreaView(game) {
 
         playAreaContainer.appendChild(canvasContainer);
 
-        return CanvasRendererFactory().createLayeredCanvasRenderer(gameState, mapCanvas, wormHeadsCanvas, powerUpCanvas, playAreaCanvas);
+        return CanvasRenderer({
+            gameState: gameState,
+            playerConfigs: playerConfigs,
+            mapCanvas: mapCanvas,
+            wormHeadsCanvas: wormHeadsCanvas,
+            powerUpCanvas: powerUpCanvas,
+            playAreaCanvas: playAreaCanvas});
     }
 
     var gameCanvasContainer = document.createElement("div");
