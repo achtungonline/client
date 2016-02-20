@@ -4,7 +4,6 @@ module.exports = function KeyListener() {
 
     function onKeyPressed(keyCode, callback) {
         addKeyPressedEventFunction(function (event) {
-            console.log(event.keyCode);
             if (keyCode === event.keyCode) {
                 callback();
             }

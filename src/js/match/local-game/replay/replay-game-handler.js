@@ -38,7 +38,7 @@ module.exports = function Replay(gameHistory) {
     function update() {
         function setPlayerSteering(update) {
             update.steering.forEach(function ApplySteering(steering, index) {
-                game.setPlayerSteering(game.gameState.players[index], steering); //TODO should only update when player actually pressed key
+                game.setPlayerSteering(game.gameState.players[index].id, steering); //TODO should only update when player actually pressed key
             });
         }
 

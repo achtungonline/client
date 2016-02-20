@@ -1,5 +1,4 @@
 var PlayerSteeringListener = require("./player-steering-listener.js");
-var KEY_BINDINGS = require("./../../game-module/default-values.js").player.KEY_BINDINGS;
 var DeltaTimeHandler = require("./delta-time-handler.js");
 var requestFrame = require("./request-frame.js");
 
@@ -12,24 +11,25 @@ var requestFrame = require("./request-frame.js");
 //TODO: has shared functions with replay-game-handler
 module.exports = function LocalGameHandler(options) {
     var game = options.game;
+    var playerConfigs = options.playerConfigs;
     var deltaTimeHandler = DeltaTimeHandler(requestFrame);
 
     var localGameState = {
         paused: false
     };
 
-    function setupSteeringListenerEvents(game) {
+    function setupSteeringListenerEvents(game, playerConfigs) {
         var playerSteeringListener = PlayerSteeringListener(game);
         var players = game.gameState.players;
         for (var i = 0; i < players.length; i++) {
-            var keyBindings = KEY_BINDINGS[i];
-            var leftKey = keyBindings[0];
-            var rightKey = keyBindings[1];
-            playerSteeringListener.addListener(players[i], leftKey, rightKey);
+            var playerId = players[i].id;
+            var leftKey = playerConfigs.find(pc => pc.id === playerId).left;
+            var rightKey = playerConfigs.find(pc => pc.id === playerId).right;
+            playerSteeringListener.addListener(playerId, leftKey, rightKey);
         }
     }
 
-    setupSteeringListenerEvents(game);
+    setupSteeringListenerEvents(game, playerConfigs);
 
 
     function requestNextUpdate() {

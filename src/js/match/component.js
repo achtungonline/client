@@ -77,7 +77,7 @@ module.exports = React.createClass({
 
         startGameHistoryRecording(game);
 
-        var localGame = LocalGameHandler({game: game});
+        var localGame = LocalGameHandler({game: game, playerConfigs: this.props.players});
         this.prepareGameForCanvas(localGame);
         localGame.start();
 
