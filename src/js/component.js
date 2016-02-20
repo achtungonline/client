@@ -54,44 +54,44 @@ var availableNames = [
 
 var availableKeyBindings = [
     {
-        left: "A",
-        right: "S"
+        left: 65,   //A
+        right: 83   //S
     },
     {
-        left: "DOWN",
-        right: "RIGHT"
+        left: 40,   //DOWN
+        right: 39   //Right
     },
     {
-        left: "Y",
-        right: "U"
+        left: 89,   //Y
+        right: 85   //U
     },
     {
-        left: "C",
-        right: "V"
+        left: 67,   //C
+        right: 86   //V
     },
     {
-        left: "Z",
-        right: "X"
+        left: 90,   //Z
+        right: 88   //X
     },
     {
-        left: "K",
-        right: "L"
+        left: 75,   //K
+        right: 76   //L
     },
     {
-        left: "B",
-        right: "N"
+        left: 66,   //B
+        right: 78   //N
     },
     {
-        left: "Q",
-        right: "W"
+        left: 81,   //Q
+        right: 87   //W
     },
     {
-        left: "H",
-        right: "J"
+        left: 72,   //H
+        right: 74   //J
     },
     {
-        left: "D",
-        right: "F"
+        left: 68,   //D
+        right: 70   //F
     }
 ];
 
@@ -124,6 +124,7 @@ function getUnusedKeyBindings(players) {
 module.exports = React.createClass({
     displayName: "TopComponent",
     getInitialState: function () {
+
         var firstName = getRandomUnusedName([]);
         var secondName = getRandomUnusedName([{name: firstName}]);
         return {

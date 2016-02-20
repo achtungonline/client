@@ -19,5 +19,15 @@ utils.rgbToHex = function (rgbArray) {
     return "#" + ((1 << 24) + (rgbArray[0] << 16) + (rgbArray[1] << 8) + rgbArray[2]).toString(16).slice(1);
 };
 
+utils.keyCodeToString = function (keyCode) {
+    var keyCodeMap = {};
+    keyCodeMap[37] = "LEFT";
+    keyCodeMap[39] = "RIGHT";
+    keyCodeMap[38] = "UP";
+    keyCodeMap[40] = "DOWN";
+
+    return keyCodeMap[keyCode] || String.fromCharCode(keyCode);
+};
+
 module.exports = utils;
 

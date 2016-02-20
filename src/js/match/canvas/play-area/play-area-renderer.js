@@ -1,6 +1,6 @@
 var PlayArea = require("core/src/core/play-area/play-area.js");
 var playerUtils = require("core/src/core/player/player-utils.js");
-var colorConverter = require("./../../../util/color-converter.js");
+var utils = require("./../../../utils.js");
 var canvasImageDataUtils = require("./../canvas-image-data-utils.js");
 
 module.exports = function PlayAreaRenderer(gameState, playerConfigs, playAreaContext, renderProperties) {
@@ -33,7 +33,7 @@ module.exports = function PlayAreaRenderer(gameState, playerConfigs, playAreaCon
                 var wormId = pixel.value;
                 var worm = playerUtils.getWormById(gameState.worms, wormId);
                 var hexColor = playerConfigs.find(pc => pc.id === worm.playerId).color.hexCode;
-                rgbColor = colorConverter.hexToRgb(hexColor);
+                rgbColor = utils.hexToRgb(hexColor);
             }
             var row = Math.floor(pixel.index / playAreaWidth);
             var col = pixel.index - row * playAreaWidth;

@@ -1,4 +1,5 @@
 var React = require('react');
+var utils = require("./../utils.js");
 
 var ColorPicker = React.createClass({
     propTypes: {
@@ -78,8 +79,8 @@ module.exports = React.createClass({
             var bot = player.bot;
             var color = player.color;
             var name = player.name;
-            var left = bot ? null : player.left;
-            var right = bot ? null : player.right;
+            var left = bot ? null : utils.keyCodeToString(player.left);
+            var right = bot ? null : utils.keyCodeToString(player.right);
             var removeButton = this.props.players.length > 2 ? <button onClick={this.onRemoveClick.bind(this, player.id)}>X</button> : null;
             return (
                 <tr key={player.id}>
