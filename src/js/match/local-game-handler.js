@@ -1,12 +1,20 @@
-var PlayerSteeringListenerFactory = require("./player-steering-listener-factory.js");
-var KEY_BINDINGS = require("./../default-values.js").player.KEY_BINDINGS;
+var PlayerSteeringListenerFactory = require("./../game-module/local-game/player-steering-listener-factory.js");
+var KEY_BINDINGS = require("./../game-module/default-values.js").player.KEY_BINDINGS;
 var GameHistory = require("core/src/core/history/game-history.js");
+var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");
+var DeltaTimeHandler = require("./../game-module/local-game/delta-time-handler.js");
+var requestFrame = require("./../game-module/local-game/request-frame.js");
+
 
 /**
  * Game wrapper responsible of handling the game on the client. Other can listen on the LocalGameHandler for events and get the current state.
  * @constructor
  */
-module.exports = function LocalGameHandler(game, gameHistoryHandler, deltaTimeHandler, seed) {
+module.exports = function LocalGameHandler(options) {
+    var game = options.game;
+    var gameHistoryHandler = GameHistoryHandler();
+    var deltaTimeHandler = DeltaTimeHandler(requestFrame);
+
     var localGameState = {
         paused: false
     };
@@ -30,7 +38,7 @@ module.exports = function LocalGameHandler(game, gameHistoryHandler, deltaTimeHa
 
     // TODO: History stuff should not be in this "class".
     function startGameHistoryRecording() {
-        var gameHistory = GameHistory(game.gameState.map, game.gameState.players.length, seed);
+        var gameHistory = GameHistory(game.gameState.map, game.gameState.players.length, game.gameState.seed);
         gameHistoryHandler.recordGameHistory(game, gameHistory);
         return gameHistory;
     }

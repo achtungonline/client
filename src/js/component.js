@@ -2,6 +2,7 @@ var React = require('react');
 
 var NewMatchComponent = require('./newMatch/component.js');
 var MatchComponent = require('./match/component.js');
+var MatchOverComponent = require("./matchOver/component.js");
 
 var availableColorIds = ["black", "yellow", "orange", "red", "pink", "purple", "indigo", "blue", "turquoise", "green"];
 var availableNames = [
@@ -117,14 +118,20 @@ module.exports = React.createClass({
                                       onRemovePlayerAction={this.removePlayer}
                                       onPlayerColorChangeAction={this.changePlayerColor}
             />;
-        } else if(this.state.view === "match") {
-            return <MatchComponent players={this.state.players} />;
+        } else if (this.state.view === "match") {
+            return <MatchComponent players={this.state.players}
+                                   onMatchOverAction={this.endMatch}/>;
+        } else if (this.state.view === "matchOver") {
+            return <MatchOverComponent/>;
         } else {
             throw new Error("Unknown view: " + this.state.view);
         }
     },
     startMatch: function () {
         this.setState({view: "match"});
+    },
+    endMatch: function () {
+        this.setState({view: "matchOver"})
     },
     addPlayer: function () {
         this.setState(function (prevState) {

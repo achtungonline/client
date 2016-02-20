@@ -1,7 +1,7 @@
 var startPhaseType = require("core/src/core/phase/start-phase.js").type;
 var playPhaseType = require("core/src/core/phase/play-phase.js").type;
 
-var CanvasRendererFactory = require("./canvas-renderer-factory.js");
+var CanvasRendererFactory = require("./../game-module/game-area-module/canvas-renderer-factory.js");
 
 module.exports = function GameAreaView(game) {
     function createCanvas(name, boundingBox) {
@@ -35,10 +35,10 @@ module.exports = function GameAreaView(game) {
         return CanvasRendererFactory().createLayeredCanvasRenderer(gameState, mapCanvas, wormHeadsCanvas, powerUpCanvas, playAreaCanvas);
     }
 
-    var playAreaContainer = document.createElement("div");
-    playAreaContainer.className = "ao-game-area";
+    var gameCanvasContainer = document.createElement("div");
+    gameCanvasContainer.className = "ao-game-area";
 
-    var canvasRenderer = setupGameRenderer(game.gameState, playAreaContainer);
+    var canvasRenderer = setupGameRenderer(game.gameState, gameCanvasContainer);
 
     game.on("newPhaseStarted", function onNewPhaseStarted(phaseType) {
         // TODO We need a more convenient way to handle render properties for different rounds
@@ -59,11 +59,11 @@ module.exports = function GameAreaView(game) {
         canvasRenderer.render();
     });
 
-    function render() {
-        return playAreaContainer;
+    function getGameCanvasContainer() {
+        return gameCanvasContainer;
     }
 
     return {
-        render: render
+        getGameCanvasContainer: getGameCanvasContainer
     };
 };
