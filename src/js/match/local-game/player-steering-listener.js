@@ -1,6 +1,9 @@
 var steering = require("core/src/core/player/player.js").steering;
+var KeyListenerFactory = require("./../../game-module/key-listener-factory.js");
 
-module.exports = function PlayerSteeringListener(keyListenerHandler, game) {
+
+module.exports = function PlayerSteeringListener(game) {
+    var keyListenerHandler = KeyListenerFactory().create();
 
     function addListener(playerId, leftKey, rightKey) {
         var leftKeyPressed = false;

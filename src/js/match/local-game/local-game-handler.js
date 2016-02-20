@@ -1,4 +1,4 @@
-var PlayerSteeringListenerFactory = require("./player-steering-listener-factory.js");
+var PlayerSteeringListener = require("./player-steering-listener.js");
 var KEY_BINDINGS = require("./../../game-module/default-values.js").player.KEY_BINDINGS;
 var DeltaTimeHandler = require("./delta-time-handler.js");
 var requestFrame = require("./request-frame.js");
@@ -8,6 +8,8 @@ var requestFrame = require("./request-frame.js");
  * Game wrapper responsible of handling the game on the client. Other can listen on the LocalGameHandler for events and get the current state.
  * @constructor
  */
+
+//TODO: has shared functions with replay-game-handler
 module.exports = function LocalGameHandler(options) {
     var game = options.game;
     var deltaTimeHandler = DeltaTimeHandler(requestFrame);
@@ -17,7 +19,7 @@ module.exports = function LocalGameHandler(options) {
     };
 
     function setupSteeringListenerEvents(game) {
-        var playerSteeringListener = PlayerSteeringListenerFactory(game).create();
+        var playerSteeringListener = PlayerSteeringListener(game);
         var players = game.gameState.players;
         for (var i = 0; i < players.length; i++) {
             var keyBindings = KEY_BINDINGS[i];
@@ -28,10 +30,6 @@ module.exports = function LocalGameHandler(options) {
     }
 
     setupSteeringListenerEvents(game);
-
-    game.on(game.events.GAME_OVER, function onGameOver() {
-        console.log("game over");
-    });
 
 
     function requestNextUpdate() {

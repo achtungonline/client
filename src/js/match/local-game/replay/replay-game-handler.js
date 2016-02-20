@@ -6,6 +6,8 @@ var GameFactory = require("core/src/game-factory.js");
  * Game wrapper responsible of handling the game on the client. Other can listen on the LocalGameHandler for events and get the current state.
  * @constructor
  */
+
+//TODO: has shared functions with local-game-handler
 module.exports = function Replay(gameHistory) {
     var deltaTimeHandler = DeltaTimeHandler(requestFrame);
     var playerConfigs = gameHistory.playerConfigs.map(pc => ({id: pc.id, type: "human"}));
@@ -20,10 +22,6 @@ module.exports = function Replay(gameHistory) {
         paused: false,
         replayUpdateIndex: 0
     };
-
-    game.on(game.events.GAME_OVER, function onGameOver() {
-        console.log("game over");
-    });
 
     function requestNextUpdate() {
         deltaTimeHandler.update(localGameState, function onUpdateTick(deltaTime) {
