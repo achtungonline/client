@@ -2,8 +2,8 @@ var React = require('react');
 
 var ColorPicker = React.createClass({
     propTypes: {
-        colorId: React.PropTypes.any.isRequired,
-        availableColorIds: React.PropTypes.array.isRequired,
+        color: React.PropTypes.any.isRequired,
+        availableWormColors: React.PropTypes.array.isRequired,
         onColorSelected: React.PropTypes.func.isRequired
     },
     getInitialState: function () {
@@ -15,9 +15,9 @@ var ColorPicker = React.createClass({
     render: function () {
         var thisComponent = this;
 
-        function getColorElements(colorIds) {
-            return colorIds.map(function (colorId) {
-                return (<div key={colorId} className={"color-picker bg-" + colorId} onClick={thisComponent.onAvailableColorClick.bind(thisComponent, colorId)}></div>);
+        function getColorElements(colors) {
+            return colors.map(function (color) {
+                return (<div key={color.id} className="color-picker" style={{backgroundColor: color.hexCode}} onClick={thisComponent.onAvailableColorClick.bind(thisComponent, color)}></div>);
             });
         }
 
@@ -25,14 +25,14 @@ var ColorPicker = React.createClass({
         if (this.state.expanded) {
             selectionList = (
                 <div className="color-picker-list">
-                    {getColorElements(this.props.availableColorIds.filter(c => c !== thisComponent.props.colorId))}
+                    {getColorElements(this.props.availableWormColors.filter(c => c.id !== thisComponent.props.color.id))}
                 </div>
             );
         }
 
         return (
             <div ref="colorPicker" className="color-picker">
-                <div className={"color-picker-selected bg-" + this.props.colorId} onClick={this.onSelectedColorClick}></div>
+                <div className="color-picker-selected" style={{backgroundColor: this.props.color.hexCode}} onClick={this.onSelectedColorClick}></div>
                 {selectionList}
             </div>
         )
@@ -45,11 +45,11 @@ var ColorPicker = React.createClass({
             expanded: !this.state.expanded
         });
     },
-    onAvailableColorClick: function (colorId) {
+    onAvailableColorClick: function (color) {
         this.setState({
             expanded: false
         });
-        this.props.onColorSelected(colorId);
+        this.props.onColorSelected(color);
     },
     onDocumentClick: function (e) {
         function isDescendant(child, parent) {
@@ -76,7 +76,7 @@ module.exports = React.createClass({
     render: function () {
         var rows = this.props.players.map(function (player) {
             var bot = player.bot;
-            var colorId = player.colorId;
+            var color = player.color;
             var name = player.name;
             var left = bot ? null : player.left;
             var right = bot ? null : player.right;
@@ -86,7 +86,7 @@ module.exports = React.createClass({
                     <td>
                         <input type="checkbox" checked={bot} onChange={this.onBotChange.bind(this, player.id)}/>
                     </td>
-                    <td><ColorPicker colorId={colorId} availableColorIds={this.props.availableColorIds} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/></td>
+                    <td><ColorPicker color={color} availableWormColors={this.props.availableWormColors} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/></td>
                     <td>
                         <input type="text" onChange={this.onNameChange.bind(this, player.id)} value={name}/>
                     </td>
@@ -99,7 +99,7 @@ module.exports = React.createClass({
             );
         }, this);
 
-        var maxPlayersReached = this.props.players.length >= this.props.availableColorIds.length;
+        var maxPlayersReached = this.props.players.length >= this.props.availableWormColors.length;
         var maxPlayersReachedText = maxPlayersReached ? <p>Stop pretending, we know you don't have that many friends to play with.</p> : null;
 
         return (

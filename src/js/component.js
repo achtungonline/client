@@ -4,7 +4,50 @@ var NewMatchComponent = require('./newMatch/component.js');
 var MatchComponent = require('./match/component.js');
 var MatchOverComponent = require("./matchOver/component.js");
 
-var availableColorIds = ["black", "yellow", "orange", "red", "pink", "purple", "indigo", "blue", "turquoise", "green"];
+
+// Note: The length of this list is also the maximum amount of players. But make sure that there are enough keybindings and names as well
+var availableWormColors = [
+    {
+        id: "black",
+        hexCode: "#444"
+    },
+    {
+        id: "yellow",
+        hexCode: "#FDD835"
+    },
+    {
+        id: "orange",
+        hexCode: "#FF9800"
+    },
+    {
+        id: "red",
+        hexCode: "#F44336"
+    },
+    {
+        id: "pink",
+        hexCode: "#E91E63"
+    },
+    {
+        id: "purple",
+        hexCode: "#9C27B0"
+    },
+    {
+        id: "indigo",
+        hexCode: "#3F51B5"
+    },
+    {
+        id: "blue",
+        hexCode: "#03A9F4"
+    },
+    {
+        id: "turquoise",
+        hexCode: "#009688"
+    },
+    {
+        id: "green",
+        hexCode: "#8BC34A"
+    }];
+
 var availableNames = [
     "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
     "Adolf Hitler", "Donald Trump", "Vladimir Putin", "Osama bin Laden", "Kim Jong-un", "Mao Zedong", "Joseph Stalin", "Prophet Muhammad", "Steve Jobs", "Benito Mussolini"];
@@ -68,9 +111,9 @@ function getPlayer(players, playerId) {
     });
 }
 
-function getUnusedColorIds(players) {
-    var usedColors = players.map(p => p.colorId);
-    return availableColorIds.filter(c => usedColors.indexOf(c) === -1);
+function getUnusedColor(players) {
+    var usedColors = players.map(p => p.color.id);
+    return availableWormColors.filter(c => usedColors.indexOf(c.id) === -1);
 }
 
 function getUnusedKeyBindings(players) {
@@ -89,7 +132,7 @@ module.exports = React.createClass({
             players: [
                 {
                     bot: false,
-                    colorId: "blue",
+                    color: availableWormColors[0],
                     name: firstName,
                     left: availableKeyBindings[0].left,
                     right: availableKeyBindings[0].right,
@@ -97,7 +140,7 @@ module.exports = React.createClass({
                 },
                 {
                     bot: true,
-                    colorId: "red",
+                    color: availableWormColors[1],
                     name: secondName,
                     left: availableKeyBindings[1].left,
                     right: availableKeyBindings[1].right,
@@ -110,7 +153,7 @@ module.exports = React.createClass({
         //TODO Analyze how to seperate players state etc. from this component
         if (this.state.view === "newMatch") {
             return <NewMatchComponent players={this.state.players}
-                                      availableColorIds={availableColorIds}
+                                      availableWormColors={availableWormColors}
                                       onStartMatchAction={this.startMatch}
                                       onAddPlayerAction={this.addPlayer}
                                       onNameChangeAction={this.changeName}
@@ -140,7 +183,7 @@ module.exports = React.createClass({
             return {
                 players: prevState.players.concat([{
                     bot: false,
-                    colorId: getUnusedColorIds(prevState.players)[0],
+                    color: getUnusedColor(prevState.players)[0],
                     name: name,
                     left: keyBinding.left,
                     right: keyBinding.right,
@@ -171,20 +214,20 @@ module.exports = React.createClass({
         });
         this.setState({players: players});
     },
-    changePlayerColor: function (playerId, colorId) {
+    changePlayerColor: function (playerId, color) {
         this.setState(function (oldState) {
             var oldPlayerWithColor = oldState.players.find(function (p) {
-                return p.colorId === colorId;
+                return p.color.id === color.id;
             });
 
             var newPlayerWithColor = getPlayer(oldState.players, playerId);
 
             if (oldPlayerWithColor) {
                 // The picked color is occupied, so the players need to swap colors.
-                oldPlayerWithColor.colorId = newPlayerWithColor.colorId;
+                oldPlayerWithColor.color = newPlayerWithColor.color;
             }
 
-            newPlayerWithColor.colorId = colorId;
+            newPlayerWithColor.color = color;
 
             return {
                 players: oldState.players
