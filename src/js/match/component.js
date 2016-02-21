@@ -5,7 +5,7 @@ var LocalGameHandler = require('./local-game/local-game-handler.js');
 var ReplayGameHandler = require('./local-game/replay/replay-game-handler.js');
 var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");
 var GameHistory = require("core/src/core/history/game-history.js");
-
+var FPS = require("./fps-component.js");
 
 module.exports = React.createClass({
     displayName: 'Match',
