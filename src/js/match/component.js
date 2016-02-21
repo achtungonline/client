@@ -30,9 +30,12 @@ module.exports = React.createClass({
         var startNextGameButton = currentGame && currentGame.isGameOver() ? <button onClick={this.startNextGame}>Start next game</button> : null;
         var replayButton = currentGame && currentGame.isGameOver() && this.state.gameHistory ? <button onClick={this.startReplay}>Watch replay</button> : null;
 
-        var scoreTableRows = this.props.players.map(function (player) {
+        var scoreTableRows = this.props.players.sort(function(p1, p2) {
+            var score = thisComponent.state.match.matchState.score;
+            return score[p1.id] < score[p2.id];
+        }).map(function (player) {
             return (
-                <tr key={player.id}>
+                <tr key={player.id} style={{color: player.color.hexCode}}>
                     <td>{player.name}</td>
                     <td>{thisComponent.state.match.matchState.score[player.id]}</td>
                 </tr>
