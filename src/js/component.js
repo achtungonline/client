@@ -3,6 +3,7 @@ var React = require('react');
 var NewMatchComponent = require('./newMatch/component.js');
 var MatchComponent = require('./match/component.js');
 var MatchOverComponent = require("./matchOver/component.js");
+var CoreMatchFactory = require('core/src/match-factory.js');
 
 
 // Note: The length of this list is also the maximum amount of players. But make sure that there are enough keybindings and names as well
@@ -147,7 +148,9 @@ module.exports = React.createClass({
                     right: availableKeyBindings[1].right,
                     id: 1
                 }
-            ]
+            ],
+            matchConfig: null,
+            match: null
         };
     },
     render: function () {
@@ -163,16 +166,33 @@ module.exports = React.createClass({
                                       onPlayerColorChangeAction={this.changePlayerColor}
             />;
         } else if (this.state.view === "match") {
-            return <MatchComponent players={this.state.players}
+            return <MatchComponent match={this.state.match}
+                                   matchConfig={this.state.matchConfig}
+                                   players={this.state.players}
                                    onMatchOverAction={this.endMatch}/>;
         } else if (this.state.view === "matchOver") {
-            return <MatchOverComponent/>;
+            return <MatchOverComponent matchState={this.state.match.matchState}
+                                       players={this.state.players}
+                                       onRestartAction={this.startMatch}
+                                       onExitAction={this.newMatch}/>;
         } else {
             throw new Error("Unknown view: " + this.state.view);
         }
     },
+    newMatch: function () {
+        this.setState({matchConfig: null, match: null, view: "newMatch"});
+    },
     startMatch: function () {
-        this.setState({view: "match"});
+        var matchConfig = {};
+        matchConfig.playerConfigs = this.state.players.map(function (player) {
+            return {
+                id: player.id,
+                type: player.bot ? "bot" : "human"
+            }
+        });
+        matchConfig.maxScore = 15;
+        var match = CoreMatchFactory().create({matchConfig: matchConfig});
+        this.setState({matchConfig: matchConfig, match: match, view: "match"});
     },
     endMatch: function () {
         this.setState({view: "matchOver"})
