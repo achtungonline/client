@@ -169,12 +169,14 @@ module.exports = React.createClass({
             return <MatchComponent match={this.state.match}
                                    matchConfig={this.state.matchConfig}
                                    players={this.state.players}
-                                   onMatchOverAction={this.endMatch}/>;
+                                   onMatchOverAction={this.endMatch}
+            />;
         } else if (this.state.view === "matchOver") {
             return <MatchOverComponent matchState={this.state.match.matchState}
                                        players={this.state.players}
                                        onRestartAction={this.startMatch}
-                                       onExitAction={this.newMatch}/>;
+                                       onExitAction={this.newMatch}
+            />;
         } else {
             throw new Error("Unknown view: " + this.state.view);
         }

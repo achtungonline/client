@@ -9,6 +9,7 @@ var duration = require('gulp-duration');
 var eslint = require('gulp-eslint');
 var babelify = require('babelify');
 var sass = require('gulp-sass');
+var plumber = require('gulp-plumber');
 
 var path = {
     CORE: 'node_modules/core',
@@ -61,8 +62,8 @@ gulp.task('watch', function () {
         function pipeBundle(bundle) {
             bundle.on('error', function(err){
                 console.log(err.message);
-                this.end();
             })
+                .pipe(plumber())
                 .pipe(duration('rebuilding files: ' + entry))
                 .pipe(source(entry))
                 .pipe(gulp.dest(path.DEST_BUILD));
@@ -73,8 +74,6 @@ gulp.task('watch', function () {
         }).bundle());
     });
 });
-
-
 
 gulp.task('default', ['lint', 'sass', 'watch']);
 

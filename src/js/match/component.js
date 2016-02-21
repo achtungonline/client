@@ -18,7 +18,8 @@ module.exports = React.createClass({
     render: function () {
         var thisComponent = this;
         var currentGame = this.props.match.getCurrentGame();
-        var startNextGameButton = currentGame && currentGame.isGameOver() ? <button onClick={this.startNextGame}>Start next game</button> : null;
+        var matchOverButton = this.props.match.isMatchOver() ? <button onClick={thisComponent.props.onMatchOverAction}>Game Over</button> : null;
+        var startNextGameButton = currentGame && currentGame.isGameOver() && !this.props.match.isMatchOver() ? <button onClick={this.startNextGame}>Start next game</button> : null;
         var replayButton = currentGame && currentGame.isGameOver() && this.state.gameHistory ? <button onClick={this.startReplay}>Watch replay</button> : null;
 
         var scoreTableRows = scoreUtils.sort(this.props.players, this.props.match.matchState).map(function (player) {
@@ -32,6 +33,7 @@ module.exports = React.createClass({
 
         return (
             <div>
+                {matchOverButton}
                 {startNextGameButton}
                 {replayButton}
                 <div ref="gameCanvas"></div>
@@ -47,9 +49,6 @@ module.exports = React.createClass({
     componentDidMount: function () {
         var thisComponent = this;
         var match = this.props.match;
-        match.on(match.events.MATCH_OVER, function () {
-            thisComponent.props.onMatchOverAction(match.matchState);
-        });
         match.on(match.events.SCORE_UPDATED, function () {
             thisComponent.forceUpdate();
         });
