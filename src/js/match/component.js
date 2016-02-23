@@ -6,13 +6,14 @@ var GameHistoryHandler = require("core/src/core/history/game-history-handler.js"
 var GameHistory = require("core/src/core/history/game-history.js");
 var FPS = require("./fps-component.js");
 var scoreUtils = require("./../score-utils.js");
+var windowFocusHandler = require("../window-focus-handler.js");
 
 module.exports = React.createClass({
     displayName: 'Match',
     getInitialState: function () {
-
         return {
-            gameHistory: null
+            gameHistory: null,
+            pausedDueToLostFocus: false
         }
     },
     render: function () {
@@ -21,6 +22,7 @@ module.exports = React.createClass({
         var matchOverButton = this.props.match.isMatchOver() ? <button onClick={thisComponent.props.onMatchOverAction}>Game Over</button> : null;
         var startNextGameButton = currentGame && currentGame.isGameOver() && !this.props.match.isMatchOver() ? <button onClick={this.startNextGame}>Start next game</button> : null;
         var replayButton = currentGame && currentGame.isGameOver() && this.state.gameHistory ? <button onClick={this.startReplay}>Watch replay</button> : null;
+        var pausedDueToLostFocusElement = this.state.pausedDueToLostFocus ? <strong>Game lost focus!</strong> : null;
 
         var scoreTableRows = scoreUtils.sort(this.props.players, this.props.match.matchState).map(function (player) {
             return (
@@ -36,6 +38,7 @@ module.exports = React.createClass({
                 {matchOverButton}
                 {startNextGameButton}
                 {replayButton}
+                {pausedDueToLostFocusElement}
                 <div ref="gameCanvas"></div>
                 <table>
                     <tbody>
@@ -68,10 +71,32 @@ module.exports = React.createClass({
         startGameHistoryRecording(game);
 
         var localGame = LocalGameHandler({game: game, playerConfigs: this.props.players});
+
+        function onWindowFocus() {
+            setTimeout(function () {
+                thisComponent.setState({
+                    pausedDueToLostFocus: false
+                });
+                localGame.resume();
+            }, 1000);
+        }
+
+        function onWindowBlur() {
+            thisComponent.setState({
+                pausedDueToLostFocus: true
+            });
+            localGame.pause();
+        }
+
+        windowFocusHandler.on("focus", onWindowFocus);
+        windowFocusHandler.on("blur", onWindowBlur);
+
         this.prepareGameForCanvas(localGame);
         localGame.start();
 
         localGame.on("gameOver", function (phaseType) {
+            windowFocusHandler.off("focus", onWindowFocus);
+            windowFocusHandler.off("blur", onWindowFocus);
             // So that the startNextGameButton shows
             thisComponent.forceUpdate();
         });

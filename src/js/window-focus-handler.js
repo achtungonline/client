@@ -1,89 +1,86 @@
-module.exports = function WindowFocusHandler() {
+function WindowFocusHandler() {
     var focusListeners = [];
     var blurListeners = [];
 
     function init() {
         function onWindowFocus() {
-            console.log("window focus");
             focusListeners.forEach(function (listener) {
                 listener();
             });
         }
 
         function onWindowBlur() {
-            console.log("window blur");
             blurListeners.forEach(function (listener) {
                 listener();
             });
         }
 
-        // This code is super ugly! Want to rewrite it. Cluttering the document body className and stuff :(
-        // Taken from http://stackoverflow.com/questions/1060008/is-there-a-way-to-detect-if-a-browser-window-is-not-currently-active
-        var hidden = "hidden";
-
-        // Standards:
-        if (hidden in document) {
-            document.addEventListener("visibilitychange", onchange);
-        }
-        else if ((hidden = "mozHidden") in document) {
-            document.addEventListener("mozvisibilitychange", onchange);
-        }
-        else if ((hidden = "webkitHidden") in document) {
-            document.addEventListener("webkitvisibilitychange", onchange);
-        }
-        else if ((hidden = "msHidden") in document) {
-            document.addEventListener("msvisibilitychange", onchange);
-        }
-        // IE 9 and lower:
-        else if ("onfocusin" in document) {
-            document.onfocusin = document.onfocusout = onchange;
-        }
-        // All others:
-        else {
-            window.onpageshow = window.onpagehide = window.onfocus = window.onblur = onchange;
+        // Set the name of the hidden property and the change event for visibility
+        var hidden, visibilityChange;
+        if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
+            hidden = "hidden";
+            visibilityChange = "visibilitychange";
+        } else if (typeof document.mozHidden !== "undefined") {
+            hidden = "mozHidden";
+            visibilityChange = "mozvisibilitychange";
+        } else if (typeof document.msHidden !== "undefined") {
+            hidden = "msHidden";
+            visibilityChange = "msvisibilitychange";
+        } else if (typeof document.webkitHidden !== "undefined") {
+            hidden = "webkitHidden";
+            visibilityChange = "webkitvisibilitychange";
         }
 
-        function onchange(evt) {
-            var v = "visible", h = "hidden",
-                evtMap = {
-                    focus: v, focusin: v, pageshow: v, blur: h, focusout: h, pagehide: h
-                };
-
-            evt = evt || window.event;
-            if (evt.type in evtMap) {
-                if (evtMap[evt.type] === v) {
-                    onWindowFocus();
-                } else {
-                    onWindowBlur();
-                }
+        function handleVisibilityChange() {
+            if (document[hidden]) {
+                onWindowBlur();
             } else {
-                if (this[hidden]) {
-                    onWindowBlur();
-                } else {
-                    onWindowFocus();
-                }
+                onWindowFocus();
             }
         }
 
-        // set the initial state (but only if browser supports the Page Visibility API)
-        if (document[hidden] !== undefined) {
-            onchange({type: document[hidden] ? "blur" : "focus"});
+        // Warn if the browser doesn't support addEventListener or the Page Visibility API
+        if (typeof document.addEventListener === "undefined" || typeof document[hidden] === "undefined") {
+            console.error("This game requires a modern browser, such as Google Chrome or Firefox, that supports the Page Visibility API.");
+        } else {
+            // Handle page visibility change
+            document.addEventListener(visibilityChange, handleVisibilityChange);
         }
+    }
 
+    function removeListener(listeners, callback) {
+        var index = listeners.indexOf(callback);
+        if (index !== -1) {
+            listeners.splice(index);
+        }
+    }
+
+    function on(event, callback) {
+        if (event === "focus") {
+            focusListeners.push(callback);
+        } else if (event === "blur") {
+            blurListeners.push(callback);
+        } else {
+            throw new Error("Invalid event: " + event);
+        }
+    }
+
+    function off(event, callback) {
+        if (event === "focus") {
+            removeListener(focusListeners, callback);
+        } else if (event === "blur") {
+            removeListener(blurListeners, callback);
+        } else {
+            throw new Error("Invalid event: " + event);
+        }
     }
 
     init();
 
-    function addFocusListener(callback) {
-        focusListeners.push(callback);
-    }
-
-    function addBlurListener(callback) {
-        blurListeners.push(callback);
-    }
-
     return {
-        onFocus: addFocusListener,
-        onBlur: addBlurListener
+        on: on,
+        off: off
     };
 };
+
+module.exports = WindowFocusHandler();
