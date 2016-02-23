@@ -24,6 +24,9 @@
     "url": "https://github.com/achtungonline/client/issues"
   },
   "homepage": "https://github.com/achtungonline/client",
+  "scripts": {
+      "watch": "gulp"
+  },
   "dependencies": {
     "core": "achtungonline/core",
     "react": "^0.14.6",
