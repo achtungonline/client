@@ -20,10 +20,15 @@ module.exports = function PlayAreaRenderer(gameState, playerConfigs, playAreaCon
 
     var render = function () {
         var updatedPixels = gameState.playAreaUpdateBuffer;
+        console.log(playAreaContext);
+        playAreaContext.imageSmoothingEnabled = true;
 
         var data = image.data;
 
         updatedPixels.forEach(function (pixel) {
+            function getSurrondingEightPixels(pixel) {
+
+            }
             var rgbColor;
             if (pixel.value === PlayArea.FREE) {
                 rgbColor = [0, 0, 0, 0];
