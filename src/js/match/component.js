@@ -50,17 +50,17 @@ module.exports = React.createClass({
         );
     },
     componentDidMount: function () {
-        var thisComponent = this;
-        var match = this.props.match;
-        match.on(match.events.SCORE_UPDATED, function () {
-            thisComponent.forceUpdate();
-        });
         this.startNextGame();
     },
     startNextGame: function () {
         var thisComponent = this;
         var seed = Math.random();
         var game = this.props.match.prepareNextGame(seed);
+
+        var match = this.props.match;
+        match.getCurrentScoreHandler().on(match.getCurrentScoreHandler().events.SCORE_UPDATED, function () {
+            thisComponent.forceUpdate();
+        });
 
         function startGameHistoryRecording(game) {
             var gameHistory = GameHistory(game.gameState.map, thisComponent.props.matchConfig.playerConfigs, game.gameState.seed);
