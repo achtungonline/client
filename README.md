@@ -1,15 +1,18 @@
-# client 
+# client
 
 The web client of the game.
 
 ## Installation
 
-Download node at [nodejs.org](http://nodejs.org) and install it, if you haven't already.
+Download node at [nodejs.org](http://nodejs.org) and install it, if you haven't already. Run the following command in the root of the repo:
 
 ```sh
-npm install <client directory location> --save
+npm install
 ```
 
+## Running the Client
+
+Make sure that the installation step is done. The run `npm run watch` in the root of the repo, in order to build the project files. This command will continue to watch files for changes to rebuild the project, so don't wait for the command to finish. Now you can open the `src/index.html` file in your browser and play the game!
 
 
 ## Dependencies
@@ -27,4 +30,4 @@ npm install <client directory location> --save
 
 ## Other
 
-- [Trello](https://trello.com/b/o7O6oTkx/achtungonline): Flexible online organization of workflow 
+- [Trello](https://trello.com/b/o7O6oTkx/achtungonline): Flexible online organization of workflow

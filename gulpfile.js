@@ -14,12 +14,10 @@ var plumber = require('gulp-plumber');
 var path = {
     CORE: 'node_modules/core',
     INDEX_HTML: 'src/index.html',
-    START_HTML: 'src/start.html',
     DEST: 'dist',
     DEST_BUILD: 'dist/build',
     DEST_CSS: 'dist/css',
     INDEX_ENTRY_POINT: 'index.js',
-    START_ENTRY_POINT: 'start.js',
     GULP_FILE: 'gulpfile.js',
     JS: 'src/js',
     SASS: 'src/sass'
@@ -45,8 +43,7 @@ gulp.task('watch', function () {
     gulp.watch(path.SASS + '/**/*.scss', ['sass']);
 
     var entryFiles = [
-        path.INDEX_ENTRY_POINT,
-        path.START_ENTRY_POINT
+        path.INDEX_ENTRY_POINT
     ];
 
     //TODO Break out the building part from the watching part. In other words: make gulp-task('build/bundle')
@@ -79,11 +76,11 @@ gulp.task('default', ['lint', 'sass', 'watch']);
 
 
 //gulp.task('copy', function () {
-//    gulp.src([path.INDEX_HTML, path.START_HTML])
+//    gulp.src([path.INDEX_HTML])
 //        .pipe(gulp.dest(path.DEST));
 //});
 
-//gulp.watch([path.START_HTML, path.INDEX_HTML], ['copy']);
+//gulp.watch([path.INDEX_HTML], ['copy']);
 
 
 //gulp.task('build', function () {
