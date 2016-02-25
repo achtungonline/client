@@ -4,6 +4,9 @@ var LocalGameHandler = require('./local-game/local-game-handler.js');
 var ReplayGameHandler = require('./local-game/replay/replay-game-handler.js');
 var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");
 var GameHistory = require("core/src/core/history/game-history.js");
+var ScoreHandler = require("core/src/core/score-handler.js");
+var clone = require("core/src/core/util/clone.js");
+
 var FPS = require("./fps-component.js");
 var scoreUtils = require("./../score-utils.js");
 var windowFocusHandler = require("../window-focus-handler.js");
@@ -13,7 +16,12 @@ module.exports = React.createClass({
     getInitialState: function () {
         return {
             gameHistory: null,
-            pausedDueToLostFocus: false
+            roundStartScore: null,
+            pausedDueToLostFocus: false,
+            scoreState: {
+                score: {},
+                roundsWon: {}
+            } //TODO: Might want to have different components for replay and match. Might as in we should...
         }
     },
     render: function () {
@@ -24,11 +32,11 @@ module.exports = React.createClass({
         var replayButton = currentGame && currentGame.isGameOver() && this.state.gameHistory ? <button onClick={this.startReplay}>Watch replay</button> : null;
         var pausedDueToLostFocusElement = this.state.pausedDueToLostFocus ? <strong>Game lost focus!</strong> : null;
 
-        var scoreTableRows = scoreUtils.sort(this.props.players, this.props.match.matchState).map(function (player) {
+        var scoreTableRows = scoreUtils.sort(this.props.players, this.state.scoreState).map(function (player) {
             return (
                 <tr key={player.id} style={{color: player.color.hexCode}}>
                     <td>{player.name}</td>
-                    <td>{thisComponent.props.match.matchState.score[player.id]}</td>
+                    <td>{thisComponent.state.scoreState.score[player.id] || 0}</td>
                 </tr>
             )
         });
@@ -56,6 +64,10 @@ module.exports = React.createClass({
         var thisComponent = this;
         var seed = Math.random();
         var game = this.props.match.prepareNextGame(seed);
+        var roundStartScore = {};
+        roundStartScore.score = clone(this.props.match.matchState.score);
+        roundStartScore.roundsWon = clone(this.props.match.matchState.roundsWon);
+        this.setState({scoreState: this.props.match.matchState, roundStartScore: roundStartScore});
 
         var match = this.props.match;
         match.getCurrentScoreHandler().on(match.getCurrentScoreHandler().events.SCORE_UPDATED, function () {
@@ -103,9 +115,18 @@ module.exports = React.createClass({
         thisComponent.forceUpdate();
     },
     startReplay: function () {
-        // Replay stuff
+        var thisComponent = this;
         var replayGame = ReplayGameHandler(this.state.gameHistory);
         this.prepareGameForCanvas(replayGame);
+        var replayScoreState = {};
+        replayScoreState.score = clone(this.state.roundStartScore.score);
+        replayScoreState.roundsWon = clone(this.state.roundStartScore.roundsWon);
+        var scoreHandler = ScoreHandler({game: replayGame, scoreState: replayScoreState});
+        this.setState({scoreState: replayScoreState});
+        console.log(replayScoreState);
+        scoreHandler.on(scoreHandler.events.SCORE_UPDATED, function () {
+            thisComponent.forceUpdate();
+        });
         replayGame.start();
         this.forceUpdate();
     },

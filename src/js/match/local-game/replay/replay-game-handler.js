@@ -80,6 +80,7 @@ module.exports = function Replay(gameHistory) {
         stop: game.stop,
         isPaused: isPaused,
         on: game.on.bind(game),
+        off: game.off.bind(game),
         events: game.events,
         gameState: game.gameState
     };
