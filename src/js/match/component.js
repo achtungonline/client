@@ -31,6 +31,8 @@ module.exports = React.createClass({
         var currentMatchGame = this.props.match.getCurrentGame();
         var matchOverButton = this.props.match.isMatchOver() ? <button onClick={thisComponent.props.onMatchOverAction}>Game Over</button> : null;
         var startNextGameButton = currentMatchGame && currentMatchGame.isGameOver() && !this.props.match.isMatchOver() ? <button onClick={this.startNextGame}>Start next game</button> : null;
+        var pauseButton = thisComponent.state.localGame.isGameOver() ? null : <button onClick={this.pauseGame}>Pause</button>;
+        var exitButton = this.props.match.isMatchOver() ? null : <button onClick={thisComponent.props.onMatchOverAction}>Exit</button>;
         var replayButton = currentMatchGame && currentMatchGame.isGameOver() && this.state.gameHistory ? <button onClick={this.startReplay}>Watch replay</button> : null;
         var pausedDueToLostFocusElement = this.state.pausedDueToLostFocus ? <strong>Game lost focus!</strong> : null;
 
@@ -54,6 +56,8 @@ module.exports = React.createClass({
                 {matchOverButton}
                 {startNextGameButton}
                 {replayButton}
+                {pauseButton}
+                {exitButton}
                 {pausedDueToLostFocusElement}
                 <div ref="gameCanvas"></div>
                 <table>
@@ -68,8 +72,18 @@ module.exports = React.createClass({
     componentWillMount: function () {
         this.startNextGame();
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.prepareGameForCanvas(this.state.localGame);
+    },
+    pauseGame: function () {
+        if (this.state.localGame.isPaused()) {
+            this.state.localGame.resume();
+        } else {
+            this.state.localGame.pause();
+        }
+    },
+    exitGame: function () {
+
     },
     startNextGame: function () {
         var thisComponent = this;
@@ -147,7 +161,7 @@ module.exports = React.createClass({
         var gameCanvasHandler = GameCanvasHandler({game: game, playerConfigs: this.props.players});
         var gameCanvasContainer = gameCanvasHandler.getGameCanvasContainer();
         var container = this.refs.gameCanvas;
-        if(container) {
+        if (container) {
             container.innerHTML = "";
             container.appendChild(gameCanvasContainer);
         }
