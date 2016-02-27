@@ -16,7 +16,7 @@ module.exports = React.createClass({
     getInitialState: function () {
         return {
             gameHistory: null,
-            roundStartScore: null,
+            roundStartScore: {score: {}, roundsWon: {}},
             pausedDueToLostFocus: false,
             scoreState: {
                 score: {},
@@ -33,10 +33,15 @@ module.exports = React.createClass({
         var pausedDueToLostFocusElement = this.state.pausedDueToLostFocus ? <strong>Game lost focus!</strong> : null;
 
         var scoreTableRows = scoreUtils.sort(this.props.players, this.state.scoreState).map(function (player) {
+            var roundStartScore = thisComponent.state.roundStartScore.score[player.id] || 0;
+            var score = thisComponent.state.scoreState.score[player.id] || 0;
+            var thisRoundScore = score - roundStartScore;
+            var scoreColumn = score + (thisRoundScore ? " +" + thisRoundScore : "");
+
             return (
                 <tr key={player.id} style={{color: player.color.hexCode}}>
                     <td>{player.name}</td>
-                    <td>{thisComponent.state.scoreState.score[player.id] || 0}</td>
+                    <td>{scoreColumn}</td>
                 </tr>
             )
         });
