@@ -208,6 +208,8 @@ module.exports = React.createClass({
             var mapWidth = Number(selectedMapData[1]);
             var mapHeight = selectedMapData[2];
             matchConfig.map = CoreMapFactory()["create" + mapType](mapWidth, mapHeight)
+        } else {
+            matchConfig.map = CoreMapFactory().createSquare(800);
         }
         matchConfig.maxScore = 15;
         var match = CoreMatchFactory().create({matchConfig: matchConfig});
