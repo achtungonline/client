@@ -1,4 +1,4 @@
-module.exports = function MapRenderer(map, shapeRenderer, mapContext, renderProperties) {
+module.exports = function MapRenderer(map, shapeRenderer, mapContext) {
     var rendered = false;
 
     var render = function () {

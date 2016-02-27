@@ -79,6 +79,7 @@ module.exports = function Replay(gameHistory) {
         resume: resume,
         stop: game.stop,
         isPaused: isPaused,
+        isGameOver: game.isGameOver,
         on: game.on.bind(game),
         off: game.off.bind(game),
         events: game.events,

@@ -3,7 +3,7 @@ var playerUtils = require("core/src/core/player/player-utils.js");
 var utils = require("./../../../utils.js");
 var canvasImageDataUtils = require("./../canvas-image-data-utils.js");
 
-module.exports = function PlayAreaRenderer(gameState, playerConfigs, playAreaContext, renderProperties) {
+module.exports = function PlayAreaRenderer(gameState, playerConfigs, playAreaContext) {
 
     var UPDATE_GRANULARITY = 50;
 

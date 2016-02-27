@@ -6,6 +6,7 @@ var GameHistoryHandler = require("core/src/core/history/game-history-handler.js"
 var GameHistory = require("core/src/core/history/game-history.js");
 var ScoreHandler = require("core/src/core/score-handler.js");
 var clone = require("core/src/core/util/clone.js");
+var CoreGameStateFunctions = require("core/src/core/game-state-functions.js");
 
 var FPS = require("./fps-component.js");
 var scoreUtils = require("./../score-utils.js");
@@ -15,6 +16,7 @@ module.exports = React.createClass({
     displayName: 'Match',
     getInitialState: function () {
         return {
+            localGame: null,
             gameHistory: null,
             roundStartScore: {score: {}, roundsWon: {}},
             pausedDueToLostFocus: false,
@@ -26,10 +28,10 @@ module.exports = React.createClass({
     },
     render: function () {
         var thisComponent = this;
-        var currentGame = this.props.match.getCurrentGame();
+        var currentMatchGame = this.props.match.getCurrentGame();
         var matchOverButton = this.props.match.isMatchOver() ? <button onClick={thisComponent.props.onMatchOverAction}>Game Over</button> : null;
-        var startNextGameButton = currentGame && currentGame.isGameOver() && !this.props.match.isMatchOver() ? <button onClick={this.startNextGame}>Start next game</button> : null;
-        var replayButton = currentGame && currentGame.isGameOver() && this.state.gameHistory ? <button onClick={this.startReplay}>Watch replay</button> : null;
+        var startNextGameButton = currentMatchGame && currentMatchGame.isGameOver() && !this.props.match.isMatchOver() ? <button onClick={this.startNextGame}>Start next game</button> : null;
+        var replayButton = currentMatchGame && currentMatchGame.isGameOver() && this.state.gameHistory ? <button onClick={this.startReplay}>Watch replay</button> : null;
         var pausedDueToLostFocusElement = this.state.pausedDueToLostFocus ? <strong>Game lost focus!</strong> : null;
 
         var scoreTableRows = scoreUtils.sort(this.props.players, this.state.scoreState).map(function (player) {
@@ -37,9 +39,10 @@ module.exports = React.createClass({
             var score = thisComponent.state.scoreState.score[player.id] || 0;
             var thisRoundScore = score - roundStartScore;
             var scoreColumn = score + (thisRoundScore ? " +" + thisRoundScore : "");
+            var opacity = CoreGameStateFunctions.isPlayerAlive(thisComponent.state.localGame.gameState, player.id) ? 1 : 0.25;
 
             return (
-                <tr key={player.id} style={{color: player.color.hexCode}}>
+                <tr key={player.id} style={{color: player.color.hexCode, opacity: opacity}}>
                     <td>{player.name}</td>
                     <td>{scoreColumn}</td>
                 </tr>
@@ -62,8 +65,11 @@ module.exports = React.createClass({
             </div>
         );
     },
-    componentDidMount: function () {
+    componentWillMount: function () {
         this.startNextGame();
+    },
+    componentDidMount: function() {
+        this.prepareGameForCanvas(this.state.localGame);
     },
     startNextGame: function () {
         var thisComponent = this;
@@ -88,6 +94,7 @@ module.exports = React.createClass({
         startGameHistoryRecording(game);
 
         var localGame = LocalGameHandler({game: game, playerConfigs: this.props.players});
+        this.setState({localGame: localGame});
 
         function onWindowFocus() {
             setTimeout(function () {
@@ -109,6 +116,7 @@ module.exports = React.createClass({
         windowFocusHandler.on("blur", onWindowBlur);
 
         this.prepareGameForCanvas(localGame);
+
         localGame.start();
 
         localGame.on("gameOver", function (phaseType) {
@@ -127,7 +135,7 @@ module.exports = React.createClass({
         replayScoreState.score = clone(this.state.roundStartScore.score);
         replayScoreState.roundsWon = clone(this.state.roundStartScore.roundsWon);
         var scoreHandler = ScoreHandler({game: replayGame, scoreState: replayScoreState});
-        this.setState({scoreState: replayScoreState});
+        this.setState({scoreState: replayScoreState, localGame: replayGame});
         console.log(replayScoreState);
         scoreHandler.on(scoreHandler.events.SCORE_UPDATED, function () {
             thisComponent.forceUpdate();
@@ -139,7 +147,9 @@ module.exports = React.createClass({
         var gameCanvasHandler = GameCanvasHandler({game: game, playerConfigs: this.props.players});
         var gameCanvasContainer = gameCanvasHandler.getGameCanvasContainer();
         var container = this.refs.gameCanvas;
-        container.innerHTML = "";
-        container.appendChild(gameCanvasContainer);
+        if(container) {
+            container.innerHTML = "";
+            container.appendChild(gameCanvasContainer);
+        }
     }
 });

@@ -256,7 +256,6 @@ module.exports = React.createClass({
             player.name = name.substring(0, 20);
             return {players: oldState.players};
         });
-
     },
     changeIsBot: function (playerId, isBot) {
         this.setState(function (oldState) {

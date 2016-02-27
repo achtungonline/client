@@ -72,6 +72,7 @@ module.exports = function LocalGameHandler(options) {
         resume: resume,
         stop: game.stop,
         isPaused: isPaused,
+        isGameOver: game.isGameOver,
         on: game.on.bind(game),
         events: game.events,
         gameState: game.gameState

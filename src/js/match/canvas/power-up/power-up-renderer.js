@@ -1,4 +1,4 @@
-module.exports = function PowerUpRenderer(gameState, powerUpContext, shapeRenderer, renderProperties) {
+module.exports = function PowerUpRenderer(gameState, powerUpContext, shapeRenderer) {
 
     var render = function () {
         powerUpContext.clearRect(0, 0, powerUpContext.canvas.width, powerUpContext.canvas.height);

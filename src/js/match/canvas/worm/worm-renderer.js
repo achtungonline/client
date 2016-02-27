@@ -1,8 +1,8 @@
-module.exports = function WormRenderer(worm, playerConfigs, shapeRenderer, wormHeadsContext, shapeModifierImmutable, renderProperties) {
+module.exports = function WormRenderer(worm, playerConfigs, shapeRenderer, wormHeadsContext, shapeModifierImmutable) {
 
     var lastRenderedHead;
 
-    function render() {
+    function render(renderProperties) {
         var largerHead = shapeModifierImmutable.changeSize(worm.head, 2);
         shapeRenderer.render(wormHeadsContext, largerHead, "#FF9800");
         lastRenderedHead = largerHead;
