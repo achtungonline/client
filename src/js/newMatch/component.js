@@ -107,6 +107,18 @@ module.exports = React.createClass({
             <div>
                 <button disabled={maxPlayersReached} onClick={this.props.onAddPlayerAction}>Add player</button>
                 <button onClick={this.props.onStartMatchAction}>Play</button>
+                <select defaultValue="" value={this.props.selectedMap} onChange={this.onMapChange}>
+                    <option value="" disabled>Select Map</option>
+                    <option value="Square 500">Small Square</option>
+
+                    <option value="Square 800">Medium Square</option>
+                    <option value="Square 1100">Large Square</option>
+                    <option value="Circle 500">Small Circle</option>
+                    <option value="Circle 800">Medium Circle</option>
+                    <option value="Circle 1100">Large Circle</option>
+                    <option value="Rectangle 1100 400">Rectangle</option>
+                    <option value="Full Sized Rectangle">Max Sized Rectangle</option>
+                </select>
                 <table>
                     <thead>
                     <tr>
@@ -125,6 +137,9 @@ module.exports = React.createClass({
                 {maxPlayersReachedText}
             </div>
         );
+    },
+    onMapChange: function (event) {
+        this.props.onMapChangeAction(event.target.value);
     },
     onNameChange: function (playerId, event) {
         this.props.onNameChangeAction(playerId, event.target.value);

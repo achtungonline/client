@@ -5,12 +5,12 @@ var canvasImageDataUtils = require("./../canvas-image-data-utils.js");
 
 module.exports = function PlayAreaRenderer(gameState, playerConfigs, playAreaContext, renderProperties) {
 
-    var UPDATE_GRANULARITY = 50; // Assuming map width and height is a multiple of the granularity
+    var UPDATE_GRANULARITY = 50;
 
-    var playAreaWidth = gameState.map.shape.boundingBox.width;
     var playAreaHeight = gameState.map.shape.boundingBox.height;
-    var updateRows = playAreaHeight / UPDATE_GRANULARITY;
-    var updateCols = playAreaWidth / UPDATE_GRANULARITY;
+    var playAreaWidth = gameState.map.shape.boundingBox.width;
+    var updateRows = Math.ceil(playAreaHeight / UPDATE_GRANULARITY);
+    var updateCols = Math.ceil(playAreaWidth / UPDATE_GRANULARITY);
     var updatedSquare = new Array(updateRows * updateCols);
     updatedSquare.forEach(function (value, index) {
         updatedSquare[index] = false;

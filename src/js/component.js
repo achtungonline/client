@@ -4,6 +4,8 @@ var NewMatchComponent = require('./newMatch/component.js');
 var MatchComponent = require('./match/component.js');
 var MatchOverComponent = require("./matchOver/component.js");
 var CoreMatchFactory = require('core/src/match-factory.js');
+var CoreMapFactory = require("core/src/core/map/map-factory.js");
+
 
 
 // Note: The length of this list is also the maximum amount of players. But make sure that there are enough keybindings and names as well
@@ -150,13 +152,15 @@ module.exports = React.createClass({
                 }
             ],
             matchConfig: null,
-            match: null
+            match: null,
+            selectedMap: null
         };
     },
     render: function () {
         //TODO Analyze how to seperate players state etc. from this component
         if (this.state.view === "newMatch") {
             return <NewMatchComponent players={this.state.players}
+                                      selectedMap={this.state.selectedMap}
                                       availableWormColors={availableWormColors}
                                       onStartMatchAction={this.startMatch}
                                       onAddPlayerAction={this.addPlayer}
@@ -164,6 +168,7 @@ module.exports = React.createClass({
                                       onIsBotChangeAction={this.changeIsBot}
                                       onRemovePlayerAction={this.removePlayer}
                                       onPlayerColorChangeAction={this.changePlayerColor}
+                                      onMapChangeAction={this.changeMap}
             />;
         } else if (this.state.view === "match") {
             return <MatchComponent match={this.state.match}
@@ -192,12 +197,27 @@ module.exports = React.createClass({
                 type: player.bot ? "bot" : "human"
             }
         });
+        var selectedMap = this.state.selectedMap;
+
+        if(selectedMap === "Full Sized Rectangle") {
+            matchConfig.map = CoreMapFactory().createRectangle(window.innerWidth - 250, window.innerHeight);
+        }
+        else if(selectedMap) {
+            var selectedMapData = selectedMap.split(" ");
+            var mapType = selectedMapData[0];
+            var mapWidth = Number(selectedMapData[1]);
+            var mapHeight = selectedMapData[2];
+            matchConfig.map = CoreMapFactory()["create" + mapType](mapWidth, mapHeight)
+        }
         matchConfig.maxScore = 15;
         var match = CoreMatchFactory().create({matchConfig: matchConfig});
         this.setState({matchConfig: matchConfig, match: match, view: "match"});
     },
     endMatch: function () {
         this.setState({view: "matchOver"})
+    },
+    changeMap: function(map) {
+        this.setState({selectedMap: map});
     },
     addPlayer: function () {
         this.setState(function (prevState) {
