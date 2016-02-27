@@ -53,7 +53,7 @@ module.exports = React.createClass({
                     {scoreTableRows}
                     </tbody>
                 </table>
-                <div>Max score: {this.props.match.matchState.maxScore}</div>
+                <div>Max score: {this.props.match.matchState.maxScore}, you have to win by 2 points</div>
             </div>
         );
     },
