@@ -7,7 +7,6 @@ var CoreMatchFactory = require('core/src/match-factory.js');
 var CoreMapFactory = require("core/src/core/map/map-factory.js");
 
 
-
 // Note: The length of this list is also the maximum amount of players. But make sure that there are enough keybindings and names as well
 var availableWormColors = [
     {
@@ -98,6 +97,8 @@ var availableKeyBindings = [
     }
 ];
 
+var SCORE_INCREASE = 5;
+
 function getUnusedNames(players) {
     var usedNames = players.map(p => p.name);
     return availableNames.filter(n => usedNames.indexOf(n) === -1);
@@ -153,7 +154,9 @@ module.exports = React.createClass({
             ],
             matchConfig: null,
             match: null,
-            selectedMap: null
+            selectedMap: null,
+            maxScore: 5,
+            maxScoreManuallyChanged: false
         };
     },
     render: function () {
@@ -161,6 +164,7 @@ module.exports = React.createClass({
         if (this.state.view === "newMatch") {
             return <NewMatchComponent players={this.state.players}
                                       selectedMap={this.state.selectedMap}
+                                      maxScore={this.state.maxScore}
                                       availableWormColors={availableWormColors}
                                       onStartMatchAction={this.startMatch}
                                       onAddPlayerAction={this.addPlayer}
@@ -169,6 +173,7 @@ module.exports = React.createClass({
                                       onRemovePlayerAction={this.removePlayer}
                                       onPlayerColorChangeAction={this.changePlayerColor}
                                       onMapChangeAction={this.changeMap}
+                                      onMaxScoreChangeAction={this.maxScoreChangeAction}
             />;
         } else if (this.state.view === "match") {
             return <MatchComponent match={this.state.match}
@@ -199,10 +204,10 @@ module.exports = React.createClass({
         });
         var selectedMap = this.state.selectedMap;
 
-        if(selectedMap === "Full Sized Rectangle") {
+        if (selectedMap === "Full Sized Rectangle") {
             matchConfig.map = CoreMapFactory().createRectangle(window.innerWidth - 250, window.innerHeight);
         }
-        else if(selectedMap) {
+        else if (selectedMap) {
             var selectedMapData = selectedMap.split(" ");
             var mapType = selectedMapData[0];
             var mapWidth = Number(selectedMapData[1]);
@@ -211,15 +216,21 @@ module.exports = React.createClass({
         } else {
             matchConfig.map = CoreMapFactory().createSquare(800);
         }
-        matchConfig.maxScore = 15;
+        matchConfig.maxScore = this.state.maxScore;
         var match = CoreMatchFactory().create({matchConfig: matchConfig});
         this.setState({matchConfig: matchConfig, match: match, view: "match"});
     },
     endMatch: function () {
         this.setState({view: "matchOver"})
     },
-    changeMap: function(map) {
+    changeMap: function (map) {
         this.setState({selectedMap: map});
+    },
+    maxScoreChangeAction: function (maxScore) {
+        var maxScoreInt = parseInt(maxScore.replace(/[^0-9]/g, ''));
+        if (maxScoreInt !== this.state.maxScore && maxScoreInt > 0) {
+            this.setState({maxScore: maxScoreInt, maxScoreManuallyChanged: true})
+        }
     },
     addPlayer: function () {
         this.setState(function (prevState) {
@@ -234,7 +245,8 @@ module.exports = React.createClass({
                     right: keyBinding.right,
                     id: prevState.nextId
                 }]),
-                nextId: prevState.nextId + 1
+                nextId: prevState.nextId + 1,
+                maxScore: prevState.maxScoreManuallyChanged ? prevState.maxScore : prevState.maxScore + SCORE_INCREASE
             };
         });
     },
@@ -257,7 +269,7 @@ module.exports = React.createClass({
         var players = this.state.players.filter(function (player) {
             return player.id !== playerId;
         });
-        this.setState({players: players});
+        this.setState({players: players, maxScore: this.state.maxScoreManuallyChanged ? this.state.maxScore : this.state.maxScore - SCORE_INCREASE});
     },
     changePlayerColor: function (playerId, color) {
         this.setState(function (oldState) {

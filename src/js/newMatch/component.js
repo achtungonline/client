@@ -110,7 +110,6 @@ module.exports = React.createClass({
                 <select defaultValue="" value={this.props.selectedMap} onChange={this.onMapChange}>
                     <option value="" disabled>Select Map</option>
                     <option value="Square 500">Small Square</option>
-
                     <option value="Square 800">Medium Square</option>
                     <option value="Square 1100">Large Square</option>
                     <option value="Circle 500">Small Circle</option>
@@ -119,6 +118,7 @@ module.exports = React.createClass({
                     <option value="Rectangle 1100 400">Rectangle</option>
                     <option value="Full Sized Rectangle">Max Sized Rectangle</option>
                 </select>
+                Max Score: <input type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
                 <table>
                     <thead>
                     <tr>
@@ -137,6 +137,9 @@ module.exports = React.createClass({
                 {maxPlayersReachedText}
             </div>
         );
+    },
+    onMaxScoreChange: function(event) {
+        this.props.onMaxScoreChangeAction(event.target.value);
     },
     onMapChange: function (event) {
         this.props.onMapChangeAction(event.target.value);
