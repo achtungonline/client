@@ -1,8 +1,8 @@
-var React = require('react');
+var React = require("react");
 
 //TODO: Rethink how the fps handler works (ML)
 module.exports = React.createClass({
-    displayName: 'FPS',
+    displayName: "FPS",
 
     getInitialState: function () {
         return {

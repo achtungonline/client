@@ -1,7 +1,7 @@
-var React = require('react');
-var GameCanvasHandler = require('./canvas/game-canvas-handler.js');
-var LocalGameHandler = require('./local-game/local-game-handler.js');
-var ReplayGameHandler = require('./local-game/replay/replay-game-handler.js');
+var React = require("react");
+var GameCanvasHandler = require("./canvas/game-canvas-handler.js");
+var LocalGameHandler = require("./local-game/local-game-handler.js");
+var ReplayGameHandler = require("./local-game/replay/replay-game-handler.js");
 var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");
 var GameHistory = require("core/src/core/history/game-history.js");
 var ScoreHandler = require("core/src/core/score-handler.js");
@@ -14,7 +14,7 @@ var scoreUtils = require("./../score-utils.js");
 var windowFocusHandler = require("../window-focus-handler.js");
 
 module.exports = React.createClass({
-    displayName: 'Match',
+    displayName: "Match",
     getInitialState: function () {
         return {
             localGame: null,

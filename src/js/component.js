@@ -1,9 +1,9 @@
-var React = require('react');
+var React = require("react");
 
-var NewMatchComponent = require('./newMatch/component.js');
-var MatchComponent = require('./match/component.js');
+var NewMatchComponent = require("./newMatch/component.js");
+var MatchComponent = require("./match/component.js");
 var MatchOverComponent = require("./matchOver/component.js");
-var CoreMatchFactory = require('core/src/match-factory.js');
+var CoreMatchFactory = require("core/src/match-factory.js");
 var CoreMapFactory = require("core/src/core/map/map-factory.js");
 
 
@@ -227,7 +227,7 @@ module.exports = React.createClass({
         this.setState({selectedMap: map});
     },
     maxScoreChangeAction: function (maxScore) {
-        var maxScoreInt = parseInt(maxScore.replace(/[^0-9]/g, ''));
+        var maxScoreInt = parseInt(maxScore.replace(/[^0-9]/g, ""));
         if (maxScoreInt !== this.state.maxScore && maxScoreInt > 0) {
             this.setState({maxScore: maxScoreInt, maxScoreManuallyChanged: true})
         }

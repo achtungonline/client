@@ -13,9 +13,9 @@ module.exports = function PowerUpRenderer(gameState, powerUpContext, shapeRender
             }
             shapeRenderer.render(powerUpContext, powerUp.shape, color);
             powerUpContext.font = "14px Arial";
-            powerUpContext.textAlign = 'center';
+            powerUpContext.textAlign = "center";
             powerUpContext.textBaseline = "middle";
-            powerUpContext.fillStyle = 'white';
+            powerUpContext.fillStyle = "white";
             powerUpContext.fillText(powerUp.name, powerUp.shape.centerX, powerUp.shape.centerY);
         });
     };

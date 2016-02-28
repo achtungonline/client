@@ -1,8 +1,8 @@
-var React = require('react');
+var React = require("react");
 var scoreUtils = require("./../score-utils.js");
 
 module.exports = React.createClass({
-    displayName: 'MatchOver',
+    displayName: "MatchOver",
     render: function () {
         var thisComponent = this;
 

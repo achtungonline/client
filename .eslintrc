@@ -12,9 +12,8 @@
         "quotes": [2, "double", "avoid-escape"],
         "no-undef": 2,
         "no-use-before-define": [2, "nofunc"],
-        "new-cap": 2,
+        "new-cap": 0,
         "no-caller": 2,
-        "strict": 2,
         "wrap-iife": 2,
         "indent": [2, 4],
         "no-trailing-spaces": 2

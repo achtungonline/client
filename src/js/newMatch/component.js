@@ -1,4 +1,4 @@
-var React = require('react');
+var React = require("react");
 var utils = require("./../utils.js");
 
 var ColorPicker = React.createClass({
@@ -73,7 +73,7 @@ var ColorPicker = React.createClass({
 });
 
 module.exports = React.createClass({
-    displayName: 'NewMatch',
+    displayName: "NewMatch",
     render: function () {
         var rows = this.props.players.map(function (player) {
             var bot = player.bot;
@@ -101,7 +101,7 @@ module.exports = React.createClass({
         }, this);
 
         var maxPlayersReached = this.props.players.length >= this.props.availableWormColors.length;
-        var maxPlayersReachedText = maxPlayersReached ? <p>Stop pretending, we know you don't have that many friends to play with.</p> : null;
+        var maxPlayersReachedText = maxPlayersReached ? <p>Stop pretending, we know you don"t have that many friends to play with.</p> : null;
 
         return (
             <div>

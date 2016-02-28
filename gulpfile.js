@@ -1,8 +1,8 @@
 /*eslint-disable */
 
 var gulp = require('gulp');
-var uglify = require('gulp-uglify');
-var htmlReplace = require('gulp-html-replace');
+//var uglify = require('gulp-uglify');
+//var htmlReplace = require('gulp-html-replace');
 var source = require('vinyl-source-stream');
 var browserify = require('browserify');
 var watchify = require('watchify');

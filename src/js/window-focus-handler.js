@@ -39,7 +39,7 @@ function WindowFocusHandler() {
             }
         }
 
-        // Warn if the browser doesn't support addEventListener or the Page Visibility API
+        // Warn if the browser doesn"t support addEventListener or the Page Visibility API
         if (typeof document.addEventListener === "undefined" || typeof document[hidden] === "undefined") {
             console.error("This game requires a modern browser, such as Google Chrome or Firefox, that supports the Page Visibility API.");
         } else {
