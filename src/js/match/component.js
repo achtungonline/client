@@ -12,27 +12,7 @@ var FPS = require("./fps-component.js");
 var scoreUtils = require("./../score-utils.js");
 var windowFocusHandler = require("../window-focus-handler.js");
 
-var Score = require("./scoreComponent.js");
-var GameCanvasComponent = require("./gameCanvasComponent.js");
-
-function MatchControls({ match, onStartNextGameAction, onPauseAction, onExitAction, onReplayAction }) {
-    var game = match.getCurrentGame();
-    var matchOverButton = match.isMatchOver() ? <button onClick={onExitAction}>Game Over</button> : null;
-    var startNextGameButton = game && game.isGameOver() && !match.isMatchOver() ? <button onClick={onStartNextGameAction}>Start next game</button> : null;
-    var pauseButton = game.isGameOver() ? null : <button onClick={onPauseAction}>Pause</button>;
-    var exitButton = match.isMatchOver() ? <button onClick={onExitAction}>Game Over</button> : <button onClick={onExitAction}>Exit</button>;
-    var replayButton = onReplayAction && game && game.isGameOver() ? <button onClick={onReplayAction}>Watch replay</button> : null;
-
-    return (
-        <div>
-            {matchOverButton}
-            {startNextGameButton}
-            {replayButton}
-            {pauseButton}
-            {exitButton}
-        </div>
-    );
-}
+var PlayComponent = require("./playComponent.js");
 
 module.exports = React.createClass({
     displayName: "Match",
@@ -51,18 +31,25 @@ module.exports = React.createClass({
     render: function () {
         var pausedDueToLostFocusElement = this.state.pausedDueToLostFocus ? <strong>Game lost focus!</strong> : null;
 
+        var match = this.props.match;
+        var game = this.state.localGame;
         var startScoreState = this.state.roundStartScore;
         var scoreState = this.state.scoreState;
-        var gameState = this.state.localGame.gameState;
         var players = this.props.players;
-        var maxScore = this.props.match.matchState.maxScore;
 
         return (
             <div>
-                {pausedDueToLostFocusElement}
-                <MatchControls match={this.props.match} onStartNextGameAction={this.startNextGame} onPauseAction={this.pauseGame} onExitAction={this.exitGame} onReplayAction={this.startReplay} />
-                <GameCanvasComponent game={this.state.localGame} players={this.props.players} renderBotTrajectories={false} />
-                <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore} />
+                <PlayComponent
+                    game={game}
+                    match={match}
+                    players={players}
+                    scoreState={scoreState}
+                    roundStartScore={startScoreState}
+                    onStartNextGameAction={this.startNextGame}
+                    onPauseAction={this.pauseGame}
+                    onExitAction={this.exitGame}
+                    onReplayAction={this.startReplay}
+                />
             </div>
         );
     },
