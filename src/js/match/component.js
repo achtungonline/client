@@ -7,6 +7,7 @@ var GameHistory = require("core/src/core/history/game-history.js");
 var ScoreHandler = require("core/src/core/score-handler.js");
 var clone = require("core/src/core/util/clone.js");
 var CoreGameStateFunctions = require("core/src/core/game-state-functions.js");
+var random = require("core/src/core/util/random.js");
 
 var FPS = require("./fps-component.js");
 var scoreUtils = require("./../score-utils.js");
@@ -87,7 +88,7 @@ module.exports = React.createClass({
     },
     startNextGame: function () {
         var thisComponent = this;
-        var seed = Math.random();
+        var seed = random.generateSeed();
         var game = this.props.match.prepareNextGame(seed);
         var roundStartScore = {};
         roundStartScore.score = clone(this.props.match.matchState.score);
