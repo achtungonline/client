@@ -15,6 +15,25 @@ var windowFocusHandler = require("../window-focus-handler.js");
 var Score = require("./scoreComponent.js");
 var GameCanvasComponent = require("./gameCanvasComponent.js");
 
+function MatchControls({ match, onStartNextGameAction, onPauseAction, onExitAction, onReplayAction }) {
+    var game = match.getCurrentGame();
+    var matchOverButton = match.isMatchOver() ? <button onClick={onExitAction}>Game Over</button> : null;
+    var startNextGameButton = game && game.isGameOver() && !match.isMatchOver() ? <button onClick={onStartNextGameAction}>Start next game</button> : null;
+    var pauseButton = game.isGameOver() ? null : <button onClick={onPauseAction}>Pause</button>;
+    var exitButton = match.isMatchOver() ? <button onClick={onExitAction}>Game Over</button> : <button onClick={onExitAction}>Exit</button>;
+    var replayButton = onReplayAction && game && game.isGameOver() ? <button onClick={onReplayAction}>Watch replay</button> : null;
+
+    return (
+        <div>
+            {matchOverButton}
+            {startNextGameButton}
+            {replayButton}
+            {pauseButton}
+            {exitButton}
+        </div>
+    );
+}
+
 module.exports = React.createClass({
     displayName: "Match",
     getInitialState: function () {
@@ -30,13 +49,6 @@ module.exports = React.createClass({
         }
     },
     render: function () {
-        var thisComponent = this;
-        var currentMatchGame = this.props.match.getCurrentGame();
-        var matchOverButton = this.props.match.isMatchOver() ? <button onClick={thisComponent.props.onMatchOverAction}>Game Over</button> : null;
-        var startNextGameButton = currentMatchGame && currentMatchGame.isGameOver() && !this.props.match.isMatchOver() ? <button onClick={this.startNextGame}>Start next game</button> : null;
-        var pauseButton = thisComponent.state.localGame.isGameOver() ? null : <button onClick={this.pauseGame}>Pause</button>;
-        var exitButton = this.props.match.isMatchOver() ? null : <button onClick={thisComponent.props.onMatchOverAction}>Exit</button>;
-        var replayButton = currentMatchGame && currentMatchGame.isGameOver() && this.state.gameHistory ? <button onClick={this.startReplay}>Watch replay</button> : null;
         var pausedDueToLostFocusElement = this.state.pausedDueToLostFocus ? <strong>Game lost focus!</strong> : null;
 
         var startScoreState = this.state.roundStartScore;
@@ -47,13 +59,9 @@ module.exports = React.createClass({
 
         return (
             <div>
-                {matchOverButton}
-                {startNextGameButton}
-                {replayButton}
-                {pauseButton}
-                {exitButton}
                 {pausedDueToLostFocusElement}
-                <GameCanvasComponent game={this.state.localGame} players={this.props.players} renderBotTrajectories="false" />
+                <MatchControls match={this.props.match} onStartNextGameAction={this.startNextGame} onPauseAction={this.pauseGame} onExitAction={this.exitGame} onReplayAction={this.startReplay} />
+                <GameCanvasComponent game={this.state.localGame} players={this.props.players} renderBotTrajectories={false} />
                 <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore} />
             </div>
         );
@@ -72,7 +80,7 @@ module.exports = React.createClass({
         }
     },
     exitGame: function () {
-
+        this.props.onMatchOverAction();
     },
     startNextGame: function () {
         var thisComponent = this;
