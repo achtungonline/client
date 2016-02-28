@@ -71,6 +71,7 @@ module.exports = React.createClass({
     },
     componentDidMount: function () {
         this.prepareGameForCanvas(this.state.localGame);
+        this.forceUpdate();
     },
     pauseGame: function () {
         if (this.state.localGame.isPaused()) {
@@ -136,7 +137,6 @@ module.exports = React.createClass({
             // So that the startNextGameButton shows
             thisComponent.forceUpdate();
         });
-        thisComponent.forceUpdate();
     },
     startReplay: function () {
         var thisComponent = this;
