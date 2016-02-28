@@ -33,7 +33,7 @@
     "build": "npm run build:css -s && npm run build:js -s",
     "build:js": "browserify -t [ babelify --presets [ es2015 react ] ] --outfile build/index.js -d src/js/index.js",
     "build:css": "node-sass src/css/main.scss build/index.css",
-    "watch:js": "watchify -t [ babelify --presets [ es2015 react ] ] --outfile build/index.js -d src/js/index.js",
+    "watch:js": "npm run build:js -s && watchify -t [ babelify --presets [ es2015 react ] ] --outfile build/index.js -d src/js/index.js",
     "watch:css": "nodemon -q -w src/css/ --ext '.scss' --exec 'npm run build:css'",
     "watch:test": "nodemon -q -w src --ext '.js' --exec 'npm run test'"
   },
