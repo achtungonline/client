@@ -13,6 +13,7 @@ var scoreUtils = require("./../score-utils.js");
 var windowFocusHandler = require("../window-focus-handler.js");
 
 var Score = require("./scoreComponent.js");
+var GameCanvasComponent = require("./gameCanvasComponent.js");
 
 module.exports = React.createClass({
     displayName: "Match",
@@ -52,7 +53,7 @@ module.exports = React.createClass({
                 {pauseButton}
                 {exitButton}
                 {pausedDueToLostFocusElement}
-                <div ref="gameCanvas"></div>
+                <GameCanvasComponent game={this.state.localGame} players={this.props.players} renderBotTrajectories="false" />
                 <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore} />
             </div>
         );
