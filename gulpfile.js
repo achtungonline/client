@@ -1,3 +1,5 @@
+/*eslint-disable */
+
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var htmlReplace = require('gulp-html-replace');

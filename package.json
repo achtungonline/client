@@ -25,7 +25,8 @@
   },
   "homepage": "https://github.com/achtungonline/client",
   "scripts": {
-      "watch": "gulp"
+      "watch": "gulp",
+      "lint": "eslint **.js"
   },
   "dependencies": {
     "core": "achtungonline/core",
