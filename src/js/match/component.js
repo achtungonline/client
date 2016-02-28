@@ -70,8 +70,6 @@ module.exports = React.createClass({
         this.startNextGame();
     },
     componentDidMount: function () {
-        this.prepareGameForCanvas(this.state.localGame);
-        this.forceUpdate();
     },
     pauseGame: function () {
         if (this.state.localGame.isPaused()) {
@@ -127,8 +125,6 @@ module.exports = React.createClass({
         windowFocusHandler.on("focus", onWindowFocus);
         windowFocusHandler.on("blur", onWindowBlur);
 
-        this.prepareGameForCanvas(localGame);
-
         localGame.start();
 
         localGame.on("gameOver", function (phaseType) {
@@ -137,11 +133,12 @@ module.exports = React.createClass({
             // So that the startNextGameButton shows
             thisComponent.forceUpdate();
         });
+
+        thisComponent.forceUpdate();
     },
     startReplay: function () {
         var thisComponent = this;
         var replayGame = ReplayGameHandler(this.state.gameHistory);
-        this.prepareGameForCanvas(replayGame);
         var replayScoreState = {};
         replayScoreState.score = clone(this.state.roundStartScore.score);
         replayScoreState.roundsWon = clone(this.state.roundStartScore.roundsWon);
@@ -153,14 +150,5 @@ module.exports = React.createClass({
         });
         replayGame.start();
         this.forceUpdate();
-    },
-    prepareGameForCanvas: function (game) {
-        var gameCanvasHandler = GameCanvasHandler({game: game, playerConfigs: this.props.players, drawBotTrajectories: false});
-        var gameCanvasContainer = gameCanvasHandler.getGameCanvasContainer();
-        var container = this.refs.gameCanvas;
-        if (container) {
-            container.innerHTML = "";
-            container.appendChild(gameCanvasContainer);
-        }
     }
 });
