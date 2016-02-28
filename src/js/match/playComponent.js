@@ -25,8 +25,6 @@ function MatchControls({ match, onStartNextGameAction, onPauseAction, onExitActi
 module.exports = React.createClass({
     displayName: "Play",
     render: function () {
-        var pausedDueToLostFocusElement = this.state.pausedDueToLostFocus ? <strong>Game lost focus!</strong> : null;
-
         var match = this.props.match;
         var game = this.props.game;
         var startScoreState = this.props.roundStartScore;
@@ -37,7 +35,6 @@ module.exports = React.createClass({
 
         return (
             <div>
-                {pausedDueToLostFocusElement}
                 <MatchControls match={match} onStartNextGameAction={this.props.onStartNextGameAction} onPauseAction={this.props.onPauseAction} onExitAction={this.props.onExitAction} onReplayAction={this.props.onReplayAction} />
                 <GameCanvasComponent game={game} players={players} renderBotTrajectories={false} />
                 <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore} />

@@ -13,11 +13,13 @@ var scoreUtils = require("./../score-utils.js");
 var windowFocusHandler = require("../window-focus-handler.js");
 
 var PlayComponent = require("./playComponent.js");
+var ReplayComponent = require("./replayComponent.js");
 
 module.exports = React.createClass({
     displayName: "Match",
     getInitialState: function () {
         return {
+            isReplaying: false,
             localGame: null,
             gameHistory: null,
             roundStartScore: {score: {}, roundsWon: {}},
@@ -37,8 +39,23 @@ module.exports = React.createClass({
         var scoreState = this.state.scoreState;
         var players = this.props.players;
 
-        return (
-            <div>
+        var play;
+        var replay;
+        if (this.state.isReplaying) {
+            var replay = (
+                <ReplayComponent
+                    match={match}
+                    roundStartScore={startScoreState}
+                    gameHistory={this.state.gameHistory}
+                    players={players}
+                    maxScore={this.props.match.matchState.maxScore}
+                    onStartNextGameAction={this.startNextGame}
+                    onPauseAction={this.pauseGame}
+                    onExitAction={this.exitGame}
+                />
+            );
+        } else {
+            play = (
                 <PlayComponent
                     game={game}
                     match={match}
@@ -50,6 +67,13 @@ module.exports = React.createClass({
                     onExitAction={this.exitGame}
                     onReplayAction={this.startReplay}
                 />
+            );
+        }
+
+        return (
+            <div>
+                {play}
+                {replay}
             </div>
         );
     },
@@ -57,6 +81,13 @@ module.exports = React.createClass({
         this.startNextGame();
     },
     componentDidMount: function () {
+
+    },
+    componentWillUnmount: function () {
+        this.state.localGame.off("gameOver", this.onGameOver);
+        windowFocusHandler.off("focus", this.onWindowFocus);
+        windowFocusHandler.off("blur", this.onWindowFocus);
+        this.props.match.getCurrentScoreHandler().off(this.props.match.getCurrentScoreHandler().events.SCORE_UPDATED, this.onScoreUpdated);
     },
     pauseGame: function () {
         if (this.state.localGame.isPaused()) {
@@ -78,9 +109,7 @@ module.exports = React.createClass({
         this.setState({scoreState: this.props.match.matchState, roundStartScore: roundStartScore});
 
         var match = this.props.match;
-        match.getCurrentScoreHandler().on(match.getCurrentScoreHandler().events.SCORE_UPDATED, function () {
-            thisComponent.forceUpdate();
-        });
+        match.getCurrentScoreHandler().on(match.getCurrentScoreHandler().events.SCORE_UPDATED, this.onScoreUpdated);
 
         function startGameHistoryRecording(game) {
             var gameHistory = GameHistory(game.gameState.map, thisComponent.props.matchConfig.playerConfigs, game.gameState.seed);
@@ -93,49 +122,53 @@ module.exports = React.createClass({
         var localGame = LocalGameHandler({game: game, playerConfigs: this.props.players});
         this.setState({localGame: localGame});
 
-        function onWindowFocus() {
-            setTimeout(function () {
-                thisComponent.setState({
-                    pausedDueToLostFocus: false
-                });
-                localGame.resume();
-            }, 1000);
-        }
-
-        function onWindowBlur() {
-            thisComponent.setState({
-                pausedDueToLostFocus: true
-            });
-            localGame.pause();
-        }
-
-        windowFocusHandler.on("focus", onWindowFocus);
-        windowFocusHandler.on("blur", onWindowBlur);
-
         localGame.start();
 
-        localGame.on("gameOver", function (phaseType) {
-            windowFocusHandler.off("focus", onWindowFocus);
-            windowFocusHandler.off("blur", onWindowFocus);
-            // So that the startNextGameButton shows
-            thisComponent.forceUpdate();
-        });
+        localGame.on("gameOver", this.onGameOver);
 
-        thisComponent.forceUpdate();
+        this.setState({ isReplaying: false });
+
+        windowFocusHandler.on("focus", this.onWindowFocus);
+        windowFocusHandler.on("blur", this.onWindowBlur);
+    },
+    onScoreUpdated: function () {
+        this.forceUpdate();
+    },
+    onGameOver: function () {
+        windowFocusHandler.off("focus", this.onWindowFocus);
+        windowFocusHandler.off("blur", this.onWindowFocus);
+        // So that the startNextGameButton shows
+        this.forceUpdate();
+    },
+    onWindowFocus: function () {
+        var thisComponent = this;
+        setTimeout(function () {
+            thisComponent.setState({
+                pausedDueToLostFocus: false
+            });
+            thisComponent.state.localGame.resume();
+        }, 1000);
+    },
+    onWindowBlur: function () {
+        this.setState({
+            pausedDueToLostFocus: true
+        });
+        this.pause();
     },
     startReplay: function () {
-        var thisComponent = this;
-        var replayGame = ReplayGameHandler(this.state.gameHistory);
-        var replayScoreState = {};
-        replayScoreState.score = clone(this.state.roundStartScore.score);
-        replayScoreState.roundsWon = clone(this.state.roundStartScore.roundsWon);
-        var scoreHandler = ScoreHandler({game: replayGame, scoreState: replayScoreState});
-        this.setState({scoreState: replayScoreState, localGame: replayGame});
-        console.log(replayScoreState);
-        scoreHandler.on(scoreHandler.events.SCORE_UPDATED, function () {
-            thisComponent.forceUpdate();
-        });
-        replayGame.start();
-        this.forceUpdate();
+        this.setState({ isReplaying: true });
+        // var thisComponent = this;
+        // var replayGame = ReplayGameHandler(this.state.gameHistory);
+        // var replayScoreState = {};
+        // replayScoreState.score = clone(this.state.roundStartScore.score);
+        // replayScoreState.roundsWon = clone(this.state.roundStartScore.roundsWon);
+        // var scoreHandler = ScoreHandler({game: replayGame, scoreState: replayScoreState});
+        // this.setState({scoreState: replayScoreState, localGame: replayGame});
+        // console.log(replayScoreState);
+        // scoreHandler.on(scoreHandler.events.SCORE_UPDATED, function () {
+        //     thisComponent.forceUpdate();
+        // });
+        // replayGame.start();
+        // this.forceUpdate();
     }
 });
