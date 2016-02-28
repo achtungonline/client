@@ -6,12 +6,13 @@ var GameHistoryHandler = require("core/src/core/history/game-history-handler.js"
 var GameHistory = require("core/src/core/history/game-history.js");
 var ScoreHandler = require("core/src/core/score-handler.js");
 var clone = require("core/src/core/util/clone.js");
-var CoreGameStateFunctions = require("core/src/core/game-state-functions.js");
 var random = require("core/src/core/util/random.js");
 
 var FPS = require("./fps-component.js");
 var scoreUtils = require("./../score-utils.js");
 var windowFocusHandler = require("../window-focus-handler.js");
+
+var Score = require("./scoreComponent.js");
 
 module.exports = React.createClass({
     displayName: "Match",
@@ -37,20 +38,11 @@ module.exports = React.createClass({
         var replayButton = currentMatchGame && currentMatchGame.isGameOver() && this.state.gameHistory ? <button onClick={this.startReplay}>Watch replay</button> : null;
         var pausedDueToLostFocusElement = this.state.pausedDueToLostFocus ? <strong>Game lost focus!</strong> : null;
 
-        var scoreTableRows = scoreUtils.sort(this.props.players, this.state.scoreState).map(function (player) {
-            var roundStartScore = thisComponent.state.roundStartScore.score[player.id] || 0;
-            var score = thisComponent.state.scoreState.score[player.id] || 0;
-            var thisRoundScore = score - roundStartScore;
-            var scoreColumn = score + (thisRoundScore ? " +" + thisRoundScore : "");
-            var opacity = CoreGameStateFunctions.isPlayerAlive(thisComponent.state.localGame.gameState, player.id) ? 1 : 0.25;
-
-            return (
-                <tr key={player.id} style={{color: player.color.hexCode, opacity: opacity}}>
-                    <td>{player.name}</td>
-                    <td>{scoreColumn}</td>
-                </tr>
-            )
-        });
+        var startScoreState = this.state.roundStartScore;
+        var scoreState = this.state.scoreState;
+        var gameState = this.state.localGame.gameState;
+        var players = this.props.players;
+        var maxScore = this.props.match.matchState.maxScore;
 
         return (
             <div>
@@ -61,12 +53,7 @@ module.exports = React.createClass({
                 {exitButton}
                 {pausedDueToLostFocusElement}
                 <div ref="gameCanvas"></div>
-                <table>
-                    <tbody>
-                    {scoreTableRows}
-                    </tbody>
-                </table>
-                <div>Max score: {this.props.match.matchState.maxScore}, you have to win by 2 points</div>
+                <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore} />
             </div>
         );
     },
