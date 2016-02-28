@@ -13,6 +13,7 @@ module.exports = function CanvasRenderer(options) {
     var wormHeadsCanvas = options.wormHeadsCanvas;
     var powerUpCanvas = options.powerUpCanvas;
     var playAreaCanvas = options.playAreaCanvas;
+    var drawBotTrajectories = options.drawBotTrajectories;
 
     var mapCanvasContext = mapCanvas.getContext("2d");
     var wormHeadsContext = wormHeadsCanvas.getContext("2d");
@@ -25,7 +26,14 @@ module.exports = function CanvasRenderer(options) {
     var powerUpRenderer = PowerUpRenderer(gameState, powerUpContext, shapeRenderer);
     var playAreaRenderer = PlayAreaRenderer(gameState, playerConfigs, playAreaContext);
     var shapeModifierImmutable = ShapeModifierImmutable(ShapeFactory());
-    var wormHeadsRenderer = WormsRenderer(gameState, playerConfigs, shapeRenderer, wormHeadsContext, shapeModifierImmutable);
+    var wormHeadsRenderer = WormsRenderer({
+        gameState: gameState,
+        playerConfigs: playerConfigs,
+        shapeRenderer: shapeRenderer,
+        wormHeadsContext: wormHeadsContext,
+        shapeModifierImmutable: shapeModifierImmutable,
+        drawBotTrajectories: drawBotTrajectories
+    });
 
 
     function render() {

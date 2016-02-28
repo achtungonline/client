@@ -1,7 +1,14 @@
 var WormRenderer = require("./worm-renderer.js");
 var forEach = require("core/src/core/util/for-each.js");
 
-module.exports = function WormsRenderer(gameState, playerConfigs, shapeRenderer, wormHeadsContext, shapeModifierImmutable) {
+module.exports = function WormsRenderer(options) {
+    var gameState = options.gameState;
+    var playerConfigs = options.playerConfigs;
+    var shapeRenderer = options.shapeRenderer;
+    var wormHeadsContext = options.wormHeadsContext;
+    var shapeModifierImmutable = options.shapeModifierImmutable;
+    var drawBotTrajectories = options.drawBotTrajectories;
+
     var wormRenderers = {};
     var clearWholeCanvas = false;
 
@@ -21,7 +28,7 @@ module.exports = function WormsRenderer(gameState, playerConfigs, shapeRenderer,
         }
         var renderProperties = {
             drawArrows: gameState.phase === "startPhase",
-            showTrajectories: gameState.phase !== "startPhase"
+            showTrajectories: drawBotTrajectories && gameState.phase !== "startPhase"
         };
 
         clearWholeCanvas = renderProperties.drawArrows || renderProperties.showTrajectories;

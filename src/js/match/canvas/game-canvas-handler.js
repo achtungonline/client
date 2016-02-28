@@ -6,6 +6,7 @@ var CanvasRenderer = require("./canvas-renderer.js");
 module.exports = function GameCanvasHandler(options) {
     var game = options.game;
     var playerConfigs = options.playerConfigs;
+    var drawBotTrajectories = options.drawBotTrajectories;
 
     function createCanvas(name, boundingBox) {
         var canvas = document.createElement("canvas");
@@ -41,7 +42,9 @@ module.exports = function GameCanvasHandler(options) {
             mapCanvas: mapCanvas,
             wormHeadsCanvas: wormHeadsCanvas,
             powerUpCanvas: powerUpCanvas,
-            playAreaCanvas: playAreaCanvas});
+            playAreaCanvas: playAreaCanvas,
+            drawBotTrajectories: drawBotTrajectories
+        });
     }
 
     var gameCanvasContainer = document.createElement("div");
