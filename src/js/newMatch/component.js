@@ -107,8 +107,8 @@ module.exports = React.createClass({
             <div>
                 <button disabled={maxPlayersReached} onClick={this.props.onAddPlayerAction}>Add player</button>
                 <button onClick={this.props.onStartMatchAction}>Play</button>
-                <select defaultValue="" value={this.props.selectedMap} onChange={this.onMapChange}>
-                    <option value="" disabled>Select Map</option>
+                <label>Select map</label>
+                <select defaultValue="Square 800" value={this.props.selectedMap} onChange={this.onMapChange}>
                     <option value="Square 500">Small Square</option>
                     <option value="Square 800">Medium Square</option>
                     <option value="Square 1100">Large Square</option>
