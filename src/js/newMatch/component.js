@@ -104,7 +104,7 @@ module.exports = React.createClass({
         var maxPlayersReachedText = maxPlayersReached ? <p>Stop pretending, we know you don"t have that many friends to play with.</p> : null;
 
         return (
-            <div>
+            <div align="center">
                 <button disabled={maxPlayersReached} onClick={this.props.onAddPlayerAction}>Add player</button>
                 <button onClick={this.props.onStartMatchAction}>Play</button>
                 <label>Select maps</label>
