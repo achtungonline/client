@@ -10,6 +10,12 @@ Download node at [nodejs.org](http://nodejs.org) and install it, if you haven't 
 npm install
 ```
 
+### Ubuntu installation
+
+The following depencies are required for fabric.js on ubuntu:
+
+```sudo apt-get install libcairo2-dev libjpeg-dev libgif-dev```
+
 ## Running the Client
 
 Make sure that the installation step is done. Then run `npm run watch` in the root of the repo, in order to build the project files. This command will continue to watch files for changes to rebuild the project, so don't wait for the command to finish. Now you can open the `src/index.html` file in your browser and play the game!
