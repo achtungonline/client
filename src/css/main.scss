@@ -92,17 +92,17 @@ body {
 //  float: left;
 //}
 //
-//.canvas-container {
-//  position: relative;
-//  display: inline-block;
-//}
-//
-//.canvas-container canvas {
-//  position: absolute;
-//  left: 0;
-//  top: 0;
-//}
-//
+.canvas-container {
+  position: relative;
+  display: inline-block;
+}
+
+.canvas-container canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
 //.right-column {
 //  float: left;
 //  margin-left: 10px;
