@@ -81,19 +81,23 @@ module.exports = React.createClass({
             var name = player.name;
             var left = bot ? null : utils.keyCodeToString(player.left);
             var right = bot ? null : utils.keyCodeToString(player.right);
-            var removeButton = this.props.players.length > 2 ? <button onClick={this.onRemoveClick.bind(this, player.id)}>X</button> : null;
+            var removeButton = this.props.players.length > 2 ? <button className="btn-clean btn-remove-player" onClick={this.onRemoveClick.bind(this, player.id)}><img src="src/css/svg/remove.svg" alt="X"/></button> : null;
+
+
             return (
                 <tr key={player.id}>
-                    <td>
-                        <input type="checkbox" checked={bot} onChange={this.onBotChange.bind(this, player.id)}/>
+                    <td className="col-bot">
+                        <button className="btn-clean" onClick={this.onBotChange.bind(this, player.id, !bot)}>
+                            <img src={bot ? "src/css/svg/computer.svg" : "src/css/svg/human.svg"} alt="X"/>
+                        </button>
                     </td>
-                    <td><ColorPicker color={color} availableWormColors={this.props.availableWormColors} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/></td>
-                    <td>
-                        <input type="text" onChange={this.onNameChange.bind(this, player.id)} value={name}/>
+                    <td className="col-color"><ColorPicker color={color} availableWormColors={this.props.availableWormColors} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/></td>
+                    <td className="col-name">
+                        <input className="input-clean" type="text" onChange={this.onNameChange.bind(this, player.id)} value={name}/>
                     </td>
-                    <td>{left}</td>
-                    <td>{right}</td>
-                    <td>
+                    <td className="col-left">{left}</td>
+                    <td className="col-right">{right}</td>
+                    <td className="col-remove">
                         {removeButton}
                     </td>
                 </tr>
@@ -101,44 +105,42 @@ module.exports = React.createClass({
         }, this);
 
         var maxPlayersReached = this.props.players.length >= this.props.availableWormColors.length;
-        var maxPlayersReachedText = maxPlayersReached ? <p>Stop pretending, we know you don"t have that many friends to play with.</p> : null;
 
         return (
-            <div align="center">
-                <button disabled={maxPlayersReached} onClick={this.props.onAddPlayerAction}>Add player</button>
-                <button onClick={this.props.onStartMatchAction}>Play</button>
-                <label>Select maps</label>
-                <select defaultValue="Square 800" value={this.props.selectedMap} onChange={this.onMapChange}>
-                    <option value="Square 500">Small Square</option>
-                    <option value="Square 800">Medium Square</option>
-                    <option value="Square 1100">Large Square</option>
-                    <option value="Circle 500">Small Circle</option>
-                    <option value="Circle 800">Medium Circle</option>
-                    <option value="Circle 1100">Large Circle</option>
-                    <option value="Rectangle 1100 400">Rectangle</option>
-                    <option value="Full Sized Rectangle">Max Sized Rectangle</option>
-                </select>
-                Max Score: <input type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Bot</th>
-                        <th>Color</th>
-                        <th>Name</th>
-                        <th>Left</th>
-                        <th>Right</th>
-                        <th></th>
-                    </tr>
-                    </thead>
+            <div className="new-match">
+                <table className="player-table" cellSpacing="0" cellPadding="0">
                     <tbody>
                     {rows}
                     </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colSpan="5">
+                            <button className="btn-add-player" disabled={maxPlayersReached} onClick={this.props.onAddPlayerAction}>Add player</button>
+                        </td>
+                    </tr>
+                    </tfoot>
                 </table>
-                {maxPlayersReachedText}
+                <div>
+                    <label for="select-map">Select Map: </label>
+                    <select id="select-map" value={this.props.selectedMap} onChange={this.onMapChange}>
+                        <option value="Square 500">Small Square</option>
+                        <option value="Square 800">Medium Square</option>
+                        <option value="Square 1100">Large Square</option>
+                        <option value="Circle 500">Small Circle</option>
+                        <option value="Circle 800">Medium Circle</option>
+                        <option value="Circle 1100">Large Circle</option>
+                        <option value="Rectangle 1100 400">Rectangle</option>
+                        <option value="Full Sized Rectangle">Max Sized Rectangle</option>
+                    </select>
+                    Max Score: <input type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
+                    <div>
+                        <button className="btn-start-game"onClick={this.props.onStartMatchAction}>START</button>
+                    </div>
+                </div>
             </div>
         );
     },
-    onMaxScoreChange: function(event) {
+    onMaxScoreChange: function (event) {
         this.props.onMaxScoreChangeAction(event.target.value);
     },
     onMapChange: function (event) {
@@ -147,8 +149,8 @@ module.exports = React.createClass({
     onNameChange: function (playerId, event) {
         this.props.onNameChangeAction(playerId, event.target.value);
     },
-    onBotChange: function (playerId, event) {
-        this.props.onIsBotChangeAction(playerId, event.target.checked);
+    onBotChange: function (playerId, isBot, event) {
+        this.props.onIsBotChangeAction(playerId, isBot);
     },
     onRemoveClick: function (playerId) {
         this.props.onRemovePlayerAction(playerId);

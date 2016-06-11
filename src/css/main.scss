@@ -1,36 +1,117 @@
 // General styling
 
 body {
-  text-align:center;
-  margin: 0 auto;
   padding: 0;
   background-color: #faf7ed;
 }
 
-#game-container {
-  float: left;
+#main {
+  max-width: 1170px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
-.canvas-container {
-  position: relative;
-  display: inline-block;
+/**
+ * Buttons
+*/
+
+.btn-add-player {
+  width: 100%;
 }
 
-.canvas-container canvas {
-  position: absolute;
-  left: 0;
-  top: 0;
+.btn-remove-player {
+  display: none;
 }
 
-.right-column {
-  float: left;
-  margin-left: 10px;
+.btn-clean {
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
 }
 
-.fps-container h4 {
-  margin-top: 0px;
+.btn-start-game {
+  width: 100%
 }
 
+/**
+ * Icons
+*/
+
+.icon-remove {
+  fill: 'green'
+}
+
+.input-clean {
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: text;
+  overflow: hidden;
+  outline: none;
+}
+
+/**
+ * Player settings table
+*/
+
+.player-table {
+  .col-bot {
+    width: 35px
+  }
+  .col-color {
+    width: 27px
+  }
+  .col-name {
+    width: 200px
+  }
+  .col-left {
+    width: 55px
+  }
+  .col-right {
+    width: 55px
+  }
+  .col-remove {
+    width: 40px
+  }
+  tr:hover .btn-remove-player {
+    display: block;
+  }
+}
+
+.new-match {
+  padding: 20px;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+//#game-container {
+//  float: left;
+//}
+//
+//.canvas-container {
+//  position: relative;
+//  display: inline-block;
+//}
+//
+//.canvas-container canvas {
+//  position: absolute;
+//  left: 0;
+//  top: 0;
+//}
+//
+//.right-column {
+//  float: left;
+//  margin-left: 10px;
+//}
+//
+//.fps-container h4 {
+//  margin-top: 0px;
+//}
+//
 .color-picker {
   width: 20px;
   height: 20px;
