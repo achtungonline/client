@@ -14,6 +14,7 @@ module.exports = function CanvasRenderer(options) {
     var powerUpCanvas = options.powerUpCanvas;
     var playAreaCanvas = options.playAreaCanvas;
     var drawBotTrajectories = options.drawBotTrajectories;
+    var scale = options.scale;
 
     var mapCanvasContext = mapCanvas.getContext("2d");
     var wormHeadsContext = wormHeadsCanvas.getContext("2d");
@@ -24,7 +25,7 @@ module.exports = function CanvasRenderer(options) {
     var shapeRenderer = ShapeRendererFactory().create();
     var mapRenderer = MapRenderer(gameState.map, shapeRenderer, mapCanvasContext);
     var powerUpRenderer = PowerUpRenderer(gameState, powerUpContext, shapeRenderer);
-    var playAreaRenderer = PlayAreaRenderer(gameState, playerConfigs, playAreaContext);
+    var playAreaRenderer = PlayAreaRenderer({gameState: gameState, playerConfigs: playerConfigs, playAreaContext: playAreaContext, scale: scale});
     var shapeModifierImmutable = ShapeModifierImmutable(ShapeFactory());
     var wormHeadsRenderer = WormsRenderer({
         gameState: gameState,

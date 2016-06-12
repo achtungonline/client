@@ -7,12 +7,14 @@ module.exports = function GameCanvasHandler(options) {
     var game = options.game;
     var playerConfigs = options.playerConfigs;
     var drawBotTrajectories = options.drawBotTrajectories;
+    var scale = options.scale || 1;
 
     function createCanvas(name, boundingBox) {
         var canvas = document.createElement("canvas");
         canvas.className = name;
         canvas.width = boundingBox.width;
         canvas.height = boundingBox.height;
+        canvas.getContext("2d").scale(scale, scale);
         return canvas;
     }
 
@@ -43,7 +45,8 @@ module.exports = function GameCanvasHandler(options) {
             wormHeadsCanvas: wormHeadsCanvas,
             powerUpCanvas: powerUpCanvas,
             playAreaCanvas: playAreaCanvas,
-            drawBotTrajectories: drawBotTrajectories
+            drawBotTrajectories: drawBotTrajectories,
+            scale: scale
         });
     }
 
