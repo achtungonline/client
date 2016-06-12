@@ -126,7 +126,7 @@ module.exports = React.createClass({
             var name = player.name;
             var left = bot ? null : utils.keyCodeToString(player.left);
             var right = bot ? null : utils.keyCodeToString(player.right);
-            var removeButton = this.props.players.length > 2 ? <button className="btn-clean btn-remove-player" onClick={this.onRemoveClick.bind(this, player.id)}><img src="src/css/svg/remove.svg" alt="X"/></button> : null;
+            var removeButton = this.props.players.length > 2 ? <button className="btn-clean btn-remove-player" onClick={this.onRemoveClick.bind(this, player.id)}><img src="src/css/svg/cross.svg" alt="X"/></button> : null;
 
 
             return (

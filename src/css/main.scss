@@ -16,7 +16,19 @@ body {
 */
 
 .btn-add-player {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
   width: 100%;
+  :focus {
+    outline:0;
+  }
+
 }
 
 .btn-remove-player {
@@ -33,7 +45,18 @@ body {
 }
 
 .btn-start-game {
-  width: 100%
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  width: 100%;
+  :focus {
+    outline:0;
+  }
 }
 
 /**
@@ -67,15 +90,8 @@ td {
 */
 
 .player-table {
-  .col-bot {
-    width: 35px
-  }
-  .col-color {
-    width: 27px
-  }
-  .col-name {
-    width: 200px
-  }
+
+
   .col-left {
     width: 55px
   }
