@@ -1,5 +1,6 @@
 var ShapeRendererFactory = require("./shape/shape-renderer-factory.js");
 var MapRenderer = require("./map/map-renderer.js");
+var MapBorderRenderer = require("./map/map-border-renderer.js");
 var WormsRenderer = require("./worm/worms-renderer.js");
 var ShapeModifierImmutable = require("core/src/core/geometry/shape-modifier-immutable.js");
 var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
@@ -10,20 +11,23 @@ module.exports = function CanvasRenderer(options) {
     var gameState = options.gameState;
     var playerConfigs = options.playerConfigs;
     var mapCanvas = options.mapCanvas;
+    var mapBorderCanvas = options.mapBorderCanvas;
     var wormHeadsCanvas = options.wormHeadsCanvas;
     var powerUpCanvas = options.powerUpCanvas;
     var playAreaCanvas = options.playAreaCanvas;
     var drawBotTrajectories = options.drawBotTrajectories;
-    var scale = options.scale;
+    var mapBorderWidth = options.mapBorderWidth;
 
     var mapCanvasContext = mapCanvas.getContext("2d");
     var wormHeadsContext = wormHeadsCanvas.getContext("2d");
     var powerUpContext = powerUpCanvas.getContext("2d");
     var playAreaContext = playAreaCanvas.getContext("2d");
+    var mapBorderContext = mapBorderCanvas.getContext("2d");
 
 
     var shapeRenderer = ShapeRendererFactory().create();
-    var mapRenderer = MapRenderer(gameState.map, shapeRenderer, mapCanvasContext);
+    var mapRenderer = MapRenderer(gameState.map, shapeRenderer, mapCanvasContext, mapBorderWidth);
+    var mapBorderRenderer = MapBorderRenderer(gameState.map, shapeRenderer, mapBorderContext, mapBorderWidth);
     var powerUpRenderer = PowerUpRenderer(gameState, powerUpContext, shapeRenderer);
     var playAreaRenderer = PlayAreaRenderer({gameState: gameState, playerConfigs: playerConfigs, playAreaContext: playAreaContext});
     var shapeModifierImmutable = ShapeModifierImmutable(ShapeFactory());
@@ -39,6 +43,7 @@ module.exports = function CanvasRenderer(options) {
 
     function render() {
         mapRenderer.render();
+        mapBorderRenderer.render();
         wormHeadsRenderer.render();
         powerUpRenderer.render();
         playAreaRenderer.render();

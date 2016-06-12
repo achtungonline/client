@@ -6,7 +6,11 @@ module.exports = function MapRenderer(map, shapeRenderer, mapContext) {
             return;
         }
 
-        shapeRenderer.render(mapContext, map.shape, "#faf7ed", "black");
+        shapeRenderer.render({
+            canvasContext: mapContext,
+            shape: map.shape,
+            fillColor: "#faf7ed"
+        });
 
         rendered = true;
     };

@@ -8,6 +8,7 @@ module.exports = function GameCanvasHandler(options) {
     var playerConfigs = options.playerConfigs;
     var drawBotTrajectories = options.drawBotTrajectories;
     var scale = options.scale || 1;
+    var mapBorderWidth = options.mapBorderWidth || 10;
 
     function createCanvas(name, boundingBox) {
         var canvas = document.createElement("canvas");
@@ -16,6 +17,17 @@ module.exports = function GameCanvasHandler(options) {
         canvas.height = boundingBox.height;
         canvas.style.width = boundingBox.width * scale;
         canvas.style.height = boundingBox.height * scale;
+        canvas.style.padding = mapBorderWidth * scale;
+        return canvas;
+    }
+
+    function createCanvasIncludingBorder(name, boundingBox) {
+        var canvas = document.createElement("canvas");
+        canvas.className = name;
+        canvas.width = boundingBox.width + mapBorderWidth * 2;
+        canvas.height = boundingBox.height + mapBorderWidth * 2;
+        canvas.style.width = (boundingBox.width + mapBorderWidth * 2) * scale;
+        canvas.style.height = (boundingBox.height + mapBorderWidth * 2) * scale;
         return canvas;
     }
 
@@ -24,14 +36,16 @@ module.exports = function GameCanvasHandler(options) {
 
         var canvasContainer = document.createElement("div");
         canvasContainer.className = "canvas-container";
-        canvasContainer.style.width = mapBoundingBox.width * scale;
-        canvasContainer.style.height = mapBoundingBox.height * scale;
+        canvasContainer.style.width = (mapBoundingBox.width + mapBorderWidth * 2) * scale;
+        canvasContainer.style.height = (mapBoundingBox.height + mapBorderWidth * 2) * scale;
 
         var mapCanvas = createCanvas("map", mapBoundingBox);
+        var mapBorderCanvas =  createCanvasIncludingBorder("mapBorder", mapBoundingBox);
         var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
         var powerUpCanvas = createCanvas("powerUps", mapBoundingBox);
         var playAreaCanvas = createCanvas("playAreaCanvas", mapBoundingBox);
 
+        canvasContainer.appendChild(mapBorderCanvas);
         canvasContainer.appendChild(mapCanvas);
         canvasContainer.appendChild(powerUpCanvas);
         canvasContainer.appendChild(playAreaCanvas);
@@ -43,10 +57,12 @@ module.exports = function GameCanvasHandler(options) {
             gameState: gameState,
             playerConfigs: playerConfigs,
             mapCanvas: mapCanvas,
+            mapBorderCanvas: mapBorderCanvas,
             wormHeadsCanvas: wormHeadsCanvas,
             powerUpCanvas: powerUpCanvas,
             playAreaCanvas: playAreaCanvas,
-            drawBotTrajectories: drawBotTrajectories
+            drawBotTrajectories: drawBotTrajectories,
+            mapBorderWidth: mapBorderWidth
         });
     }
 

@@ -1,6 +1,12 @@
 module.exports = function ShapeRenderer(contourRenderers) {
 
-    var render = function (canvasContext, shape, fillColor, strokeColor) {
+    var render = function (options) {
+        var canvasContext = options.canvasContext;
+        var shape = options.shape;
+        var fillColor = options.fillColor;
+        var strokeColor = options.strokeColor;
+        var strokeWidth = options.strokeWidth;
+
         var contourRenderer = contourRenderers[shape.type];
         contourRenderer(canvasContext, shape);
 
@@ -11,7 +17,7 @@ module.exports = function ShapeRenderer(contourRenderers) {
 
         if (strokeColor !== undefined) {
             canvasContext.strokeStyle = strokeColor;
-            //canvasContext.lineWidth = 5;
+            canvasContext.lineWidth = strokeWidth;
             canvasContext.stroke();
         }
     };

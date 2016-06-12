@@ -11,7 +11,11 @@ module.exports = function PowerUpRenderer(gameState, powerUpContext, shapeRender
             } else if (powerUp.affects === "all") {
                 color = "blue";
             }
-            shapeRenderer.render(powerUpContext, powerUp.shape, color);
+            shapeRenderer.render({
+                canvasContext: powerUpContext,
+                shape: powerUp.shape,
+                fillColor: color
+            });
             powerUpContext.font = "14px Arial";
             powerUpContext.textAlign = "center";
             powerUpContext.textBaseline = "middle";
