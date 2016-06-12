@@ -78,18 +78,21 @@ var ColorPicker = React.createClass({
 });
 
 var GamePreview = React.createClass({
+    shouldComponentUpdate: function(nextProps) {
+        return this.props.matchConfig.map.name !== nextProps.matchConfig.map.name || (this.props.players.length !== nextProps.players.length);
+    },
     render: function () {
         var game = coreGameFactory.create({
             seed: Math.floor((Math.random() * 100000)),
             map: this.props.matchConfig.map,
-            playerConfigs: this.props.matchConfig.playerConfigs.map(function(pc) {
+            playerConfigs: this.props.matchConfig.playerConfigs.map(function (pc) {
                 return {
                     id: pc.id,
                     type: "bot"
                 }
             })
         });
-        if(this.localGame) {
+        if (this.localGame) {
             this.localGame.stop();
         }
         var localGame = LocalGameHandler({game: game, playerConfigs: this.props.players});
@@ -106,8 +109,8 @@ var GamePreview = React.createClass({
                 scale={scale}/>
         );
     },
-    componentWillUnmount: function() {
-        if(this.localGame) {
+    componentWillUnmount: function () {
+        if (this.localGame) {
             this.localGame.stop();
         }
     }
@@ -147,6 +150,7 @@ module.exports = React.createClass({
         }, this);
 
         var maxPlayersReached = this.props.players.length >= this.props.availableWormColors.length;
+        var addPlayerButton = maxPlayersReached ? null : <button className="btn-add-player" onClick={this.props.onAddPlayerAction}>Add player</button>;
 
         return (
             <div className="new-match">
@@ -157,7 +161,7 @@ module.exports = React.createClass({
                     <tfoot>
                     <tr>
                         <td colSpan="5">
-                            <button className="btn-add-player" disabled={maxPlayersReached} onClick={this.props.onAddPlayerAction}>Add player</button>
+                            {addPlayerButton}
                         </td>
                     </tr>
                     </tfoot>

@@ -195,7 +195,7 @@ module.exports = React.createClass({
     newMatch: function () {
         this.setState({matchConfig: null, match: null, view: "newMatch"});
     },
-    getMatchConfig: function() {
+    getMatchConfig: function () {
         var matchConfig = {};
         matchConfig.playerConfigs = this.state.players.map(function (player) {
             return {
@@ -206,16 +206,35 @@ module.exports = React.createClass({
         var selectedMap = this.state.selectedMap;
 
         if (selectedMap === "Full Sized Rectangle") {
-            matchConfig.map = CoreMapFactory().createRectangle(window.innerWidth - 250, window.innerHeight);
+            matchConfig.map = CoreMapFactory().createRectangle({
+                name: selectedMap,
+                width: window.innerWidth - 250,
+                height: window.innerHeight
+            });
         }
         else if (selectedMap) {
             var selectedMapData = selectedMap.split(" ");
             var mapType = selectedMapData[0];
             var mapWidth = Number(selectedMapData[1]);
             var mapHeight = selectedMapData[2];
-            matchConfig.map = CoreMapFactory()["create" + mapType](mapWidth, mapHeight)
-        } else {
-            matchConfig.map = CoreMapFactory().createSquare(800);
+            if(mapType === "Square") {
+                matchConfig.map = CoreMapFactory().createSquare({
+                    name: selectedMap,
+                    size: mapWidth
+                })
+            } else if (mapType === "Rectangle") {
+                matchConfig.map = CoreMapFactory().createRectangle({
+                    name: selectedMap,
+                    width: mapWidth,
+                    height: mapHeight
+                })
+            } else if (mapType === "Circle") {
+                matchConfig.map = CoreMapFactory().createCircle({
+                    name: selectedMap,
+                    size: mapWidth
+                })
+            }
+
         }
         matchConfig.maxScore = this.state.maxScore;
         return matchConfig;
