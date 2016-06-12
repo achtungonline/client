@@ -1,5 +1,10 @@
 var React = require("react");
 var utils = require("./../utils.js");
+var CoreGameFactory = require("core/src/game-factory.js");
+var GameCanvasComponent = require("../match/gameCanvasComponent.js");
+var LocalGameHandler = require("../match/local-game/local-game-handler.js");
+
+var coreGameFactory = CoreGameFactory();
 
 var ColorPicker = React.createClass({
     propTypes: {
@@ -72,6 +77,38 @@ var ColorPicker = React.createClass({
     }
 });
 
+var GamePreview = React.createClass({
+    render: function () {
+        var game = coreGameFactory.create({
+            seed: Math.floor((Math.random() * 100000)),
+            map: this.props.matchConfig.map,
+            playerConfigs: this.props.matchConfig.playerConfigs.map(function(pc) {
+                return {
+                    id: pc.id,
+                    type: 'bot'
+                }
+            })
+        });
+        if(this.localGame) {
+            this.localGame.stop();
+        }
+        var localGame = LocalGameHandler({game: game, playerConfigs: this.props.players});
+        localGame.start();
+        this.localGame = localGame;
+
+        var scale = 500 / this.props.matchConfig.map.width;
+
+        return (
+            <GameCanvasComponent
+                game={game}
+                players={this.props.players}
+                renderBotTrajectories={false}
+                scale={scale}/>
+        );
+    }
+});
+
+
 module.exports = React.createClass({
     displayName: "NewMatch",
     render: function () {
@@ -121,7 +158,7 @@ module.exports = React.createClass({
                     </tfoot>
                 </table>
                 <div>
-                    <label for="select-map">Select Map: </label>
+                    <label htmlFor="select-map">Select Map: </label>
                     <select id="select-map" value={this.props.selectedMap} onChange={this.onMapChange}>
                         <option value="Square 500">Small Square</option>
                         <option value="Square 800">Medium Square</option>
@@ -134,7 +171,10 @@ module.exports = React.createClass({
                     </select>
                     Max Score: <input type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
                     <div>
-                        <button className="btn-start-game"onClick={this.props.onStartMatchAction}>START</button>
+                        <GamePreview matchConfig={this.props.matchConfig} players={this.props.players}/>
+                    </div>
+                    <div>
+                        <button className="btn-start-game" onClick={this.props.onStartMatchAction}>START</button>
                     </div>
                 </div>
             </div>

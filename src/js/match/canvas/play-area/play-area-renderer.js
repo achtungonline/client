@@ -7,7 +7,6 @@ module.exports = function PlayAreaRenderer(options) {
     var gameState = options.gameState;
     var playerConfigs = options.playerConfigs;
     var playAreaContext = options.playAreaContext;
-    var scale = options.scale; // Need to handle scale manually since we do pixel manipulation in this renderer. Can for now only handle lower scales
 
     var UPDATE_GRANULARITY = 50;
 
@@ -45,17 +44,14 @@ module.exports = function PlayAreaRenderer(options) {
             var updateSquareRow = Math.floor(row / UPDATE_GRANULARITY);
             var updatedSquareCol = Math.floor(col / UPDATE_GRANULARITY);
             updatedSquare[updateSquareRow * updateCols + updatedSquareCol] = true;
-            var scaledIndex = scale ? Math.floor(Math.floor(row * scale) * playAreaWidth + (col * scale)) : pixel.index;
-            canvasImageDataUtils.setColorByIndex(data, scaledIndex, rgbColor);
+            canvasImageDataUtils.setColorByIndex(data, pixel.index, rgbColor);
         });
 
         for (var row = 0; row < updateRows; row++) {
             for (var col = 0; col < updateCols; col++) {
                 if (updatedSquare[row * updateCols + col]) {
                     updatedSquare[row * updateCols + col] = false;
-                    playAreaContext.putImageData(image, 0, 0);
-
-                    //playAreaContext.putImageData(image, 0, 0, col * UPDATE_GRANULARITY, row * UPDATE_GRANULARITY, UPDATE_GRANULARITY, UPDATE_GRANULARITY);
+                    playAreaContext.putImageData(image, 0, 0, col * UPDATE_GRANULARITY, row * UPDATE_GRANULARITY, UPDATE_GRANULARITY, UPDATE_GRANULARITY);
                 }
             }
         }

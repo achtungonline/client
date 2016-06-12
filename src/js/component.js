@@ -154,7 +154,7 @@ module.exports = React.createClass({
             ],
             matchConfig: null,
             match: null,
-            selectedMap: null,
+            selectedMap: "Square 800",
             maxScore: 5,
             maxScoreManuallyChanged: false
         };
@@ -166,6 +166,7 @@ module.exports = React.createClass({
                                       selectedMap={this.state.selectedMap}
                                       maxScore={this.state.maxScore}
                                       availableWormColors={availableWormColors}
+                                      matchConfig={this.getMatchConfig()}
                                       onStartMatchAction={this.startMatch}
                                       onAddPlayerAction={this.addPlayer}
                                       onNameChangeAction={this.changeName}
@@ -194,7 +195,7 @@ module.exports = React.createClass({
     newMatch: function () {
         this.setState({matchConfig: null, match: null, view: "newMatch"});
     },
-    startMatch: function () {
+    getMatchConfig: function() {
         var matchConfig = {};
         matchConfig.playerConfigs = this.state.players.map(function (player) {
             return {
@@ -217,6 +218,10 @@ module.exports = React.createClass({
             matchConfig.map = CoreMapFactory().createSquare(800);
         }
         matchConfig.maxScore = this.state.maxScore;
+        return matchConfig;
+    },
+    startMatch: function () {
+        var matchConfig = this.getMatchConfig();
         var match = CoreMatchFactory().create({matchConfig: matchConfig});
         this.setState({matchConfig: matchConfig, match: match, view: "match"});
     },

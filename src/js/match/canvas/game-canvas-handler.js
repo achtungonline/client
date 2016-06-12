@@ -14,7 +14,8 @@ module.exports = function GameCanvasHandler(options) {
         canvas.className = name;
         canvas.width = boundingBox.width;
         canvas.height = boundingBox.height;
-        canvas.getContext("2d").scale(scale, scale);
+        canvas.style.width = boundingBox.width * scale;
+        canvas.style.height = boundingBox.height * scale;
         return canvas;
     }
 
@@ -23,8 +24,8 @@ module.exports = function GameCanvasHandler(options) {
 
         var canvasContainer = document.createElement("div");
         canvasContainer.className = "canvas-container";
-        canvasContainer.style.width = mapBoundingBox.width;
-        canvasContainer.style.height = mapBoundingBox.height;
+        canvasContainer.style.width = mapBoundingBox.width * scale;
+        canvasContainer.style.height = mapBoundingBox.height * scale;
 
         var mapCanvas = createCanvas("map", mapBoundingBox);
         var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
@@ -45,8 +46,7 @@ module.exports = function GameCanvasHandler(options) {
             wormHeadsCanvas: wormHeadsCanvas,
             powerUpCanvas: powerUpCanvas,
             playAreaCanvas: playAreaCanvas,
-            drawBotTrajectories: drawBotTrajectories,
-            scale: scale
+            drawBotTrajectories: drawBotTrajectories
         });
     }
 

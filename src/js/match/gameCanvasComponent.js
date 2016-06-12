@@ -30,18 +30,16 @@ module.exports = React.createClass({
         );
     },
     componentDidMount: function () {
-        var thisComponent = this;
-        var game = this.props.game;
-
-        this.prepareGameForCanvas(this.props.game);
+        this.prepareGameForCanvas(this.props);
     },
+
     componentWillReceiveProps: function (newProps) {
         if (this.props.game !== newProps.game) {
-            this.prepareGameForCanvas(newProps.game);
+            this.prepareGameForCanvas(newProps);
         }
     },
-    prepareGameForCanvas: function (game) {
-        var gameCanvasHandler = GameCanvasHandler({game: game, playerConfigs: this.props.players, drawBotTrajectories: this.props.renderBotTrajectories});
+    prepareGameForCanvas: function (props) {
+        var gameCanvasHandler = GameCanvasHandler({game: props.game, playerConfigs: props.players, drawBotTrajectories: props.renderBotTrajectories, scale : props.scale});
         var gameCanvasContainer = gameCanvasHandler.getGameCanvasContainer();
         var container = this.refs.gameCanvas;
         if (container) {
