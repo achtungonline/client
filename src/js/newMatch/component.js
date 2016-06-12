@@ -85,7 +85,7 @@ var GamePreview = React.createClass({
             playerConfigs: this.props.matchConfig.playerConfigs.map(function(pc) {
                 return {
                     id: pc.id,
-                    type: 'bot'
+                    type: "bot"
                 }
             })
         });

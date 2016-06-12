@@ -14,23 +14,11 @@ module.exports = function LocalGameHandler(options) {
     var playerConfigs = options.playerConfigs;
     var deltaTimeHandler = DeltaTimeHandler(requestFrame);
 
+    var playerSteeringListener = PlayerSteeringListener(game);
+
     var localGameState = {
         paused: false
     };
-
-    function setupSteeringListenerEvents(game, playerConfigs) {
-        var playerSteeringListener = PlayerSteeringListener(game);
-        var players = game.gameState.players;
-        for (var i = 0; i < players.length; i++) {
-            var playerId = players[i].id;
-            var leftKey = playerConfigs.find(pc => pc.id === playerId).left;
-            var rightKey = playerConfigs.find(pc => pc.id === playerId).right;
-            playerSteeringListener.addListener(playerId, leftKey, rightKey);
-        }
-    }
-
-    setupSteeringListenerEvents(game, playerConfigs);
-
 
     function requestNextUpdate() {
         deltaTimeHandler.update(localGameState, function onUpdateTick(deltaTime) {
@@ -38,7 +26,18 @@ module.exports = function LocalGameHandler(options) {
         });
     }
 
+    function setupSteeringListenerEvents(game, playerConfigs) {
+        var players = game.gameState.players;
+        for (var i = 0; i < players.length; i++) {
+            var playerId = players[i].id;
+            var leftKey = playerConfigs.find(pc => pc.id === playerId).left;
+            var rightKey = playerConfigs.find(pc => pc.id === playerId).right;
+            playerSteeringListener.addKeyListeners(playerId, leftKey, rightKey);
+        }
+    }
+
     function start() {
+        setupSteeringListenerEvents(game, playerConfigs);
         game.start();
         deltaTimeHandler.start(localGameState);
         requestNextUpdate();
@@ -66,11 +65,19 @@ module.exports = function LocalGameHandler(options) {
         return localGameState.paused;
     }
 
+    function stop() {
+        game.stop();
+    }
+
+    game.on(game.events.GAME_OVER, function() {
+        playerSteeringListener.removeKeyListeners();
+    });
+
     return {
         start: start,
         pause: pause,
         resume: resume,
-        stop: game.stop,
+        stop: stop,
         isPaused: isPaused,
         isGameOver: game.isGameOver,
         on: game.on.bind(game),
