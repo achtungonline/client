@@ -50,6 +50,7 @@ module.exports = React.createClass({
         this.startReplay();
     },
     componentWillUnmount: function () {
+        this.state.replayGame.stop();
         var scoreHandler = this.scoreHandler;
         this.scoreHandler && this.scoreHandler.off(scoreHandler.events.SCORE_UPDATED, this.onScoreUpdated);
     },

@@ -5,6 +5,7 @@ var requestFrame = require("./request-frame.js");
 
 /**
  * Game wrapper responsible of handling the game on the client. Other can listen on the LocalGameHandler for events and get the current state.
+ * NOTE: If the game is never stopped (paused forever or for some other reason), the playerSteeringListener can cause memory leaks.
  * @constructor
  */
 

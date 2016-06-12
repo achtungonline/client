@@ -2,41 +2,35 @@ function WindowFocusHandler() {
     var focusListeners = [];
     var blurListeners = [];
 
-    function init() {
-        function onWindowFocus() {
+    var hidden;
+    var visibilityChangeEvent;
+
+    function handleVisibilityChange() {
+        if (document[hidden]) {
+            blurListeners.forEach(function (listener) {
+                listener();
+            });
+        } else {
             focusListeners.forEach(function (listener) {
                 listener();
             });
         }
+    }
 
-        function onWindowBlur() {
-            blurListeners.forEach(function (listener) {
-                listener();
-            });
-        }
-
+    function startListening() {
         // Set the name of the hidden property and the change event for visibility
-        var hidden, visibilityChange;
         if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
             hidden = "hidden";
-            visibilityChange = "visibilitychange";
+            visibilityChangeEvent = "visibilitychange";
         } else if (typeof document.mozHidden !== "undefined") {
             hidden = "mozHidden";
-            visibilityChange = "mozvisibilitychange";
+            visibilityChangeEvent = "mozvisibilitychange";
         } else if (typeof document.msHidden !== "undefined") {
             hidden = "msHidden";
-            visibilityChange = "msvisibilitychange";
+            visibilityChangeEvent = "msvisibilitychange";
         } else if (typeof document.webkitHidden !== "undefined") {
             hidden = "webkitHidden";
-            visibilityChange = "webkitvisibilitychange";
-        }
-
-        function handleVisibilityChange() {
-            if (document[hidden]) {
-                onWindowBlur();
-            } else {
-                onWindowFocus();
-            }
+            visibilityChangeEvent = "webkitvisibilitychange";
         }
 
         // Warn if the browser doesn"t support addEventListener or the Page Visibility API
@@ -44,14 +38,7 @@ function WindowFocusHandler() {
             console.error("This game requires a modern browser, such as Google Chrome or Firefox, that supports the Page Visibility API.");
         } else {
             // Handle page visibility change
-            document.addEventListener(visibilityChange, handleVisibilityChange);
-        }
-    }
-
-    function removeListener(listeners, callback) {
-        var index = listeners.indexOf(callback);
-        if (index !== -1) {
-            listeners.splice(index);
+            document.addEventListener(visibilityChangeEvent, handleVisibilityChange);
         }
     }
 
@@ -75,12 +62,27 @@ function WindowFocusHandler() {
         }
     }
 
-    init();
+    function stopListening() {
+        blurListeners = [];
+        focusListeners = [];
+        document.removeEventListener(visibilityChangeEvent, handleVisibilityChange);
+    }
+
+    function removeListener(listeners, callback) {
+        var index = listeners.indexOf(callback);
+        if (index !== -1) {
+            listeners.splice(index);
+        }
+    }
+
+
 
     return {
+        startListening: startListening,
+        stopListening: stopListening,
         on: on,
         off: off
     };
-};
+}
 
 module.exports = WindowFocusHandler();

@@ -105,6 +105,11 @@ var GamePreview = React.createClass({
                 renderBotTrajectories={false}
                 scale={scale}/>
         );
+    },
+    componentWillUnmount: function() {
+        if(this.localGame) {
+            this.localGame.stop();
+        }
     }
 });
 

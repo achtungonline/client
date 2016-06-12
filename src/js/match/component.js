@@ -1,15 +1,10 @@
 var React = require("react");
-var GameCanvasHandler = require("./canvas/game-canvas-handler.js");
 var LocalGameHandler = require("./local-game/local-game-handler.js");
-var ReplayGameHandler = require("./local-game/replay/replay-game-handler.js");
 var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");
 var GameHistory = require("core/src/core/history/game-history.js");
-var ScoreHandler = require("core/src/core/score-handler.js");
 var clone = require("core/src/core/util/clone.js");
 var random = require("core/src/core/util/random.js");
 
-var FPS = require("./fps-component.js");
-var scoreUtils = require("./../score-utils.js");
 var windowFocusHandler = require("../window-focus-handler.js");
 
 var PlayComponent = require("./playComponent.js");
@@ -39,10 +34,10 @@ module.exports = React.createClass({
         var scoreState = this.state.scoreState;
         var players = this.props.players;
 
-        var play;
-        var replay;
+        var play = null;
+        var replay = null;
         if (this.state.isReplaying) {
-            var replay = (
+            replay = (
                 <ReplayComponent
                     match={match}
                     roundStartScore={startScoreState}
@@ -80,14 +75,11 @@ module.exports = React.createClass({
     componentWillMount: function () {
         this.startNextGame();
     },
-    componentDidMount: function () {
-
-    },
     componentWillUnmount: function () {
-        this.state.localGame.off("gameOver", this.onGameOver);
-        windowFocusHandler.off("focus", this.onWindowFocus);
-        windowFocusHandler.off("blur", this.onWindowFocus);
-        this.props.match.getCurrentScoreHandler().off(this.props.match.getCurrentScoreHandler().events.SCORE_UPDATED, this.onScoreUpdated);
+        //this.state.localGame.off("gameOver", this.onGameOver);
+        windowFocusHandler.stopListening();
+        this.state.localGame.stop();
+        //this.props.match.getCurrentScoreHandler().off(this.props.match.getCurrentScoreHandler().events.SCORE_UPDATED, this.onScoreUpdated);
     },
     pauseGame: function () {
         if (this.state.localGame.isPaused()) {
@@ -110,7 +102,7 @@ module.exports = React.createClass({
 
         var match = this.props.match;
         match.getCurrentScoreHandler().on(match.getCurrentScoreHandler().events.SCORE_UPDATED, this.onScoreUpdated);
-
+        //
         function startGameHistoryRecording(game) {
             var gameHistory = GameHistory(game.gameState.map, thisComponent.props.matchConfig.playerConfigs, game.gameState.seed);
             thisComponent.setState({gameHistory: gameHistory});
@@ -128,6 +120,7 @@ module.exports = React.createClass({
 
         this.setState({ isReplaying: false });
 
+        windowFocusHandler.startListening();
         windowFocusHandler.on("focus", this.onWindowFocus);
         windowFocusHandler.on("blur", this.onWindowBlur);
     },
@@ -135,8 +128,7 @@ module.exports = React.createClass({
         this.forceUpdate();
     },
     onGameOver: function () {
-        windowFocusHandler.off("focus", this.onWindowFocus);
-        windowFocusHandler.off("blur", this.onWindowFocus);
+        windowFocusHandler.stopListening();
         // So that the startNextGameButton shows
         this.forceUpdate();
     },
@@ -156,19 +148,6 @@ module.exports = React.createClass({
         this.pause();
     },
     startReplay: function () {
-        this.setState({ isReplaying: true });
-        // var thisComponent = this;
-        // var replayGame = ReplayGameHandler(this.state.gameHistory);
-        // var replayScoreState = {};
-        // replayScoreState.score = clone(this.state.roundStartScore.score);
-        // replayScoreState.roundsWon = clone(this.state.roundStartScore.roundsWon);
-        // var scoreHandler = ScoreHandler({game: replayGame, scoreState: replayScoreState});
-        // this.setState({scoreState: replayScoreState, localGame: replayGame});
-        // console.log(replayScoreState);
-        // scoreHandler.on(scoreHandler.events.SCORE_UPDATED, function () {
-        //     thisComponent.forceUpdate();
-        // });
-        // replayGame.start();
-        // this.forceUpdate();
+        this.setState({isReplaying: true});
     }
 });
