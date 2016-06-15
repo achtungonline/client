@@ -216,7 +216,7 @@ module.exports = React.createClass({
             var selectedMapData = selectedMap.split(" ");
             var mapType = selectedMapData[0];
             var mapWidth = Number(selectedMapData[1]);
-            var mapHeight = selectedMapData[2];
+            var mapHeight = Number(selectedMapData[2]);
             if(mapType === "Square") {
                 matchConfig.map = CoreMapFactory().createSquare({
                     name: selectedMap,
