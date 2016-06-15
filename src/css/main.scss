@@ -39,7 +39,7 @@ body {
 
 .btn-add-player {
   // This is in order to make the start button pretty when the add player button disappears
-  margin-bottom: -1px;
+  margin-bottom: -2px;
 }
 
 .btn-remove-player {
@@ -218,6 +218,10 @@ body {
   justify-content: space-between;
 }
 
+.game-settings {
+  padding: 8px;
+}
+
 .heading {
 
   h1 {
@@ -227,3 +231,4 @@ body {
     border-color: #bdbdbd;
   }
 }
+

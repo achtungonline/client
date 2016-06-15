@@ -178,7 +178,7 @@ module.exports = React.createClass({
                         </tr>
                         </tfoot>
                     </table>
-                    <div>
+                    <div className="game-settings">
                         <div className="map-settings">
                             <div className="select select-primary side">
                                 <select value={this.props.selectedMap} onChange={this.onMapChange}>
