@@ -15,20 +15,31 @@ body {
  * Buttons
 */
 
-.btn-add-player {
-  background-color: #4CAF50; /* Green */
+.btn {
   border: none;
   color: white;
-  padding: 15px 32px;
+  padding: 13px 32px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
   width: 100%;
   :focus {
-    outline:0;
+    outline: 0;
   }
+}
 
+.btn-primary {
+  background-color: #4CAF50; /* Green */
+}
+
+.btn-secondary {
+  background-color: #777777; /* Green */
+}
+
+.btn-add-player {
+  // This is in order to make the start button pretty when the add player button disappears
+  margin-bottom: -1px;
 }
 
 .btn-remove-player {
@@ -44,19 +55,42 @@ body {
   outline: none;
 }
 
-.btn-start-game {
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  width: 100%;
-  :focus {
-    outline:0;
+/**
+ * Select
+ */
+
+.select {
+  background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 96% 0;
+  height: 29px;
+  overflow: hidden;
+  width: 240px;
+  select {
+    color: white;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    height: 29px;
+    padding: 5px; /* If you add too much padding here, the options won't show in IE */
+    width: 268px;
   }
+}
+
+.select-primary {
+  background-color: #4CAF50
+}
+
+/**
+ * Input
+ */
+
+.input {
+  background-color: Transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: text;
+  overflow: hidden;
+  outline: none;
+  border-bottom: 2px dotted #000000;
 }
 
 /**
@@ -68,42 +102,41 @@ body {
 }
 
 .input-clean {
-  background-color: Transparent;
-  background-repeat: no-repeat;
-  border: none;
-  cursor: text;
-  overflow: hidden;
-  outline: none;
-}
 
+}
 
 /**
 * Table
 */
 
-td {
-  padding: 8px
+.table {
+  td {
+    padding: 8px
+  }
 }
 
 /**
  * Player settings table
 */
 
-.player-table {
-
+.table-player {
 
   .col-left {
-    width: 55px
+    text-align: center;
+    width: 52px
   }
   .col-right {
-    width: 55px
+    text-align: center;
+    width: 52px
   }
   .col-remove {
     width: 40px
   }
 
   tbody tr:hover {
-    background-color: lightblue;
+    td:not(:last-child) {
+      background-color: lightblue;
+    }
     .btn-remove-player {
       display: block;
     }
@@ -111,10 +144,12 @@ td {
 }
 
 .new-match {
-  padding: 20px;
+  padding: 0 20px;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 //#game-container {
@@ -159,4 +194,36 @@ td {
   top: 0px;
   left: 25px;
   width: 300px; //TODO: Not nice fix.
+}
+
+.side {
+  display: inline-block;
+}
+
+.max-score {
+  display: flex;
+  img {
+    height: 29px;
+    margin-right: 10px;
+  }
+  input {
+    width: 51px;
+    margin-bottom: 1px;
+    text-align: center;
+  }
+}
+
+.map-settings {
+  display: flex;
+  justify-content: space-between;
+}
+
+.heading {
+
+  h1 {
+    margin-left: 20px;
+    margin-right: 20px;
+    border-bottom: 1px solid;
+    border-color: #bdbdbd;
+  }
 }

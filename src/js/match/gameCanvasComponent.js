@@ -39,7 +39,7 @@ module.exports = React.createClass({
         }
     },
     prepareGameForCanvas: function (props) {
-        var gameCanvasHandler = GameCanvasHandler({game: props.game, playerConfigs: props.players, drawBotTrajectories: props.renderBotTrajectories, scale : props.scale});
+        var gameCanvasHandler = GameCanvasHandler({game: props.game, playerConfigs: props.players, drawBotTrajectories: props.renderBotTrajectories, scale : props.scale, mapBorderWidth: props.mapBorderWidth});
         var gameCanvasContainer = gameCanvasHandler.getGameCanvasContainer();
         var container = this.refs.gameCanvas;
         if (container) {

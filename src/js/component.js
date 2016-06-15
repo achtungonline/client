@@ -251,8 +251,10 @@ module.exports = React.createClass({
         this.setState({selectedMap: map});
     },
     maxScoreChangeAction: function (maxScore) {
-        var maxScoreInt = parseInt(maxScore.replace(/[^0-9]/g, ""));
-        if (maxScoreInt !== this.state.maxScore && maxScoreInt > 0) {
+        var parsedMaxScore= maxScore.replace(/[^0-9]/g, "");
+        var maxScoreInt = parsedMaxScore === "" ? 0 : parseInt(parsedMaxScore);
+        maxScoreInt = Math.min(maxScoreInt, 1000);
+        if (maxScoreInt !== this.state.maxScore) {
             this.setState({maxScore: maxScoreInt, maxScoreManuallyChanged: true})
         }
     },

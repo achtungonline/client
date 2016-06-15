@@ -78,7 +78,7 @@ var ColorPicker = React.createClass({
 });
 
 var GamePreview = React.createClass({
-    shouldComponentUpdate: function(nextProps) {
+    shouldComponentUpdate: function (nextProps) {
         return this.props.matchConfig.map.name !== nextProps.matchConfig.map.name || (this.props.players.length !== nextProps.players.length);
     },
     render: function () {
@@ -99,14 +99,16 @@ var GamePreview = React.createClass({
         localGame.start();
         this.localGame = localGame;
 
-        var scale = 500 / this.props.matchConfig.map.width;
+        var mapBorderWidth = 10;
+        var scale = 520 / (this.props.matchConfig.map.width + mapBorderWidth * 2);
 
         return (
             <GameCanvasComponent
                 game={game}
                 players={this.props.players}
                 renderBotTrajectories={false}
-                scale={scale}/>
+                scale={scale}
+                mapBorderWidth={mapBorderWidth}/>
         );
     },
     componentWillUnmount: function () {
@@ -138,7 +140,7 @@ module.exports = React.createClass({
                     </td>
                     <td className="col-color"><ColorPicker color={color} availableWormColors={this.props.availableWormColors} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/></td>
                     <td className="col-name">
-                        <input className="input-clean" type="text" onChange={this.onNameChange.bind(this, player.id)} value={name}/>
+                        <input className="input" type="text" onChange={this.onNameChange.bind(this, player.id)} value={name}/>
                     </td>
                     <td className="col-left">{left}</td>
                     <td className="col-right">{right}</td>
@@ -150,40 +152,54 @@ module.exports = React.createClass({
         }, this);
 
         var maxPlayersReached = this.props.players.length >= this.props.availableWormColors.length;
-        var addPlayerButton = maxPlayersReached ? null : <button className="btn-add-player" onClick={this.props.onAddPlayerAction}>Add player</button>;
+        var addPlayerButton = maxPlayersReached ? null : <button className="btn btn-secondary btn-add-player" onClick={this.props.onAddPlayerAction}>Add player</button>;
 
         return (
-            <div className="new-match">
-                <table className="player-table" cellSpacing="0" cellPadding="0">
-                    <tbody>
-                    {rows}
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colSpan="5">
-                            {addPlayerButton}
-                        </td>
-                    </tr>
-                    </tfoot>
-                </table>
-                <div>
-                    <label htmlFor="select-map">Select Map: </label>
-                    <select id="select-map" value={this.props.selectedMap} onChange={this.onMapChange}>
-                        <option value="Square 500">Small Square</option>
-                        <option value="Square 800">Medium Square</option>
-                        <option value="Square 1100">Large Square</option>
-                        <option value="Circle 500">Small Circle</option>
-                        <option value="Circle 800">Medium Circle</option>
-                        <option value="Circle 1100">Large Circle</option>
-                        <option value="Rectangle 1100 400">Rectangle</option>
-                        <option value="Full Sized Rectangle">Max Sized Rectangle</option>
-                    </select>
-                    Max Score: <input type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
+            <div>
+                <div className="heading">
+                    <h1>Achtung Online</h1>
+                </div>
+                <div className="new-match">
+
+                    <table className="table table-player" cellSpacing="0" cellPadding="0">
+                        <tbody>
+                        {rows}
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colSpan="5">
+                                {addPlayerButton}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="5">
+                                <button className="btn btn-primary" onClick={this.props.onStartMatchAction}>Start</button>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
                     <div>
-                        <GamePreview matchConfig={this.props.matchConfig} players={this.props.players}/>
-                    </div>
-                    <div>
-                        <button className="btn-start-game" onClick={this.props.onStartMatchAction}>START</button>
+                        <div className="map-settings">
+                            <div className="select select-primary side">
+                                <select value={this.props.selectedMap} onChange={this.onMapChange}>
+                                    <option value="Square 500">Small Square</option>
+                                    <option value="Square 800">Medium Square</option>
+                                    <option value="Square 1100">Large Square</option>
+                                    <option value="Circle 500">Small Circle</option>
+                                    <option value="Circle 800">Medium Circle</option>
+                                    <option value="Circle 1100">Large Circle</option>
+                                    <option value="Rectangle 1100 400">Rectangle</option>
+                                    <option value="Full Sized Rectangle">Max Sized Rectangle</option>
+                                </select>
+                            </div>
+                            <div className="side max-score">
+                                <img src="src/css/svg/trophy.svg" alt="Max score: "/>
+                                <input className="input" type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
+                            </div>
+                        </div>
+                        <div>
+                            <GamePreview matchConfig={this.props.matchConfig} players={this.props.players}/>
+                        </div>
                     </div>
                 </div>
             </div>
