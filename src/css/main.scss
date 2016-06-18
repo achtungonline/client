@@ -1,14 +1,39 @@
 // General styling
 
+$m1: 5px;
+$m2: 10px;
+$m3: 20px;
+
+
 body {
   padding: 0;
   background-color: #faf7ed;
 }
 
-#main {
+.page-center {
   max-width: 1170px;
   margin-right: auto;
   margin-left: auto;
+}
+
+.page-flex-center {
+
+}
+
+.m-b-2 {
+  margin-bottom: $m2;
+}
+
+.m-l-1 {
+  margin-left: $m1;
+}
+
+.m-t-2 {
+  margin-top: $m2;
+}
+
+.m-t-3 {
+  margin-top: $m3;
 }
 
 /**
@@ -16,6 +41,8 @@ body {
 */
 
 .btn {
+  margin-top: $m1;
+  margin-bottom: $m1;
   border: none;
   color: white;
   padding: 13px 32px;
@@ -34,12 +61,7 @@ body {
 }
 
 .btn-secondary {
-  background-color: #777777; /* Green */
-}
-
-.btn-add-player {
-  // This is in order to make the start button pretty when the add player button disappears
-  margin-bottom: -2px;
+  background-color: #777777;
 }
 
 .btn-remove-player {
@@ -146,11 +168,6 @@ body {
 
 .new-match {
   padding: 0 20px;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
 }
 
 //#game-container {
@@ -197,39 +214,52 @@ body {
   width: 300px; //TODO: Not nice fix.
 }
 
-.side {
-  display: inline-block;
-}
-
 .max-score {
-  display: flex;
   img {
     height: 29px;
     margin-right: 10px;
   }
   input {
-    width: 51px;
+    width: 4em;
     margin-bottom: 1px;
     text-align: center;
   }
 }
 
-.map-settings {
-  display: flex;
-  justify-content: space-between;
-}
 
 .game-settings {
   padding: 8px;
 }
 
 .heading {
-
   h1 {
     margin-left: 20px;
     margin-right: 20px;
     border-bottom: 1px solid;
     border-color: #bdbdbd;
   }
+}
+
+.flex {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-start {
+  justify-content: start;
+}
+
+.flex-space-between {
+  justify-content: space-between;
+}
+
+.flex-center {
+  justify-content: center;
+}
+
+.flex-self-center {
+  align-self: center;
 }
 

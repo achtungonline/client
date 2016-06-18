@@ -155,11 +155,11 @@ module.exports = React.createClass({
         var addPlayerButton = maxPlayersReached ? null : <button className="btn btn-secondary btn-add-player" onClick={this.props.onAddPlayerAction}>Add player</button>;
 
         return (
-            <div>
+            <div className="page-center">
                 <div className="heading">
                     <h1>Achtung Online</h1>
                 </div>
-                <div className="new-match">
+                <div className="flex flex-space-between new-match">
 
                     <table className="table table-player" cellSpacing="0" cellPadding="0">
                         <tbody>
@@ -179,7 +179,7 @@ module.exports = React.createClass({
                         </tfoot>
                     </table>
                     <div className="game-settings">
-                        <div className="map-settings">
+                        <div className="flex flex-space-between">
                             <div className="select select-primary side">
                                 <select value={this.props.selectedMap} onChange={this.onMapChange}>
                                     <option value="Square 500">Small Square</option>
@@ -192,7 +192,7 @@ module.exports = React.createClass({
                                     <option value="Full Sized Rectangle">Max Sized Rectangle</option>
                                 </select>
                             </div>
-                            <div className="side max-score">
+                            <div className="flex max-score">
                                 <img src="src/css/svg/trophy.svg" alt="Max score: "/>
                                 <input className="input" type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
                             </div>
