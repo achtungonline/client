@@ -6,8 +6,8 @@ function MatchControls({ match, onStartNextGameAction, isPaused, onPauseAction, 
     var game = match.getCurrentGame();
     var startNextGameButton = game && game.isGameOver() && !match.isMatchOver() ? <button className="btn btn-primary" onClick={onStartNextGameAction}>Start next game</button> : null;
     var pauseButton = game.isGameOver() ? null : <button className="btn btn-primary" onClick={onPauseAction}>{isPaused ? "Resume" : "Pause"}</button>;
-    var exitButton = match.isMatchOver() ? <button className="btn btn-primary" onClick={onExitAction}>Game Over</button> : <button className="btn" onClick={onExitAction}>Exit</button>;
-    var replayButton = onReplayAction && game && game.isGameOver() ? <button className="btn" onClick={onReplayAction}>Watch replay</button> : null;
+    var exitButton = match.isMatchOver() ? <button className="btn btn-primary" onClick={onExitAction}>Game Over</button> : <button className="btn btn-secondary" onClick={onExitAction}>Exit</button>;
+    var replayButton = onReplayAction && game && game.isGameOver() ? <button className="btn btn-secondary" onClick={onReplayAction}>Watch replay</button> : null;
 
     return (
         <div className="m-t-2">
