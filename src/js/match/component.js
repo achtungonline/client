@@ -34,9 +34,10 @@ module.exports = React.createClass({
         var scoreState = this.state.scoreState;
         var players = this.props.players;
 
-        var play = null;
         var replay = null;
+        var playClasses;
         if (this.state.isReplaying) {
+            playClasses = "hidden";
             replay = (
                 <ReplayComponent
                     match={match}
@@ -45,30 +46,31 @@ module.exports = React.createClass({
                     players={players}
                     maxScore={this.props.match.matchState.maxScore}
                     onStartNextGameAction={this.startNextGame}
-                    onPauseAction={this.pauseGame}
+                    onReplayGameOver={this.stopReplay}
                     onExitAction={this.exitGame}
-                />
-            );
-        } else {
-            play = (
-                <PlayComponent
-                    game={game}
-                    match={match}
-                    players={players}
-                    scoreState={scoreState}
-                    roundStartScore={startScoreState}
-                    onStartNextGameAction={this.startNextGame}
-                    isPaused={this.state.localGame.isPaused()}
-                    onPauseAction={this.pauseGame}
-                    onExitAction={this.exitGame}
-                    onReplayAction={this.startReplay}
                 />
             );
         }
+        var play = (
+            <PlayComponent
+                game={game}
+                match={match}
+                players={players}
+                scoreState={scoreState}
+                roundStartScore={startScoreState}
+                onStartNextGameAction={this.startNextGame}
+                isPaused={this.state.localGame.isPaused()}
+                onPauseAction={this.pauseGame}
+                onExitAction={this.exitGame}
+                onReplayAction={this.startReplay}
+            />
+        );
 
         return (
             <div>
-                {play}
+                <div className={playClasses}>
+                    {play}
+                </div>
                 {replay}
             </div>
         );
@@ -120,7 +122,7 @@ module.exports = React.createClass({
 
         localGame.on("gameOver", this.onGameOver);
 
-        this.setState({ isReplaying: false });
+        this.setState({isReplaying: false});
 
         windowFocusHandler.startListening();
         windowFocusHandler.on("focus", this.onWindowFocus);
@@ -151,5 +153,8 @@ module.exports = React.createClass({
     },
     startReplay: function () {
         this.setState({isReplaying: true});
+    },
+    stopReplay: function () {
+        this.setState({isReplaying: false});
     }
 });
