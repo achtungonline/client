@@ -58,6 +58,7 @@ module.exports = React.createClass({
                     scoreState={scoreState}
                     roundStartScore={startScoreState}
                     onStartNextGameAction={this.startNextGame}
+                    isPaused={this.state.localGame.isPaused()}
                     onPauseAction={this.pauseGame}
                     onExitAction={this.exitGame}
                     onReplayAction={this.startReplay}
@@ -87,6 +88,7 @@ module.exports = React.createClass({
         } else {
             this.state.localGame.pause();
         }
+        this.forceUpdate();
     },
     exitGame: function () {
         this.props.onMatchOverAction();
