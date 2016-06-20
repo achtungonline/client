@@ -14,7 +14,7 @@ function ReplayControls({ match, replayGame, onStartNextGameAction, onPauseActio
     var game = match.getCurrentGame();
     var startNextGameButton = game && game.isGameOver() && !match.isMatchOver() ? <button className="btn btn-primary" onClick={onStartNextGameAction}>Start next game</button> : null;
     var pauseButton = replayGame.isGameOver() ? null : <button className="btn btn-secondary" onClick={onPauseAction}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
-    var exitButton = match.isMatchOver() ? <button className="btn btn-primary"onClick={onExitAction}>Game Over</button> : <button className="btn btn-secondary" onClick={onExitAction}>Exit</button>;
+    var exitButton = match.isMatchOver() ? <button className="btn btn-primary" onClick={onExitAction}>Game Over</button> : <button className="btn btn-secondary" onClick={onExitAction}>Exit</button>;
 
     return (
         <div className="m-t-2">
@@ -45,7 +45,9 @@ module.exports = React.createClass({
         return (
             <div className="flex flex-center m-t-3">
                 <div className="flex flex-start">
-                    <GameCanvasComponent game={replayGame} players={players} renderBotTrajectories={false}/>
+                    <div className="m-b-2">
+                        <GameCanvasComponent game={replayGame} players={players} renderBotTrajectories={false}/>
+                    </div>
                     <div className="m-l-2" style={{minWidth: "250px"}}>
                         <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
                         <ReplayControls match={match} replayGame={replayGame} onStartNextGameAction={this.props.onStartNextGameAction} onPauseAction={this.pauseGame} onExitAction={this.props.onExitAction}/>

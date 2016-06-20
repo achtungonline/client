@@ -41,7 +41,9 @@ module.exports = React.createClass({
         return (
             <div>
                 <div className="flex flex-start">
-                    <GameCanvasComponent game={game} players={players} renderBotTrajectories={false}/>
+                    <div className="m-b-2">
+                        <GameCanvasComponent game={game} players={players} renderBotTrajectories={false}/>
+                    </div>
                     <div className="m-l-2" style={{minWidth: "250px"}}>
                         <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
                         <MatchControls match={match} onStartNextGameAction={this.props.onStartNextGameAction} isPaused={this.props.isPaused} onPauseAction={this.props.onPauseAction} onExitAction={this.props.onExitAction} onReplayAction={this.props.onReplayAction}/>

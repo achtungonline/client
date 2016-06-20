@@ -4,7 +4,6 @@ $m1: 5px;
 $m2: 10px;
 $m3: 20px;
 
-
 body {
   padding: 0;
   background-color: #faf7ed;
@@ -14,10 +13,6 @@ body {
   max-width: 1170px;
   margin-right: auto;
   margin-left: auto;
-}
-
-.page-flex-center {
-
 }
 
 .m-b-2 {
@@ -34,6 +29,11 @@ body {
 
 .m-t-2 {
   margin-top: $m2;
+}
+
+.m-x-2 {
+  margin-left: $m2;
+  margin-right: $m2;
 }
 
 .m-t-3 {
@@ -175,6 +175,19 @@ body {
   }
 }
 
+.table-score {
+  width: 100%;
+  tr {
+    height: 43px;
+  }
+  td:nth-child(1) {
+    width: 27px;
+  }
+  td:nth-child(3) {
+    text-align: center;
+  }
+}
+
 .new-match {
   padding: 0 20px;
 }
@@ -234,7 +247,6 @@ body {
     text-align: center;
   }
 }
-
 
 .game-settings {
   padding: 8px;

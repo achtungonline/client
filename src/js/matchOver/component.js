@@ -20,12 +20,25 @@ module.exports = React.createClass({
             }
             prevScore = score;
             prevRoundsWon = roundsWon;
+
+            var placement = index + 1 - equalScoreCounter;
+            var placementElement;
+
+            if (placement === 1) {
+                placementElement = <img src="src/css/svg/gold-trophy.svg" alt="Max score: "/>
+            } else if (placement === 2) {
+                placementElement = <img src="src/css/svg/silver-trophy.svg" alt="Max score: "/>
+            } else if (placement === 3) {
+                placementElement = <img src="src/css/svg/bronze-trophy.svg" alt="Max score: "/>
+            } else {
+                placementElement = placement;
+            }
+
             return (
-                <tr key={player.id} style={{color: player.color.hexCode}}>
-                    <td>{index + 1 - equalScoreCounter}.</td>
-                    <td>{player.name}</td>
+                <tr key={player.id}>
+                    <td style={{textAlign: "center"}}>{placementElement}</td>
+                    <td style={{color: player.color.hexCode}}>{player.name}</td>
                     <td>{score}</td>
-                    <td>{roundsWon}</td>
                 </tr>
             )
         });
@@ -33,23 +46,17 @@ module.exports = React.createClass({
         return (
             <div className="page-center">
                 <Header/>
-                Final score standings
-
-                <table>
-                    <thead>
-                    <tr>
-                        <td>Placement</td>
-                        <td>Name</td>
-                        <td>Score</td>
-                        <td>Rounds Won</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {scoreTableRows}
-                    </tbody>
-                </table>
-                <button className="btn btn-primary" onClick={this.props.onRestartAction}>Restart</button>
-                <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
+                <div className="m-x-2" style={{width: "300px"}}>
+                    <table className="table table-score">
+                        <tbody>
+                        {scoreTableRows}
+                        </tbody>
+                    </table>
+                    <div className="flex flex-space-between">
+                        <button className="btn btn-primary" onClick={this.props.onRestartAction}>Restart</button>
+                        <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
+                    </div>
+                </div>
             </div>
         );
     }
