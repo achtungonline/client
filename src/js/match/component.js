@@ -9,6 +9,7 @@ var windowFocusHandler = require("../window-focus-handler.js");
 
 var PlayComponent = require("./playComponent.js");
 var ReplayComponent = require("./replayComponent.js");
+var Header = require("../header/header.js");
 
 module.exports = React.createClass({
     displayName: "Match",
@@ -67,11 +68,18 @@ module.exports = React.createClass({
         );
 
         return (
-            <div>
-                <div className={playClasses}>
-                    {play}
+            <div className="flex flex-center">
+                <div>
+                    <div style={{width: "100%"}}>
+                        <Header/>
+                    </div>
+                    <div className="m-x-3">
+                        <div className={playClasses}>
+                            {play}
+                        </div>
+                        {replay}
+                    </div>
                 </div>
-                {replay}
             </div>
         );
     },

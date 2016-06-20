@@ -39,10 +39,10 @@ module.exports = React.createClass({
         var maxScore = this.props.match.matchState.maxScore;
 
         return (
-            <div className="flex flex-center m-t-3">
+            <div>
                 <div className="flex flex-start">
                     <GameCanvasComponent game={game} players={players} renderBotTrajectories={false}/>
-                    <div className="m-l-1 m-t-2" style={{minWidth: "250px"}}>
+                    <div className="m-l-2" style={{minWidth: "250px"}}>
                         <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
                         <MatchControls match={match} onStartNextGameAction={this.props.onStartNextGameAction} isPaused={this.props.isPaused} onPauseAction={this.props.onPauseAction} onExitAction={this.props.onExitAction} onReplayAction={this.props.onReplayAction}/>
                     </div>

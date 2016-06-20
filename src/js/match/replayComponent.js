@@ -46,7 +46,7 @@ module.exports = React.createClass({
             <div className="flex flex-center m-t-3">
                 <div className="flex flex-start">
                     <GameCanvasComponent game={replayGame} players={players} renderBotTrajectories={false}/>
-                    <div className="m-l-1 m-t-2" style={{minWidth: "250px"}}>
+                    <div className="m-l-2" style={{minWidth: "250px"}}>
                         <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
                         <ReplayControls match={match} replayGame={replayGame} onStartNextGameAction={this.props.onStartNextGameAction} onPauseAction={this.pauseGame} onExitAction={this.props.onExitAction}/>
                     </div>

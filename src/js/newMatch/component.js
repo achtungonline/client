@@ -3,6 +3,7 @@ var utils = require("./../utils.js");
 var CoreGameFactory = require("core/src/game-factory.js");
 var GameCanvasComponent = require("../match/gameCanvasComponent.js");
 var LocalGameHandler = require("../match/local-game/local-game-handler.js");
+var Header = require("../header/header.js");
 
 var coreGameFactory = CoreGameFactory();
 
@@ -156,9 +157,7 @@ module.exports = React.createClass({
 
         return (
             <div className="page-center">
-                <div className="heading">
-                    <h1>Achtung Online</h1>
-                </div>
+                <Header/>
                 <div className="flex flex-space-between new-match">
 
                     <table className="table table-player" cellSpacing="0" cellPadding="0">
