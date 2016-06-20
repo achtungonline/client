@@ -1,5 +1,6 @@
 var React = require("react");
 var scoreUtils = require("./../score-utils.js");
+var Header = require("../header/header.js");
 
 module.exports = React.createClass({
     displayName: "MatchOver",
@@ -30,10 +31,10 @@ module.exports = React.createClass({
         });
 
         return (
-            <div>
+            <div className="page-center">
+                <Header/>
                 Final score standings
-                <button onClick={this.props.onExitAction}>Exit</button>
-                <button onClick={this.props.onRestartAction}>Restart</button>
+
                 <table>
                     <thead>
                     <tr>
@@ -47,6 +48,8 @@ module.exports = React.createClass({
                     {scoreTableRows}
                     </tbody>
                 </table>
+                <button className="btn btn-primary" onClick={this.props.onRestartAction}>Restart</button>
+                <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
             </div>
         );
     }

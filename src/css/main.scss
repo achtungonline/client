@@ -28,12 +28,21 @@ body {
   margin-left: $m1;
 }
 
+.m-l-2 {
+  margin-left: $m2;
+}
+
 .m-t-2 {
   margin-top: $m2;
 }
 
 .m-t-3 {
   margin-top: $m3;
+}
+
+.m-x-3 {
+  margin-left: $m3;
+  margin-right: $m3;
 }
 
 /**
