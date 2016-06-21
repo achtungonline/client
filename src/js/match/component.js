@@ -18,12 +18,13 @@ module.exports = React.createClass({
             isReplaying: false,
             localGame: null,
             gameHistory: null,
-            roundStartScore: {score: {}, roundsWon: {}},
+            roundStartScore: {score: {}, roundWinners: []},
             pausedDueToLostFocus: false,
             scoreState: {
                 score: {},
-                roundsWon: {}
-            } //TODO: Might want to have different components for replay and match. Might as in we should...
+                roundWinners: []
+            }
+            //TODO: Might want to have different components for replay and match. Might as in we should...
         }
     },
     render: function () {
@@ -109,7 +110,7 @@ module.exports = React.createClass({
         var game = this.props.match.prepareNextGame(seed);
         var roundStartScore = {};
         roundStartScore.score = clone(this.props.match.matchState.score);
-        roundStartScore.roundsWon = clone(this.props.match.matchState.roundsWon);
+        roundStartScore.roundWinners = this.props.match.matchState.roundWinners.slice();
         this.setState({scoreState: this.props.match.matchState, roundStartScore: roundStartScore});
 
         var match = this.props.match;
@@ -140,6 +141,7 @@ module.exports = React.createClass({
         this.forceUpdate();
     },
     onGameOver: function () {
+        this.props.onGameOver({gameHistory: this.state.gameHistory, roundStartScore: this.state.roundStartScore});
         windowFocusHandler.stopListening();
         // So that the startNextGameButton shows
         this.forceUpdate();

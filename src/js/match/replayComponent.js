@@ -12,20 +12,28 @@ var GameCanvasComponent = require("./gameCanvasComponent.js");
 
 function ReplayControls({ match, replayGame, onStartNextGameAction, onPauseAction, onExitAction }) {
     var game = match.getCurrentGame();
-    var startNextGameButton = game && game.isGameOver() && !match.isMatchOver() ? <button className="btn btn-primary" onClick={onStartNextGameAction}>Start next game</button> : null;
-    var pauseButton = replayGame.isGameOver() ? null : <button className="btn btn-secondary" onClick={onPauseAction}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
-    var exitButton = match.isMatchOver() ? <button className="btn btn-primary" onClick={onExitAction}>Game Over</button> : <button className="btn btn-secondary" onClick={onExitAction}>Exit</button>;
+    function getStartNextGameButton() {
+        return game && game.isGameOver() && !match.isMatchOver() && onStartNextGameAction ? <button className="btn btn-primary" onClick={onStartNextGameAction}>Start next game</button> : null;
+    }
+    function getPauseButton() {
+        return replayGame.isGameOver() ? null : <button className="btn btn-secondary" onClick={onPauseAction}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
+    }
+
+    function getExitButton() {
+        var exitClassName = onStartNextGameAction ? "btn btn-secondary" : "btn btn-primary";
+        return match.isMatchOver() ? <button className="btn btn-primary" onClick={onExitAction}>Game Over</button> : <button className={exitClassName} onClick={onExitAction}>Exit</button>;
+    }
 
     return (
         <div className="m-t-2">
             <div>
-                {startNextGameButton}
+                {getStartNextGameButton()}
             </div>
             <div>
-                {pauseButton}
+                {getPauseButton()}
             </div>
             <div>
-                {exitButton}
+                {getExitButton()}
             </div>
         </div>
     );
@@ -71,7 +79,7 @@ module.exports = React.createClass({
         var replayGame = ReplayGameHandler(gameHistory);
         var replayScoreState = {};
         replayScoreState.score = clone(roundStartScore.score);
-        replayScoreState.roundsWon = clone(roundStartScore.roundsWon);
+        replayScoreState.roundWinners = roundStartScore.roundWinners.slice();
         var scoreHandler = ScoreHandler({game: replayGame, scoreState: replayScoreState});
         scoreHandler.on(scoreHandler.events.SCORE_UPDATED, this.onScoreUpdated);
         this.scoreHandler = scoreHandler;

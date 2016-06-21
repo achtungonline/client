@@ -159,24 +159,17 @@ module.exports = React.createClass({
             <div className="page-center">
                 <Header/>
                 <div className="flex flex-space-between new-match">
-
-                    <table className="table table-player" cellSpacing="0" cellPadding="0">
-                        <tbody>
-                        {rows}
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <td colSpan="5">
-                                {addPlayerButton}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colSpan="5">
-                                <button className="btn btn-primary" onClick={this.props.onStartMatchAction}>Start</button>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
+                    <div style={{width: 543}}>
+                        <table className="table table-player" cellSpacing="0" cellPadding="0">
+                            <tbody>
+                            {rows}
+                            </tbody>
+                        </table>
+                        <div className="m-t-2" style={{width: 475}}>
+                            {addPlayerButton}
+                            <button className="btn btn-primary" onClick={this.props.onStartMatchAction}>Start</button>
+                        </div>
+                    </div>
                     <div className="game-settings">
                         <div className="flex flex-space-between">
                             <div className="select select-primary side">

@@ -5,6 +5,8 @@ var MatchComponent = require("./match/component.js");
 var MatchOverComponent = require("./matchOver/component.js");
 var CoreMatchFactory = require("core/src/match-factory.js");
 var CoreMapFactory = require("core/src/core/map/map-factory.js");
+var Header = require("./header/header.js");
+var ReplayComponent = require("./match/replayComponent.js");
 
 
 // Note: The length of this list is also the maximum amount of players. But make sure that there are enough keybindings and names as well
@@ -155,6 +157,7 @@ module.exports = React.createClass({
             matchConfig: null,
             match: null,
             selectedMap: "Square 800",
+            roundsData: [],
             maxScore: 5,
             maxScoreManuallyChanged: false
         };
@@ -180,13 +183,40 @@ module.exports = React.createClass({
             return <MatchComponent match={this.state.match}
                                    matchConfig={this.state.matchConfig}
                                    players={this.state.players}
+                                   onGameOver={this.addRoundsData}
                                    onMatchOverAction={this.endMatch}
             />;
+
+        } else if (this.state.view === "replayRound") {
+            var roundData = this.state.roundsData[this.state.replayRoundId];
+            return (
+                <div className="flex flex-center">
+                    <div>
+                        <div style={{width: "100%"}}>
+                            <Header/>
+                        </div>
+                        <div className="m-x-3">
+                            <ReplayComponent
+                                match={this.state.match}
+                                roundStartScore={roundData.roundStartScore}
+                                gameHistory={roundData.gameHistory}
+                                players={this.state.players}
+                                maxScore={this.state.match.matchState.maxScore}
+                                onReplayGameOver={function() {}}
+                                onExitAction={this.endMatch}
+                            />
+                        </div>
+                    </div>
+                </div>)
+
         } else if (this.state.view === "matchOver") {
             return <MatchOverComponent matchState={this.state.match.matchState}
                                        players={this.state.players}
+                                       roundsData={this.state.roundsData}
                                        onRestartAction={this.startMatch}
                                        onExitAction={this.newMatch}
+                                       onRoundClick={this.replayRound}
+
             />;
         } else {
             throw new Error("Unknown view: " + this.state.view);
@@ -217,7 +247,7 @@ module.exports = React.createClass({
             var mapType = selectedMapData[0];
             var mapWidth = Number(selectedMapData[1]);
             var mapHeight = Number(selectedMapData[2]);
-            if(mapType === "Square") {
+            if (mapType === "Square") {
                 matchConfig.map = CoreMapFactory().createSquare({
                     name: selectedMap,
                     size: mapWidth
@@ -242,7 +272,7 @@ module.exports = React.createClass({
     startMatch: function () {
         var matchConfig = this.getMatchConfig();
         var match = CoreMatchFactory().create({matchConfig: matchConfig});
-        this.setState({matchConfig: matchConfig, match: match, view: "match"});
+        this.setState({roundsData: [], matchConfig: matchConfig, match: match, view: "match"});
     },
     endMatch: function () {
         this.setState({view: "matchOver"})
@@ -250,8 +280,11 @@ module.exports = React.createClass({
     changeMap: function (map) {
         this.setState({selectedMap: map});
     },
+    replayRound: function (roundId) {
+        this.setState({view: "replayRound", replayRoundId: roundId});
+    },
     maxScoreChangeAction: function (maxScore) {
-        var parsedMaxScore= maxScore.replace(/[^0-9]/g, "");
+        var parsedMaxScore = maxScore.replace(/[^0-9]/g, "");
         var maxScoreInt = parsedMaxScore === "" ? 0 : parseInt(parsedMaxScore);
         maxScoreInt = Math.min(maxScoreInt, 1000);
         if (maxScoreInt !== this.state.maxScore) {
@@ -275,6 +308,9 @@ module.exports = React.createClass({
                 maxScore: prevState.maxScoreManuallyChanged ? prevState.maxScore : prevState.maxScore + SCORE_INCREASE
             };
         });
+    },
+    addRoundsData: function (roundsData) {
+        this.state.roundsData.push(roundsData);
     },
     changeName: function (playerId, name) {
         this.setState(function (oldState) {

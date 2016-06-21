@@ -2,6 +2,22 @@ var React = require("react");
 var scoreUtils = require("./../score-utils.js");
 var Header = require("../header/header.js");
 
+
+var RoundsStatistics = React.createClass({
+    render: function () {
+        var thisComponent = this;
+        var roundElements = this.props.roundsData.map(function (roundData, index) {
+            return <button key={index} onClick={thisComponent.props.onRoundClick.bind(null, index)}>Winner: {thisComponent.props.matchState.roundWinners[index][0]}</button>
+        });
+        return (
+            <div>
+                {roundElements}
+            </div>
+        )
+    }
+});
+
+
 module.exports = React.createClass({
     displayName: "MatchOver",
     render: function () {
@@ -9,17 +25,14 @@ module.exports = React.createClass({
 
         var equalScoreCounter = 0;
         var prevScore = -1;
-        var prevRoundsWon = -1;
         var scoreTableRows = scoreUtils.sort(this.props.players, this.props.matchState).map(function (player, index) {
             var score = thisComponent.props.matchState.score[player.id];
-            var roundsWon = thisComponent.props.matchState.roundsWon[player.id];
-            if (prevScore === score && roundsWon === prevRoundsWon) {
+            if (prevScore === score) {
                 equalScoreCounter++;
             } else {
                 equalScoreCounter = 0;
             }
             prevScore = score;
-            prevRoundsWon = roundsWon;
 
             var placement = index + 1 - equalScoreCounter;
             var placementElement;
@@ -57,6 +70,9 @@ module.exports = React.createClass({
                         <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
                     </div>
                 </div>
+                <RoundsStatistics matchState={this.props.matchState}
+                                  roundsData={this.props.roundsData}
+                                  onRoundClick={this.props.onRoundClick}/>
             </div>
         );
     }
