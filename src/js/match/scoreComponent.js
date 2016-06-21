@@ -11,10 +11,10 @@ module.exports = function Score({ startScoreState, scoreState, players, gameStat
         var opacity = gameStateFunctions.isPlayerAlive(gameState, player.id) ? 1 : 0.25;
 
         return (
-            <tr key={player.id} style={{color: player.color.hexCode, opacity: opacity}}>
-                <td>{player.name}</td>
+            <tr key={player.id} style={{opacity: opacity}}>
+                <td style={{color: player.color.hexCode}}>{player.name}</td>
                 <td>{score}</td>
-                <td style={{minWidth: "34px"}} >{roundScore}</td>
+                <td style={{minWidth: "34px"}}>{roundScore}</td>
             </tr>
         )
     });
