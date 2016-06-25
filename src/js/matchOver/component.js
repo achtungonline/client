@@ -28,7 +28,7 @@ var RoundsStatistics = React.createClass({
                 return player.id === roundData.roundWinners[0];
             });
             return (
-                <div key={index} className="m-x-2" style={{width: width}}>
+                <div key={index} className="m-x-2 m-b-3" style={{width: width}}>
                     <div style={{textAlign: "center"}}><span style={{color: winningPlayer.color.hexCode}}>{winningPlayer.name}</span></div>
                     <RoundCanvas width={width} gameState={roundData.gameState} playerConfigs={thisComponent.props.players}/>
                     <button className="btn btn-secondary" style={{marginTop: 0}} onClick={thisComponent.props.onRoundClick.bind(null, index)}>Replay</button>
