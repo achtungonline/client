@@ -1,5 +1,5 @@
 var React = require("react");
-var GameCanvasComponent = require("./gameCanvasComponent.js");
+var GameCanvasRenderer = require("./canvas/game-canvas-renderer.js");
 var Score = require("./scoreComponent.js");
 
 function MatchControls({ match, onStartNextGameAction, isPaused, onPauseAction, onExitAction, onReplayAction }) {
@@ -42,7 +42,7 @@ module.exports = React.createClass({
             <div>
                 <div className="flex flex-start">
                     <div className="m-b-2">
-                        <GameCanvasComponent game={game} players={players} renderBotTrajectories={false}/>
+                        <div ref="gameCanvas"></div>
                     </div>
                     <div className="m-l-2" style={{minWidth: "250px"}}>
                         <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
@@ -51,5 +51,18 @@ module.exports = React.createClass({
                 </div>
             </div>
         );
+    },
+    componentDidMount: function () {
+        var gameCanvasRenderer = GameCanvasRenderer({gameState: this.props.game.gameState, playerConfigs: this.props.players});
+        gameCanvasRenderer.render();
+        this.props.game.on(this.props.game.events.GAME_UPDATED, gameCanvasRenderer.render);
+        var container = this.refs.gameCanvas;
+        container.innerHTML = "";
+        container.appendChild(gameCanvasRenderer.container);
+    },
+    componentDidUpdate: function(prevProps) {
+        if(this.props.game !== prevProps.game) {
+            this.componentDidMount();
+        }
     }
 });

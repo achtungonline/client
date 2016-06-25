@@ -20,31 +20,33 @@ module.exports = function PlayAreaRenderer(options) {
     });
 
     var image = playAreaContext.getImageData(0, 0, playAreaWidth, playAreaHeight);
+    var imageData = image.data;
+
+    function renderPixel(pixel) {
+        var rgbColor;
+        if (pixel.value === PlayArea.FREE) {
+            rgbColor = [0, 0, 0, 0];
+        } else if (pixel.value === PlayArea.OBSTACLE) {
+            rgbColor = [100, 100, 100];
+        } else {
+            var wormId = pixel.value;
+            var worm = playerUtils.getWormById(gameState.worms, wormId);
+            var hexColor = playerConfigs.find(pc => pc.id === worm.playerId).color.hexCode;
+            rgbColor = utils.hexToRgb(hexColor);
+        }
+        canvasImageDataUtils.setColorByIndex(imageData, pixel.index, rgbColor);
+    }
 
     var render = function () {
         var updatedPixels = gameState.playAreaUpdateBuffer;
 
-        var data = image.data;
-
-        updatedPixels.forEach(function (pixel) {
-
-            var rgbColor;
-            if (pixel.value === PlayArea.FREE) {
-                rgbColor = [0, 0, 0, 0];
-            } else if (pixel.value === PlayArea.OBSTACLE) {
-                rgbColor = [100, 100, 100];
-            } else {
-                var wormId = pixel.value;
-                var worm = playerUtils.getWormById(gameState.worms, wormId);
-                var hexColor = playerConfigs.find(pc => pc.id === worm.playerId).color.hexCode;
-                rgbColor = utils.hexToRgb(hexColor);
-            }
+        updatedPixels.forEach(function(pixel) {
+            renderPixel(pixel);
             var row = Math.floor(pixel.index / playAreaWidth);
             var col = pixel.index - row * playAreaWidth;
             var updateSquareRow = Math.floor(row / UPDATE_GRANULARITY);
             var updatedSquareCol = Math.floor(col / UPDATE_GRANULARITY);
             updatedSquare[updateSquareRow * updateCols + updatedSquareCol] = true;
-            canvasImageDataUtils.setColorByIndex(data, pixel.index, rgbColor);
         });
 
         for (var row = 0; row < updateRows; row++) {
@@ -56,6 +58,14 @@ module.exports = function PlayAreaRenderer(options) {
             }
         }
     };
+
+    gameState.playArea.grid.forEach(function (value, index) {
+        if(value !== -1) {
+            renderPixel({index: index, value: value});
+        }
+    });
+
+    playAreaContext.putImageData(image, 0, 0);
 
     return {
         render: render

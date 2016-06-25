@@ -37,9 +37,8 @@ module.exports = React.createClass({
         var players = this.props.players;
 
         var replay = null;
-        var playClasses;
+        var play = null;
         if (this.state.isReplaying) {
-            playClasses = "hidden";
             replay = (
                 <ReplayComponent
                     match={match}
@@ -52,21 +51,22 @@ module.exports = React.createClass({
                     onExitAction={this.exitGame}
                 />
             );
+        } else {
+            play = (
+                <PlayComponent
+                    game={game}
+                    match={match}
+                    players={players}
+                    scoreState={scoreState}
+                    roundStartScore={startScoreState}
+                    onStartNextGameAction={this.startNextGame}
+                    isPaused={this.state.localGame.isPaused()}
+                    onPauseAction={this.pauseGame}
+                    onExitAction={this.exitGame}
+                    onReplayAction={this.startReplay}
+                />
+            );
         }
-        var play = (
-            <PlayComponent
-                game={game}
-                match={match}
-                players={players}
-                scoreState={scoreState}
-                roundStartScore={startScoreState}
-                onStartNextGameAction={this.startNextGame}
-                isPaused={this.state.localGame.isPaused()}
-                onPauseAction={this.pauseGame}
-                onExitAction={this.exitGame}
-                onReplayAction={this.startReplay}
-            />
-        );
 
         return (
             <div className="flex flex-center">
@@ -75,9 +75,7 @@ module.exports = React.createClass({
                         <Header/>
                     </div>
                     <div className="m-x-3">
-                        <div className={playClasses}>
-                            {play}
-                        </div>
+                        {play}
                         {replay}
                     </div>
                 </div>

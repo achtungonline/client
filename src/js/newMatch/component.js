@@ -1,7 +1,7 @@
 var React = require("react");
 var utils = require("./../utils.js");
 var CoreGameFactory = require("core/src/game-factory.js");
-var GameCanvasComponent = require("../match/gameCanvasComponent.js");
+var GameCanvasRenderer = require("../match/canvas/game-canvas-renderer.js");
 var LocalGameHandler = require("../match/local-game/local-game-handler.js");
 var Header = require("../header/header.js");
 
@@ -83,6 +83,14 @@ var GamePreview = React.createClass({
         return this.props.matchConfig.map.name !== nextProps.matchConfig.map.name || (this.props.players.length !== nextProps.players.length);
     },
     render: function () {
+        return (
+            <div ref="gameCanvas"></div>
+        );
+    },
+    componentDidMount: function () {
+        this.componentDidUpdate();
+    },
+    componentDidUpdate: function () {
         var game = coreGameFactory.create({
             seed: Math.floor((Math.random() * 100000)),
             map: this.props.matchConfig.map,
@@ -103,14 +111,12 @@ var GamePreview = React.createClass({
         var mapBorderWidth = 10;
         var scale = 520 / (this.props.matchConfig.map.width + mapBorderWidth * 2);
 
-        return (
-            <GameCanvasComponent
-                game={game}
-                players={this.props.players}
-                renderBotTrajectories={false}
-                scale={scale}
-                mapBorderWidth={mapBorderWidth}/>
-        );
+
+        var gameCanvasRenderer = GameCanvasRenderer({gameState: localGame.gameState, playerConfigs: this.props.players, scale: scale, mapBorderWidth: mapBorderWidth});
+        this.localGame.on(localGame.events.GAME_UPDATED, gameCanvasRenderer.render);
+        var container = this.refs.gameCanvas;
+        container.innerHTML = "";
+        container.appendChild(gameCanvasRenderer.container);
     },
     componentWillUnmount: function () {
         if (this.localGame) {

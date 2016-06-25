@@ -1,14 +1,11 @@
 var React = require("react");
 
 var ReplayGameHandler = require("./local-game/replay/replay-game-handler.js");
-var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");
-var GameHistory = require("core/src/core/history/game-history.js");
 var clone = require("core/src/core/util/clone.js");
 var ScoreHandler = require("core/src/core/score-handler.js");
 
-
 var Score = require("./scoreComponent.js");
-var GameCanvasComponent = require("./gameCanvasComponent.js");
+var GameCanvasRenderer = require("./canvas/game-canvas-renderer.js");
 
 function ReplayControls({ match, replayGame, onStartNextGameAction, onPauseAction, onExitAction }) {
     var game = match.getCurrentGame();
@@ -54,7 +51,7 @@ module.exports = React.createClass({
             <div className="flex flex-center m-t-3">
                 <div className="flex flex-start">
                     <div className="m-b-2">
-                        <GameCanvasComponent game={replayGame} players={players} renderBotTrajectories={false}/>
+                        <div ref="gameCanvas"></div>
                     </div>
                     <div className="m-l-2" style={{minWidth: "250px"}}>
                         <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
@@ -63,6 +60,13 @@ module.exports = React.createClass({
                 </div>
             </div>
         );
+    },
+    componentDidMount: function() {
+        var gameCanvasRenderer = GameCanvasRenderer({gameState: this.state.replayGame.gameState, playerConfigs: this.props.players});
+        this.state.replayGame.on(this.state.replayGame.events.GAME_UPDATED, gameCanvasRenderer.render);
+        var container = this.refs.gameCanvas;
+        container.innerHTML = "";
+        container.appendChild(gameCanvasRenderer.container);
     },
     componentWillMount: function () {
         this.startReplay();
