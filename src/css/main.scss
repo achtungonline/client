@@ -19,6 +19,10 @@ body {
   margin-bottom: $m2;
 }
 
+.m-b-3 {
+  margin-bottom: $m3;
+}
+
 .m-l-1 {
   margin-left: $m1;
 }
@@ -34,6 +38,10 @@ body {
 .m-x-2 {
   margin-left: $m2;
   margin-right: $m2;
+}
+
+.m-t-0 {
+  margin-top: 0;
 }
 
 .m-t-3 {

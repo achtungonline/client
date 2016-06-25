@@ -139,7 +139,7 @@ module.exports = React.createClass({
         this.forceUpdate();
     },
     onGameOver: function () {
-        this.props.onGameOver({gameHistory: this.state.gameHistory, roundStartScore: this.state.roundStartScore});
+        this.props.onGameOver({gameHistory: this.state.gameHistory, roundStartScore: this.state.roundStartScore, gameState: this.state.localGame.gameState, roundWinners: this.props.match.matchState.roundWinners[this.props.match.matchState.roundWinners.length-1]});
         windowFocusHandler.stopListening();
         // So that the startNextGameButton shows
         this.forceUpdate();
