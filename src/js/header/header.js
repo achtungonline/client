@@ -5,6 +5,12 @@ module.exports = React.createClass({
         return (
             <div className="heading">
                 <h1>Achtung Online</h1>
+                <div
+                    className="fb-like"
+                    data-share="true"
+                    data-width="450"
+                    data-show-faces="true">
+                </div>
             </div>
         )
     }
