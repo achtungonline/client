@@ -19,29 +19,6 @@ var RoundCanvas = React.createClass({
     }
 });
 
-var RoundsStatistics = React.createClass({
-    render: function () {
-        var thisComponent = this;
-        var roundElements = this.props.roundsData.map(function (roundData, index) {
-            var width = 250;
-            var winningPlayer = thisComponent.props.players.find(function (player) {
-                return player.id === roundData.roundWinners[0];
-            });
-            return (
-                <div key={index} className="m-x-2 m-b-3" style={{width: width}}>
-                    <div style={{textAlign: "center"}}><span style={{color: winningPlayer.color.hexCode}}>{winningPlayer.name}</span></div>
-                    <RoundCanvas width={width} gameState={roundData.gameState} playerConfigs={thisComponent.props.players}/>
-                    <button className="btn btn-secondary" style={{marginTop: 0}} onClick={thisComponent.props.onRoundClick.bind(null, index)}>Replay</button>
-                </div>);
-        });
-        return (
-            <div className="flex">
-                {roundElements}
-            </div>
-        )
-    }
-});
-
 module.exports = React.createClass({
     displayName: "MatchOver",
     render: function () {
@@ -80,11 +57,26 @@ module.exports = React.createClass({
             )
         });
 
+        var roundElements = this.props.roundsData.map(function (roundData, index) {
+            var width = 200;
+            var winningPlayer = thisComponent.props.players.find(function (player) {
+                return player.id === roundData.roundWinners[0];
+            });
+            return (
+                <div key={index} className="m-x-2 m-b-3 round-replay" style={{width: width}}>
+                    <div style={{textAlign: "center"}}><span style={{color: winningPlayer.color.hexCode}}>{winningPlayer.name}</span></div>
+                    <div onClick={thisComponent.props.onRoundClick.bind(null, index)}>
+                        <div className="round-watch-replay">Watch replay</div>
+                        <RoundCanvas width={width} gameState={roundData.gameState} playerConfigs={thisComponent.props.players}/>
+                    </div>
+                </div>);
+        });
+
         return (
             <div className="page-center">
                 <Header/>
-                <div className="m-x-2">
-                    <div className="m-b-3" style={{width: "300px"}}>
+                <div className="flex m-x-2">
+                    <div className="m-b-3 m-r-3" style={{width: "420px"}}>
                         <table className="table table-score">
                             <tbody>
                             {scoreTableRows}
@@ -95,10 +87,7 @@ module.exports = React.createClass({
                             <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
                         </div>
                     </div>
-                    <RoundsStatistics matchState={this.props.matchState}
-                                      players={this.props.players}
-                                      roundsData={this.props.roundsData}
-                                      onRoundClick={this.props.onRoundClick}/>
+                    {roundElements}
                 </div>
             </div>
         );

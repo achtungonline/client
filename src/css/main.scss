@@ -31,6 +31,10 @@ body {
   margin-left: $m2;
 }
 
+.m-r-3 {
+  margin-right: $m3;
+}
+
 .m-t-2 {
   margin-top: $m2;
 }
@@ -276,6 +280,10 @@ body {
   flex-wrap: wrap;
 }
 
+.flex-no-wrap {
+  flex-wrap: nowrap;
+}
+
 .flex-start {
   justify-content: start;
 }
@@ -296,3 +304,20 @@ body {
   display: none;
 }
 
+.round-watch-replay {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  padding-left: 2.2rem;
+  padding-top: 85px;
+}
+
+.round-replay {
+  cursor: pointer;
+}
+
+.round-replay:hover {
+  .round-watch-replay {
+    display: inline;
+  }
+}
