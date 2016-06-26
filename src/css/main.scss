@@ -266,11 +266,13 @@ body {
 
 .heading {
   h1 {
-    margin-left: 20px;
-    margin-right: 20px;
-    border-bottom: 1px solid;
-    border-color: #bdbdbd;
+    margin-bottom: 0;
   }
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid;
+  border-color: #bdbdbd;
 }
 
 .flex {
@@ -290,6 +292,10 @@ body {
 
 .flex-space-between {
   justify-content: space-between;
+}
+
+.flex-align-end {
+  align-items: flex-end;
 }
 
 .flex-center {
