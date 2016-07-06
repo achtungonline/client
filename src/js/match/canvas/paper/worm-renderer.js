@@ -1,8 +1,14 @@
+var Animator = require("./animator.js");
+
 var forEach = require("core/src/core/util/for-each.js");
+var gameStateFunctions = require("core/src/core/game-state-functions.js");
+var PlayerUtils = require("core/src/core/player/player-utils.js");
 
 module.exports = function WormRenderer(paperScope, playerConfigs) {
     var wormBodyLayer = new paperScope.Layer();
     var wormHeadLayer = new paperScope.Layer();
+    var animator = Animator();
+
     var worms = {};
     var newSegmentCount = {};
 
@@ -49,13 +55,13 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
     
     function moveWorm(gameState, worm) {
         var paths = worms[worm.id].paths;
-        var currentTime = gameState.gameTime;
         var wormSegment = worm.pathSegments[worm.pathSegments.length - 1];
-        var path = undefined;
-        if (wormSegment === undefined) {
+        var currentTime = gameState.gameTime;
+        if (wormSegment === undefined || currentTime > wormSegment.startTime + wormSegment.duration) {
             return;
         }
 
+        var path;
         // Prepare path drawing
         if (paths.length === 0) {
             paths.push(createNewPath(gameState, wormSegment));
@@ -111,17 +117,37 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
         }
     }
     
-    function clearWorms() {
+    function clearWorms(gameState) {
+        var removedItems = [];
         forEach(worms, function (worm, wormId) {
             worm.paths.forEach(function (path) {
-                path.remove();
+                removedItems.push(path);
             });
             worm.paths = [];
+
+            // Remove dead heads
+            var playerId = PlayerUtils.getWormById(gameState.worms, parseInt(wormId)).playerId;
+            if (!gameStateFunctions.isPlayerAlive(gameState, playerId)) {
+                removedItems.push(worm.head);
+            }
+        });
+
+        removedItems.forEach(function (item) {
+            animator.startAnimation(gameState, {
+                item: item,
+                property: "opacity",
+                change: -item.opacity,
+                duration: 0.3,
+                endCallback: function () {
+                    item.remove();
+                }
+            });
         });
     }
 
     function update(gameState) {
         wormBodyLayer.activate();
+        animator.update(gameState);
         gameState.worms.forEach(function (worm) {
             if (worms[worm.id] === undefined) {
                 worms[worm.id] = {

@@ -29,7 +29,7 @@ module.exports = function PaperRenderer(options) {
         gameState.gameEvents.forEach(function (gameEvent) {
             if (gameEvent.time === gameState.gameTime) { // TODO check deltaTime
                 if (gameEvent.type === "clear") {
-                    wormRenderer.clearWorms();
+                    wormRenderer.clearWorms(gameState);
                 }
             }
         });
