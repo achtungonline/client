@@ -25,7 +25,7 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
     
     function createWormHead(worm) {
         wormHeadLayer.activate();
-        var circle =  new paperScope.Path.Circle([worm.head.centerX, worm.head.centerY], (worm.size + 2) / 2);
+        var circle = new paperScope.Shape.Circle([worm.head.centerX, worm.head.centerY], worm.size/2 + 1);
         circle.fillColor = "#FF9800";
         wormBodyLayer.activate();
         return circle;
@@ -97,7 +97,7 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
         // Update head
         var wormHead = worms[worm.id].head;
         wormHead.position = [wormSegment.endX, wormSegment.endY];
-        wormHead.radius = (wormSegment.size + 2)/2;
+        wormHead.radius = wormSegment.size/2 + 1;
         // Update arrow
         var wormArrow = worms[worm.id].arrow;
         wormArrow.style = path.style;

@@ -11,7 +11,7 @@ module.exports = function PowerUpRenderer(paperScope) {
             if (powerUps[powerUp.id] !== undefined) {
                 updatedPowerUps[powerUp.id] = powerUps[powerUp.id];
             } else {
-                var circle = new paperScope.Path.Circle([powerUp.shape.centerX, powerUp.shape.centerY], powerUp.shape.radius);
+                var circle = new paperScope.Shape.Circle([powerUp.shape.centerX, powerUp.shape.centerY], powerUp.shape.radius);
                 if (powerUp.affects === "self") {
                     circle.fillColor = "green";
                 } else if (powerUp.affects === "others") {

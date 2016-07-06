@@ -1,5 +1,5 @@
 var ShapeRendererFactory = require("./shape/shape-renderer-factory.js");
-var MapBorderRenderer = require("./map/map-border-renderer.js");
+var BorderRenderer = require("./border/border-renderer.js");
 var ShapeModifierImmutable = require("core/src/core/geometry/shape-modifier-immutable.js");
 var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
 var PaperRenderer = require("./paper/paper-renderer.js");
@@ -42,9 +42,9 @@ module.exports = function GameCanvasHandler(options) {
         canvasContainer.style.height = (mapBoundingBox.height + mapBorderWidth * 2) * scale;
 
         // Create the canvas needed
-        var mapBorderCanvas =  createBorderCanvas("mapBorder", mapBoundingBox);
+        var borderCanvas =  createBorderCanvas("mapBorder", mapBoundingBox);
         var paperCanvas = createCanvas("paperCanvas", mapBoundingBox);
-        canvasContainer.appendChild(mapBorderCanvas);
+        canvasContainer.appendChild(borderCanvas);
         canvasContainer.appendChild(paperCanvas);
         playAreaContainer.appendChild(canvasContainer);
 
@@ -52,10 +52,10 @@ module.exports = function GameCanvasHandler(options) {
 
         // Create and setup the renderers for the canvases
         var shapeRenderer = ShapeRendererFactory().create();
-        var mapBorderRenderer = MapBorderRenderer(gameState.map, shapeRenderer, mapBorderCanvas.getContext("2d"), mapBorderWidth);
+        var borderRenderer = BorderRenderer(gameState.map, shapeRenderer, borderCanvas.getContext("2d"), mapBorderWidth);
 
         return function render () {
-            mapBorderRenderer.render();
+            borderRenderer.render();
             paperRenderer.render();
         };
     }
