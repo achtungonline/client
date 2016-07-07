@@ -3,7 +3,6 @@ var utils = require("./../utils.js");
 var CoreGameFactory = require("core/src/game-factory.js");
 var GameCanvasRenderer = require("../match/canvas/game-canvas-renderer.js");
 var LocalGameHandler = require("../match/local-game/local-game-handler.js");
-var Header = require("../header/header.js");
 
 var coreGameFactory = CoreGameFactory();
 
@@ -162,42 +161,39 @@ module.exports = React.createClass({
         var addPlayerButton = maxPlayersReached ? null : <button className="btn btn-secondary btn-add-player" onClick={this.props.onAddPlayerAction}>Add player</button>;
 
         return (
-            <div className="page-center">
-                <Header/>
-                <div className="flex flex-space-between new-match">
-                    <div style={{width: 543}}>
-                        <table className="table table-player" cellSpacing="0" cellPadding="0">
-                            <tbody>
-                            {rows}
-                            </tbody>
-                        </table>
-                        <div className="m-t-2" style={{width: 475}}>
-                            {addPlayerButton}
-                            <button className="btn btn-primary" onClick={this.props.onStartMatchAction}>Start</button>
+            <div className="flex flex-space-between new-match">
+                <div style={{width: 543}}>
+                    <table className="table table-player" cellSpacing="0" cellPadding="0">
+                        <tbody>
+                        {rows}
+                        </tbody>
+                    </table>
+                    <div className="m-t-2" style={{width: 475}}>
+                        {addPlayerButton}
+                        <button className="btn btn-primary" onClick={this.props.onStartMatchAction}>Start</button>
+                    </div>
+                </div>
+                <div className="game-settings">
+                    <div className="flex flex-space-between">
+                        <div className="select select-primary side">
+                            <select value={this.props.selectedMap} onChange={this.onMapChange}>
+                                <option value="Square 500">Small Square</option>
+                                <option value="Square 800">Medium Square</option>
+                                <option value="Square 1100">Large Square</option>
+                                <option value="Circle 500">Small Circle</option>
+                                <option value="Circle 800">Medium Circle</option>
+                                <option value="Circle 1100">Large Circle</option>
+                                <option value="Rectangle 1100 400">Rectangle</option>
+                                <option value="Full Sized Rectangle">Max Sized Rectangle</option>
+                            </select>
+                        </div>
+                        <div className="flex max-score">
+                            <img src="src/css/svg/trophy.svg" alt="Max score: "/>
+                            <input className="input" type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
                         </div>
                     </div>
-                    <div className="game-settings">
-                        <div className="flex flex-space-between">
-                            <div className="select select-primary side">
-                                <select value={this.props.selectedMap} onChange={this.onMapChange}>
-                                    <option value="Square 500">Small Square</option>
-                                    <option value="Square 800">Medium Square</option>
-                                    <option value="Square 1100">Large Square</option>
-                                    <option value="Circle 500">Small Circle</option>
-                                    <option value="Circle 800">Medium Circle</option>
-                                    <option value="Circle 1100">Large Circle</option>
-                                    <option value="Rectangle 1100 400">Rectangle</option>
-                                    <option value="Full Sized Rectangle">Max Sized Rectangle</option>
-                                </select>
-                            </div>
-                            <div className="flex max-score">
-                                <img src="src/css/svg/trophy.svg" alt="Max score: "/>
-                                <input className="input" type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
-                            </div>
-                        </div>
-                        <div>
-                            <GamePreview matchConfig={this.props.matchConfig} players={this.props.players}/>
-                        </div>
+                    <div>
+                        <GamePreview matchConfig={this.props.matchConfig} players={this.props.players}/>
                     </div>
                 </div>
             </div>

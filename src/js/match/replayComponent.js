@@ -9,9 +9,11 @@ var GameCanvasRenderer = require("./canvas/game-canvas-renderer.js");
 
 function ReplayControls({ match, replayGame, onStartNextGameAction, onPauseAction, onExitAction }) {
     var game = match.getCurrentGame();
+
     function getStartNextGameButton() {
         return game && game.isGameOver() && !match.isMatchOver() && onStartNextGameAction ? <button className="btn btn-primary" onClick={onStartNextGameAction}>Start next game</button> : null;
     }
+
     function getPauseButton() {
         return replayGame.isGameOver() ? null : <button className="btn btn-secondary" onClick={onPauseAction}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
     }
@@ -48,20 +50,18 @@ module.exports = React.createClass({
         var maxScore = this.props.maxScore;
 
         return (
-            <div className="flex flex-center m-t-3">
-                <div className="flex flex-start">
-                    <div className="m-b-2">
-                        <div ref="gameCanvas"></div>
-                    </div>
-                    <div className="m-l-2" style={{minWidth: "250px"}}>
-                        <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
-                        <ReplayControls match={match} replayGame={replayGame} onStartNextGameAction={this.props.onStartNextGameAction} onPauseAction={this.pauseGame} onExitAction={this.props.onExitAction}/>
-                    </div>
+            <div className="flex flex-start">
+                <div className="m-b-2">
+                    <div ref="gameCanvas"></div>
+                </div>
+                <div className="m-l-2" style={{minWidth: "300px"}}>
+                    <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
+                    <ReplayControls match={match} replayGame={replayGame} onStartNextGameAction={this.props.onStartNextGameAction} onPauseAction={this.pauseGame} onExitAction={this.props.onExitAction}/>
                 </div>
             </div>
         );
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         var gameCanvasRenderer = GameCanvasRenderer({gameState: this.state.replayGame.gameState, playerConfigs: this.props.players});
         this.state.replayGame.on(this.state.replayGame.events.GAME_UPDATED, gameCanvasRenderer.render);
         var container = this.refs.gameCanvas;

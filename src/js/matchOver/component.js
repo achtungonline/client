@@ -1,6 +1,5 @@
 var React = require("react");
 var scoreUtils = require("./../score-utils.js");
-var Header = require("../header/header.js");
 var GameCanvasRenderer = require("./../match/canvas/game-canvas-renderer.js");
 
 var RoundCanvas = React.createClass({
@@ -73,22 +72,19 @@ module.exports = React.createClass({
         });
 
         return (
-            <div className="page-center">
-                <Header/>
-                <div className="flex m-x-2">
-                    <div className="m-b-3 m-r-3" style={{width: "420px"}}>
-                        <table className="table table-score">
-                            <tbody>
-                            {scoreTableRows}
-                            </tbody>
-                        </table>
-                        <div className="flex flex-space-between">
-                            <button className="btn btn-primary" onClick={this.props.onRestartAction}>Restart</button>
-                            <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
-                        </div>
+            <div className="flex m-x-2">
+                <div className="m-b-3 m-r-3" style={{width: "420px"}}>
+                    <table className="table table-score">
+                        <tbody>
+                        {scoreTableRows}
+                        </tbody>
+                    </table>
+                    <div className="flex flex-space-between">
+                        <button className="btn btn-primary" onClick={this.props.onRestartAction}>Restart</button>
+                        <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
                     </div>
-                    {roundElements}
                 </div>
+                {roundElements}
             </div>
         );
     }

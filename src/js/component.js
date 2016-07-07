@@ -163,9 +163,11 @@ module.exports = React.createClass({
         };
     },
     render: function () {
+
+        var page;
         //TODO Analyze how to seperate players state etc. from this component
         if (this.state.view === "newMatch") {
-            return <NewMatchComponent players={this.state.players}
+            page = <NewMatchComponent players={this.state.players}
                                       selectedMap={this.state.selectedMap}
                                       maxScore={this.state.maxScore}
                                       availableWormColors={availableWormColors}
@@ -180,7 +182,7 @@ module.exports = React.createClass({
                                       onMaxScoreChangeAction={this.maxScoreChangeAction}
             />;
         } else if (this.state.view === "match") {
-            return <MatchComponent match={this.state.match}
+            page = <MatchComponent match={this.state.match}
                                    matchConfig={this.state.matchConfig}
                                    players={this.state.players}
                                    onGameOver={this.addRoundsData}
@@ -189,28 +191,21 @@ module.exports = React.createClass({
 
         } else if (this.state.view === "replayRound") {
             var roundData = this.state.roundsData[this.state.replayRoundId];
-            return (
-                <div className="flex flex-center">
-                    <div>
-                        <div style={{width: "100%"}}>
-                            <Header/>
-                        </div>
-                        <div className="m-x-3">
-                            <ReplayComponent
-                                match={this.state.match}
-                                roundStartScore={roundData.roundStartScore}
-                                gameHistory={roundData.gameHistory}
-                                players={this.state.players}
-                                maxScore={this.state.match.matchState.maxScore}
-                                onReplayGameOver={function() {}}
-                                onExitAction={this.endMatch}
-                            />
-                        </div>
-                    </div>
+            page = (
+                <div className="m-x-3">
+                    <ReplayComponent
+                        match={this.state.match}
+                        roundStartScore={roundData.roundStartScore}
+                        gameHistory={roundData.gameHistory}
+                        players={this.state.players}
+                        maxScore={this.state.match.matchState.maxScore}
+                        onReplayGameOver={function() {}}
+                        onExitAction={this.endMatch}
+                    />
                 </div>)
 
         } else if (this.state.view === "matchOver") {
-            return <MatchOverComponent matchState={this.state.match.matchState}
+            page = <MatchOverComponent matchState={this.state.match.matchState}
                                        players={this.state.players}
                                        roundsData={this.state.roundsData}
                                        onRestartAction={this.startMatch}
@@ -221,6 +216,13 @@ module.exports = React.createClass({
         } else {
             throw new Error("Unknown view: " + this.state.view);
         }
+
+        return (
+            <div className="page-center">
+                <Header/>
+                {page}
+            </div>
+        );
     },
     newMatch: function () {
         this.setState({matchConfig: null, match: null, view: "newMatch"});

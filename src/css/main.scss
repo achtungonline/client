@@ -10,7 +10,7 @@ body {
 }
 
 .page-center {
-  max-width: 1170px;
+  max-width: 1160px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -325,5 +325,11 @@ body {
 .round-replay:hover {
   .round-watch-replay {
     display: inline;
+  }
+}
+
+.facebook-page-link svg:hover {
+  :first-child {
+    fill: #365899;
   }
 }
