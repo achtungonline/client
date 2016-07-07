@@ -11,7 +11,7 @@ module.exports = React.createClass({
             <div className="flex heading flex-space-between flex-align-end">
                 <h1>Achtung Online</h1>
                 <div>
-                    <div className="fb-like" data-href="https://www.facebook.com/achtungonline" data-layout="box_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
+                    <div className="fb-like" data-href="https://www.facebook.com/achtungonline" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>
                     <a className="facebook-page-link m-l-2" href="https://www.facebook.com/achtungonline" dangerouslySetInnerHTML={{__html: svgTag}}/>
                 </div>
             </div>

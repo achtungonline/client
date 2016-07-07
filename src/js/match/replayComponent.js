@@ -54,7 +54,7 @@ module.exports = React.createClass({
                 <div className="m-b-2">
                     <div ref="gameCanvas"></div>
                 </div>
-                <div className="m-l-2" style={{minWidth: "300px"}}>
+                <div className="m-l-2" style={{minWidth: "290px"}}>
                     <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
                     <ReplayControls match={match} replayGame={replayGame} onStartNextGameAction={this.props.onStartNextGameAction} onPauseAction={this.pauseGame} onExitAction={this.props.onExitAction}/>
                 </div>
