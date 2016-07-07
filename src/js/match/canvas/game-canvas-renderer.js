@@ -1,11 +1,11 @@
 var ShapeRendererFactory = require("./shape/shape-renderer-factory.js");
-var MapRenderer = require("./map/map-renderer.js");
-var MapBorderRenderer = require("./map/map-border-renderer.js");
-var WormsRenderer = require("./worm/worms-renderer.js");
+var MapRenderer = require("./renderers/map-renderer.js");
+var MapBorderRenderer = require("./renderers/map-border-renderer.js");
+var WormsRenderer = require("./renderers/worms-renderer.js");
 var ShapeModifierImmutable = require("core/src/core/geometry/shape-modifier-immutable.js");
 var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
-var PlayAreaRenderer = require("./play-area/play-area-renderer.js");
-var PowerUpRenderer = require("./power-up/power-up-renderer.js");
+var PowerUpRenderer = require("./renderers/power-up-renderer.js");
+var WormBodyRenderer = require("./renderers/worm-body-renderer.js");
 
 module.exports = function GameCanvasHandler(options) {
     var gameState = options.gameState;
@@ -49,11 +49,11 @@ module.exports = function GameCanvasHandler(options) {
         var mapBorderCanvas =  createBorderCanvas("mapBorder", mapBoundingBox);
         var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
         var powerUpCanvas = createCanvas("powerUps", mapBoundingBox);
-        var playAreaCanvas = createCanvas("playAreaCanvas", mapBoundingBox);
+        var wormBodyCanvas = createCanvas("wormBodyCanvas", mapBoundingBox);
         canvasContainer.appendChild(mapBorderCanvas);
         canvasContainer.appendChild(mapCanvas);
         canvasContainer.appendChild(powerUpCanvas);
-        canvasContainer.appendChild(playAreaCanvas);
+        canvasContainer.appendChild(wormBodyCanvas);
         canvasContainer.appendChild(wormHeadsCanvas);
         playAreaContainer.appendChild(canvasContainer);
 
@@ -62,7 +62,7 @@ module.exports = function GameCanvasHandler(options) {
         var mapRenderer = MapRenderer(gameState.map, shapeRenderer, mapCanvas.getContext("2d"), mapBorderWidth);
         var mapBorderRenderer = MapBorderRenderer(gameState.map, shapeRenderer, mapBorderCanvas.getContext("2d"), mapBorderWidth);
         var powerUpRenderer = PowerUpRenderer(gameState, powerUpCanvas.getContext("2d"), shapeRenderer);
-        var playAreaRenderer = PlayAreaRenderer({gameState: gameState, playerConfigs: playerConfigs, playAreaContext: playAreaCanvas.getContext("2d")});
+        var wormBodyRenderer = WormBodyRenderer({playerConfigs: playerConfigs, canvas: wormBodyCanvas});
         var shapeModifierImmutable = ShapeModifierImmutable(ShapeFactory());
         var wormHeadsRenderer = WormsRenderer({
             gameState: gameState,
@@ -73,12 +73,15 @@ module.exports = function GameCanvasHandler(options) {
             drawBotTrajectories: drawBotTrajectories
         });
 
+        var prevUpdateTime = 0;
+
         return function render () {
             mapRenderer.render();
             mapBorderRenderer.render();
             wormHeadsRenderer.render();
             powerUpRenderer.render();
-            playAreaRenderer.render();
+            wormBodyRenderer.render(gameState, prevUpdateTime);
+            prevUpdateTime = gameState.gameTime;
         };
     }
 
