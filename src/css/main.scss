@@ -255,6 +255,7 @@ body {
 }
 
 .max-score {
+  max-width: 110px; //Ugly Edge fix
   img {
     height: 29px;
     margin-right: 10px;
