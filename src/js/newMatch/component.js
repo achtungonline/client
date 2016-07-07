@@ -175,7 +175,7 @@ module.exports = React.createClass({
                 </div>
                 <div className="game-settings">
                     <div className="flex flex-space-between">
-                        <div className="select select-primary side">
+                        <div className="select select-primary side" style={{marginTop: "auto"}}>
                             <select value={this.props.selectedMap} onChange={this.onMapChange}>
                                 <option value="Square 500">Small Square</option>
                                 <option value="Square 800">Medium Square</option>
@@ -188,8 +188,8 @@ module.exports = React.createClass({
                             </select>
                         </div>
                         <div className="flex max-score">
-                            <img src="src/css/svg/trophy.svg" alt="Max score: "/>
-                            <input className="input" type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
+                            <img style={{marginTop: "auto"}} src="src/css/svg/trophy.svg" alt="Max score: "/>
+                            <input style={{marginTop: "auto"}} className="input" type="number" value={this.props.maxScore} onChange={this.onMaxScoreChange}/>
                         </div>
                     </div>
                     <div>
