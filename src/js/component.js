@@ -317,7 +317,7 @@ module.exports = React.createClass({
     changeName: function (playerId, name) {
         this.setState(function (oldState) {
             var player = getPlayer(oldState.players, playerId);
-            player.name = name.substring(0, 20);
+            player.name = name.substring(0, 16);
             return {players: oldState.players};
         });
     },
