@@ -11,6 +11,7 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
 
     var wormsRenderingData = {};
     var newSegmentCount = {};
+    var prevUpdateTime = 0;
 
     function createPathStyle(gameState, wormSegment) {
         return {
@@ -57,8 +58,7 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
         var worm = gameStateFunctions.getWorm(gameState, wormId);
         var paths = wormsRenderingData[wormId].paths;
         var wormSegment = worm.pathSegments[wormSegmentIndex];
-        var currentTime = gameState.gameTime;
-        if (wormSegment === undefined || currentTime > wormSegment.startTime + wormSegment.duration) {
+        if (wormSegment === undefined) {
             return;
         }
 
@@ -68,7 +68,7 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
             paths.push(createNewPath(gameState, wormSegment));
         } else {
             var path = paths[paths.length - 1];
-            if (wormSegment.startTime < currentTime) {
+            if (wormSegment.startTime < prevUpdateTime) {
                 // Continue last segment
                 path.removeSegments(path.segments.length - newSegmentCount[wormId]);
             } else {
@@ -147,6 +147,7 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
     }
 
     function update(gameState) {
+        //clearWorms(gameState);
         wormBodyLayer.activate();
         animator.update(gameState);
         gameState.worms.forEach(function (worm) {
@@ -157,12 +158,19 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
                     paths: []
                 };
             }
-            renderWormSegment(gameState, worm.id, worm.pathSegments.length - 1);
+            if (prevUpdateTime === 0) {
+                for (var i = 0; i < worm.pathSegments.length; i++) {
+                    renderWormSegment(gameState, worm.id, i);
+                }
+            } else {
+                renderWormSegment(gameState, worm.id, worm.pathSegments.length - 1);
+            }
         });
+        prevUpdateTime = gameState.gameTime;
     }
 
     return {
         clearWorms: clearWorms,
         update: update
     };
-}
+};
