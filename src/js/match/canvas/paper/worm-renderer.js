@@ -9,7 +9,7 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
     var wormHeadLayer = new paperScope.Layer();
     var animator = Animator();
 
-    var worms = {};
+    var wormsRenderingData = {};
     var newSegmentCount = {};
 
     function createPathStyle(gameState, wormSegment) {
@@ -28,10 +28,10 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
         path.moveTo([wormSegment.startX, wormSegment.startY]);
         return path;
     }
-    
+
     function createWormHead(worm) {
         wormHeadLayer.activate();
-        var circle = new paperScope.Shape.Circle([worm.head.centerX, worm.head.centerY], worm.size/2 + 1);
+        var circle = new paperScope.Shape.Circle([worm.head.centerX, worm.head.centerY], worm.size / 2 + 1);
         circle.fillColor = "#FF9800";
         wormBodyLayer.activate();
         return circle;
@@ -40,22 +40,23 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
     function createWormArrow(worm) {
         wormHeadLayer.activate();
         var arrow = new paperScope.Path();
-        arrow.add([0,2]);
-        arrow.add([0,15]);
-        arrow.add([-5,15]);
-        arrow.add([0,25]);
-        arrow.add([5,15]);
-        arrow.add([0,15]);
+        arrow.add([0, 2]);
+        arrow.add([0, 15]);
+        arrow.add([-5, 15]);
+        arrow.add([0, 25]);
+        arrow.add([5, 15]);
+        arrow.add([0, 15]);
         arrow.closed = true;
         arrow.applyMatrix = false;
-        arrow.pivot = [0,0];
+        arrow.pivot = [0, 0];
         wormBodyLayer.activate();
         return arrow;
     }
-    
-    function moveWorm(gameState, worm) {
-        var paths = worms[worm.id].paths;
-        var wormSegment = worm.pathSegments[worm.pathSegments.length - 1];
+
+    function renderWormSegment(gameState, wormId, wormSegmentIndex) {
+        var worm = gameStateFunctions.getWorm(gameState, wormId);
+        var paths = wormsRenderingData[wormId].paths;
+        var wormSegment = worm.pathSegments[wormSegmentIndex];
         var currentTime = gameState.gameTime;
         if (wormSegment === undefined || currentTime > wormSegment.startTime + wormSegment.duration) {
             return;
@@ -69,12 +70,12 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
             var path = paths[paths.length - 1];
             if (wormSegment.startTime < currentTime) {
                 // Continue last segment
-                path.removeSegments(path.segments.length - newSegmentCount[worm.id]);
+                path.removeSegments(path.segments.length - newSegmentCount[wormId]);
             } else {
                 var pathStyle = createPathStyle(gameState, wormSegment);
                 if (pathStyle.strokeWidth !== path.strokeWidth ||
-                        pathStyle.strokeColor !== path.strokeColor ||
-                        pathStyle.opacity !== path.opacity) {
+                    pathStyle.strokeColor !== path.strokeColor ||
+                    pathStyle.opacity !== path.opacity) {
                     paths.push(createNewPath(gameState, wormSegment, pathStyle));
                 }
             }
@@ -84,28 +85,28 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
         // Draw path
         if (wormSegment.type === "straight") {
             path.add([wormSegment.endX, wormSegment.endY]);
-            newSegmentCount[worm.id] = 1;
+            newSegmentCount[wormId] = 1;
         } else {
             // Arc
             if (wormSegment.speed > 0) {
-                var halfAngle = wormSegment.arcStartAngle + wormSegment.arcAngleDiff/2;
-                var halfPoint = [wormSegment.arcCenterX + wormSegment.arcRadius*Math.cos(halfAngle), wormSegment.arcCenterY + wormSegment.arcRadius*Math.sin(halfAngle)];
-                var endPoint = [wormSegment.arcCenterX + wormSegment.arcRadius*Math.cos(wormSegment.arcEndAngle), wormSegment.arcCenterY + wormSegment.arcRadius*Math.sin(wormSegment.arcEndAngle)];
+                var halfAngle = wormSegment.arcStartAngle + wormSegment.arcAngleDiff / 2;
+                var halfPoint = [wormSegment.arcCenterX + wormSegment.arcRadius * Math.cos(halfAngle), wormSegment.arcCenterY + wormSegment.arcRadius * Math.sin(halfAngle)];
+                var endPoint = [wormSegment.arcCenterX + wormSegment.arcRadius * Math.cos(wormSegment.arcEndAngle), wormSegment.arcCenterY + wormSegment.arcRadius * Math.sin(wormSegment.arcEndAngle)];
 
                 var oldSegmentCount = path.segments.length;
                 path.arcTo(halfPoint, endPoint);
-                newSegmentCount[worm.id] = path.segments.length - oldSegmentCount;
+                newSegmentCount[wormId] = path.segments.length - oldSegmentCount;
             } else {
-                newSegmentCount[worm.id] = 0;
+                newSegmentCount[wormId] = 0;
             }
         }
 
         // Update head
-        var wormHead = worms[worm.id].head;
+        var wormHead = wormsRenderingData[wormId].head;
         wormHead.position = [wormSegment.endX, wormSegment.endY];
-        wormHead.radius = wormSegment.size/2 + 1;
+        wormHead.radius = wormSegment.size / 2 + 1;
         // Update arrow
-        var wormArrow = worms[worm.id].arrow;
+        var wormArrow = wormsRenderingData[wormId].arrow;
         wormArrow.style = path.style;
         wormArrow.fillColor = wormArrow.strokeColor;
         wormArrow.position = [wormSegment.endX, wormSegment.endY];
@@ -116,10 +117,10 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
             wormArrow.visible = false;
         }
     }
-    
+
     function clearWorms(gameState) {
         var removedItems = [];
-        forEach(worms, function (worm, wormId) {
+        forEach(wormsRenderingData, function (worm, wormId) {
             worm.paths.forEach(function (path) {
                 removedItems.push(path);
             });
@@ -149,17 +150,17 @@ module.exports = function WormRenderer(paperScope, playerConfigs) {
         wormBodyLayer.activate();
         animator.update(gameState);
         gameState.worms.forEach(function (worm) {
-            if (worms[worm.id] === undefined) {
-                worms[worm.id] = {
+            if (wormsRenderingData[worm.id] === undefined) {
+                wormsRenderingData[worm.id] = {
                     head: createWormHead(worm),
                     arrow: createWormArrow(worm),
                     paths: []
                 };
             }
-            moveWorm(gameState, worm);
+            renderWormSegment(gameState, worm.id, worm.pathSegments.length - 1);
         });
     }
-   
+
     return {
         clearWorms: clearWorms,
         update: update
