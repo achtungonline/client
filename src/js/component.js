@@ -237,37 +237,28 @@ module.exports = React.createClass({
         });
         var selectedMap = this.state.selectedMap;
 
-        if (selectedMap === "Full Sized Rectangle") {
+        var selectedMapData = selectedMap.split(" ");
+        var mapType = selectedMapData[0];
+        var mapWidth = Number(selectedMapData[1]);
+        var mapHeight = Number(selectedMapData[2]);
+        if (mapType === "Square") {
+            matchConfig.map = CoreMapFactory().createSquare({
+                name: selectedMap,
+                size: mapWidth
+            })
+        } else if (mapType === "Rectangle") {
             matchConfig.map = CoreMapFactory().createRectangle({
                 name: selectedMap,
-                width: window.innerWidth - 250,
-                height: window.innerHeight
-            });
+                width: mapWidth,
+                height: mapHeight
+            })
+        } else if (mapType === "Circle") {
+            matchConfig.map = CoreMapFactory().createCircle({
+                name: selectedMap,
+                size: mapWidth
+            })
         }
-        else if (selectedMap) {
-            var selectedMapData = selectedMap.split(" ");
-            var mapType = selectedMapData[0];
-            var mapWidth = Number(selectedMapData[1]);
-            var mapHeight = Number(selectedMapData[2]);
-            if (mapType === "Square") {
-                matchConfig.map = CoreMapFactory().createSquare({
-                    name: selectedMap,
-                    size: mapWidth
-                })
-            } else if (mapType === "Rectangle") {
-                matchConfig.map = CoreMapFactory().createRectangle({
-                    name: selectedMap,
-                    width: mapWidth,
-                    height: mapHeight
-                })
-            } else if (mapType === "Circle") {
-                matchConfig.map = CoreMapFactory().createCircle({
-                    name: selectedMap,
-                    size: mapWidth
-                })
-            }
 
-        }
         matchConfig.maxScore = this.state.maxScore;
         return matchConfig;
     },

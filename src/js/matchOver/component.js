@@ -57,7 +57,7 @@ module.exports = React.createClass({
         });
 
         var roundElements = this.props.roundsData.map(function (roundData, index) {
-            var width = 200;
+            var width = 208;
             var winningPlayer = thisComponent.props.players.find(function (player) {
                 return player.id === roundData.roundWinners[0];
             });
@@ -72,8 +72,8 @@ module.exports = React.createClass({
         });
 
         return (
-            <div className="flex m-x-2">
-                <div className="m-b-3 m-r-3" style={{width: "420px"}}>
+            <div className="m-x-2">
+                <div className="m-b-3 m-r-3" style={{width: "455px"}}>
                     <table className="table table-score">
                         <tbody>
                         {scoreTableRows}
@@ -84,7 +84,9 @@ module.exports = React.createClass({
                         <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
                     </div>
                 </div>
-                {roundElements}
+                <div className="flex">
+                    {roundElements}
+                </div>
             </div>
         );
     }

@@ -183,8 +183,9 @@ module.exports = React.createClass({
                                 <option value="Circle 500">Small Circle</option>
                                 <option value="Circle 800">Medium Circle</option>
                                 <option value="Circle 1100">Large Circle</option>
-                                <option value="Rectangle 1100 400">Rectangle</option>
-                                <option value="Full Sized Rectangle">Max Sized Rectangle</option>
+                                <option value="Rectangle 500 250">Small Rectangle</option>
+                                <option value="Rectangle 800 300">Medium Rectangle</option>
+                                <option value="Rectangle 1100 400">Large Rectangle</option>
                             </select>
                         </div>
                         <div className="flex max-score">
