@@ -167,11 +167,16 @@ module.exports = React.createClass({
                         <tbody>
                         {rows}
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colSpan="5">
+                            {addPlayerButton}
+                                <button className="btn btn-primary" onClick={this.props.onStartMatchAction}>Start</button>
+
+                            </td>
+                        </tr>
+                        </tfoot>
                     </table>
-                    <div className="m-t-2" style={{width: 475}}>
-                        {addPlayerButton}
-                        <button className="btn btn-primary" onClick={this.props.onStartMatchAction}>Start</button>
-                    </div>
                 </div>
                 <div className="game-settings">
                     <div className="flex flex-space-between">
