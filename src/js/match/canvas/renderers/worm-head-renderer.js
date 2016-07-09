@@ -25,13 +25,13 @@ module.exports = function WormHeadRenderer(options) {
         context.rotate(direction - Math.PI/2);
         context.moveTo(0,2);
         context.lineTo(0,15);
-        context.stroke();
         context.lineTo(-5,15);
         context.lineTo(0,25);
         context.lineTo(5,15);
         context.lineTo(0,15);
         context.closePath();
         context.fill();
+        context.stroke();
         context.restore();
     }
 
