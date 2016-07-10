@@ -1,16 +1,12 @@
-var ShapeRendererFactory = require("./shape/shape-renderer-factory.js");
-var MapRenderer = require("./map/map-renderer.js");
-var MapBorderRenderer = require("./map/map-border-renderer.js");
-var WormsRenderer = require("./worm/worms-renderer.js");
-var ShapeModifierImmutable = require("core/src/core/geometry/shape-modifier-immutable.js");
-var ShapeFactory = require("core/src/core/geometry/shape-factory.js");
-var PlayAreaRenderer = require("./play-area/play-area-renderer.js");
-var PowerUpRenderer = require("./power-up/power-up-renderer.js");
+var ShapeRenderer = require("./shape/shape-renderer.js");
+var MapRenderer = require("./renderers/map-renderer.js");
+var WormHeadRenderer = require("./renderers/worm-head-renderer.js");
+var PowerUpRenderer = require("./renderers/power-up-renderer.js");
+var WormBodyRenderer = require("./renderers/worm-body-renderer.js");
 
 module.exports = function GameCanvasHandler(options) {
     var gameState = options.gameState;
     var playerConfigs = options.playerConfigs;
-    var drawBotTrajectories = options.drawBotTrajectories;
     var scale = options.scale || 1;
     var mapBorderWidth = options.mapBorderWidth || 10;
 
@@ -45,40 +41,47 @@ module.exports = function GameCanvasHandler(options) {
         canvasContainer.style.height = (mapBoundingBox.height + mapBorderWidth * 2) * scale;
 
         // Create the canvas needed
-        var mapCanvas = createCanvas("map", mapBoundingBox);
-        var mapBorderCanvas =  createBorderCanvas("mapBorder", mapBoundingBox);
-        var wormHeadsCanvas = createCanvas("wormHeads", mapBoundingBox);
-        var powerUpCanvas = createCanvas("powerUps", mapBoundingBox);
-        var playAreaCanvas = createCanvas("playAreaCanvas", mapBoundingBox);
-        canvasContainer.appendChild(mapBorderCanvas);
+        var mapCanvas =  createBorderCanvas("mapCanvas", mapBoundingBox);
+        var powerUpCanvas = createCanvas("powerUpCanvas", mapBoundingBox);
+        var wormBodyCanvas = createCanvas("wormBodyCanvas", mapBoundingBox);
+        var wormHeadCanvas = createCanvas("wormHeadCanvas", mapBoundingBox);
         canvasContainer.appendChild(mapCanvas);
         canvasContainer.appendChild(powerUpCanvas);
-        canvasContainer.appendChild(playAreaCanvas);
-        canvasContainer.appendChild(wormHeadsCanvas);
+        canvasContainer.appendChild(wormBodyCanvas);
+        canvasContainer.appendChild(wormHeadCanvas);
         playAreaContainer.appendChild(canvasContainer);
 
         // Create and setup the renderers for the canvases
-        var shapeRenderer = ShapeRendererFactory().create();
-        var mapRenderer = MapRenderer(gameState.map, shapeRenderer, mapCanvas.getContext("2d"), mapBorderWidth);
-        var mapBorderRenderer = MapBorderRenderer(gameState.map, shapeRenderer, mapBorderCanvas.getContext("2d"), mapBorderWidth);
-        var powerUpRenderer = PowerUpRenderer(gameState, powerUpCanvas.getContext("2d"), shapeRenderer);
-        var playAreaRenderer = PlayAreaRenderer({gameState: gameState, playerConfigs: playerConfigs, playAreaContext: playAreaCanvas.getContext("2d")});
-        var shapeModifierImmutable = ShapeModifierImmutable(ShapeFactory());
-        var wormHeadsRenderer = WormsRenderer({
-            gameState: gameState,
+        var shapeRenderer = ShapeRenderer();
+        var mapRenderer = MapRenderer({
+            map: gameState.map,
+            canvas: mapCanvas,
+            shapeRenderer: shapeRenderer,
+            borderWidth: mapBorderWidth
+        });
+        var powerUpRenderer = PowerUpRenderer({
+            canvas: powerUpCanvas
+        });
+        var wormBodyRenderer = WormBodyRenderer({
+            playerConfigs: playerConfigs,
+            canvas: wormBodyCanvas
+        });
+        var wormHeadRenderer = WormHeadRenderer({
             playerConfigs: playerConfigs,
             shapeRenderer: shapeRenderer,
-            wormHeadsContext: wormHeadsCanvas.getContext("2d"),
-            shapeModifierImmutable: shapeModifierImmutable,
-            drawBotTrajectories: drawBotTrajectories
+            canvas: wormHeadCanvas
         });
 
+        var prevUpdateTime = 0;
+
         return function render () {
-            mapRenderer.render();
-            mapBorderRenderer.render();
-            wormHeadsRenderer.render();
-            powerUpRenderer.render();
-            playAreaRenderer.render();
+            var renderStartTime = prevUpdateTime;
+            var renderEndTime = gameState.gameTime;
+            mapRenderer.render(gameState, renderStartTime, renderEndTime);
+            wormHeadRenderer.render(gameState, renderStartTime, renderEndTime);
+            powerUpRenderer.render(gameState, renderStartTime, renderEndTime);
+            wormBodyRenderer.render(gameState, renderStartTime, renderEndTime);
+            prevUpdateTime = renderEndTime;;
         };
     }
 
