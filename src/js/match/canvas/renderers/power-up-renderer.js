@@ -10,16 +10,24 @@ var POWERUP_COLORS = {
     "all": "blue"
 };
 
+var POWERUP_IMAGE_URLS = {
+    "Fat": "src/css/svg/powerup/Fat.svg",
+    "Clear": "src/css/svg/powerup/Clear.svg",
+    "Slim": "src/css/svg/powerup/Slim.svg"
+};
+
+
 module.exports = function PowerUpRenderer(options) {
 
     var canvas = options.canvas;
     var context = canvas.getContext("2d");
 
     var animator = Animator();
+
     var powerUpRenderData = {};
 
     function updateRenderData(gameState, renderStartTime, renderEndTime) {
-        forEach(powerUpRenderData, function(renderData) {
+        forEach(powerUpRenderData, function (renderData) {
             renderData.activeCurrentUpdate = false;
         });
         gameState.powerUps.forEach(function renderPowerUp(powerUp) {
@@ -30,7 +38,7 @@ module.exports = function PowerUpRenderer(options) {
                     centerY: powerUp.shape.centerY,
                     radius: 0,
                     color: POWERUP_COLORS[powerUp.affects],
-                    text: powerUp.name,
+                    name: powerUp.name,
                     active: true,
                     activeCurrentUpdate: true,
                     visibleText: false
@@ -43,7 +51,7 @@ module.exports = function PowerUpRenderer(options) {
                     change: powerUp.shape.radius,
                     startTime: renderStartTime,
                     duration: POWERUP_SPAWN_DURATION,
-                    endCallback: function() {
+                    endCallback: function () {
                         renderData.visibleText = true;
                     }
                 });
@@ -51,7 +59,7 @@ module.exports = function PowerUpRenderer(options) {
                 powerUpRenderData[powerUp.id].activeCurrentUpdate = true;
             }
         });
-        forEach(powerUpRenderData, function(renderData, id) {
+        forEach(powerUpRenderData, function (renderData, id) {
             if (renderData.active && !renderData.activeCurrentUpdate) {
                 // PowerUp despawned
                 renderData.visibleText = false;
@@ -62,7 +70,7 @@ module.exports = function PowerUpRenderer(options) {
                     change: -renderData.radius,
                     startTime: renderStartTime,
                     duration: POWERUP_DESPAWN_DURATION,
-                    endCallback: function() {
+                    endCallback: function () {
                         delete powerUpRenderData[id];
                     }
                 });
@@ -71,18 +79,27 @@ module.exports = function PowerUpRenderer(options) {
     }
 
     function renderPowerUps() {
-        forEach(powerUpRenderData, function(renderData) {
-            context.fillStyle = renderData.color;
-            context.beginPath();
-            context.arc(renderData.centerX, renderData.centerY, renderData.radius, 0, 2 * Math.PI);
-            context.fill();
+        forEach(powerUpRenderData, function (renderData) {
+            var powerUpImageUrl = POWERUP_IMAGE_URLS[renderData.name];
 
-            if (renderData.visibleText) {
-                context.font = "14px Arial";
-                context.textAlign = "center";
-                context.textBaseline = "middle";
-                context.fillStyle = "white";
-                context.fillText(renderData.text, renderData.centerX, renderData.centerY);
+            if (powerUpImageUrl) {
+                var imageElement = document.createElement('img');
+                imageElement.src = powerUpImageUrl;
+                context.drawImage(imageElement, renderData.centerX - renderData.radius, renderData.centerY - renderData.radius, renderData.radius * 2, renderData.radius * 2);
+            } else {
+                // We have no image yet, use default behaviour
+                context.fillStyle = renderData.color;
+                context.beginPath();
+                context.arc(renderData.centerX, renderData.centerY, renderData.radius, 0, 2 * Math.PI);
+                context.fill();
+
+                if (renderData.visibleText) {
+                    context.font = "14px Arial";
+                    context.textAlign = "center";
+                    context.textBaseline = "middle";
+                    context.fillStyle = "white";
+                    context.fillText(renderData.name, renderData.centerX, renderData.centerY);
+                }
             }
         });
     }
