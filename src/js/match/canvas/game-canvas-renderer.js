@@ -61,7 +61,7 @@ module.exports = function GameCanvasHandler(options) {
         var shapeRenderer = ShapeRendererFactory().create();
         var mapRenderer = MapRenderer(gameState.map, shapeRenderer, mapCanvas.getContext("2d"), mapBorderWidth);
         var mapBorderRenderer = MapBorderRenderer(gameState.map, shapeRenderer, mapBorderCanvas.getContext("2d"), mapBorderWidth);
-        var powerUpRenderer = PowerUpRenderer(gameState, powerUpCanvas.getContext("2d"), shapeRenderer);
+        var powerUpRenderer = PowerUpRenderer(powerUpCanvas.getContext("2d"));
         var playAreaRenderer = PlayAreaRenderer({gameState: gameState, playerConfigs: playerConfigs, playAreaContext: playAreaCanvas.getContext("2d")});
         var shapeModifierImmutable = ShapeModifierImmutable(ShapeFactory());
         var wormHeadsRenderer = WormsRenderer({
@@ -77,7 +77,7 @@ module.exports = function GameCanvasHandler(options) {
             mapRenderer.render();
             mapBorderRenderer.render();
             wormHeadsRenderer.render();
-            powerUpRenderer.render();
+            powerUpRenderer.render(gameState);
             playAreaRenderer.render();
         };
     }
