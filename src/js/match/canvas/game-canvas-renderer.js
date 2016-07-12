@@ -81,7 +81,7 @@ module.exports = function GameCanvasHandler(options) {
             wormHeadRenderer.render(gameState, renderStartTime, renderEndTime);
             powerUpRenderer.render(gameState, renderStartTime, renderEndTime);
             wormBodyRenderer.render(gameState, renderStartTime, renderEndTime);
-            prevUpdateTime = renderEndTime;;
+            prevUpdateTime = renderEndTime;
         };
     }
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="102px" height="102px" viewBox="0 0 102 102" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
+    <title>Thick</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Oval-1" fill="#F44336" cx="51" cy="51" r="50"></circle>
+        <circle id="Oval-2" fill="#FFFFFF" cx="75.5" cy="26.5" r="14.5"></circle>
+        <path d="M78.3794589,19 C68.724024,26.4878885 57.7724117,36.9048421 50.3794556,42.5 C37.9281316,51.9234461 30.2529608,55.2421203 23.8794556,59.5 C14.832625,65.5438196 12.5700955,68.2298047 14.7956849,66.9788316 C17.037568,65.7187 19.6245809,65 22.3794551,65 C30.9398687,65 37.8794551,71.9395864 37.8794551,80.5 C37.8794551,83.1914657 37.1708007,85.7942879 35.8794558,88 C35.8794558,88 39.4892287,84.9848769 44.3794556,76.5 C48.347463,69.6152368 50.0214521,60.9991385 58.8794556,50 C64.8509449,42.5850968 75.2978064,33.7774625 83.8794589,24.5" id="Oval-2" fill="#FFFFFF" transform="translate(48.939728, 53.500000) scale(-1, -1) translate(-48.939728, -53.500000) "></path>
+    </g>
+</svg>
