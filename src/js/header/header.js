@@ -12,7 +12,7 @@ module.exports = React.createClass({
                 <h1>Achtung Online</h1>
                 <div className="flex flex-align-center flex-self-center">
                 <img width="45px" src="https://upload.wikimedia.org/wikipedia/commons/2/27/W21-1a.svg"/>
-                    <small className="m-l-2">Website Under construction</small>
+                    <small className="m-l-2">Under construction</small>
                     </div>
                 <div>
                     <div className="fb-like" data-href="https://www.facebook.com/achtungonline" data-layout="button_count" data-action="like" data-size="small" data-show-faces="true" data-share="false"></div>

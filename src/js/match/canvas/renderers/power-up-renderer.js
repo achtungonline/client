@@ -11,9 +11,17 @@ var POWERUP_COLORS = {
 };
 
 var POWERUP_IMAGE_URLS = {
-    "Fat": "src/css/svg/powerup/Fat.svg",
-    "Clear": "src/css/svg/powerup/Clear.svg",
-    "Slim": "src/css/svg/powerup/Slim.svg"
+    "Clear": "src/css/svg/powerup/clear.svg",
+    "Drunk": "src/css/svg/powerup/drunk.svg",
+    "Fat": "src/css/svg/powerup/fat.svg",
+    "Slim": "src/css/svg/powerup/slim.svg",
+    "Slow": "src/css/svg/powerup/slow.svg",
+    "Slow Turn": "src/css/svg/powerup/slowturn.svg",
+    "Speed": "src/css/svg/powerup/speed.svg",
+    "Super Jump": "src/css/svg/powerup/superjump.svg",
+    "Switcharoonie": "src/css/svg/powerup/switcharoonie.svg",
+    "Switch Keys": "src/css/svg/powerup/switchkeys.svg",
+    "Quick Turn": "src/css/svg/powerup/quickturn.svg"
 };
 
 
