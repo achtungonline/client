@@ -6,9 +6,9 @@
     <defs></defs>
     <g id="switcharoonie" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <path d="M51,101 C78.6142375,101 101,78.6142375 101,51 C101,23.3857625 78.6142375,1 51,1 C23.3857625,1 1,23.3857625 1,51 C1,78.6142375 23.3857625,101 51,101 Z" id="Oval-1" fill="#3453BC"></path>
-        <circle id="Oval-2" fill="#8BC34A" cx="29.6136002" cy="40.4385877" r="5.5"></circle>
-        <circle id="Oval-2" fill="#FDD835" cx="51.5" cy="76.0034242" r="5.5"></circle>
-        <circle id="Oval-2" fill="#F44336" cx="73.3534262" cy="40.5614123" r="5.5"></circle>
+        <circle id="Oval-2" fill="#FFFFFF" cx="29.6136002" cy="40.4385877" r="5.5"></circle>
+        <circle id="Oval-2" fill="#FFFFFF" cx="51.5" cy="76.0034242" r="5.5"></circle>
+        <circle id="Oval-2" fill="#FFFFFF" cx="73.3534262" cy="40.5614123" r="5.5"></circle>
         <path d="M41.9062536,73.9905168 C41.9062536,73.9905168 28.7736231,68.7853472 27.3369118,55.0325968" id="Line" stroke="#FFFFFF" stroke-width="2" stroke-linecap="square"></path>
         <path d="M81.8156878,64.8210666 C81.8156878,64.8210666 70.0270589,66.3362893 60.9969027,55.6031055" id="Line" stroke="#FFFFFF" stroke-width="2" stroke-linecap="square" transform="translate(71.406295, 60.248814) scale(-1, -1) rotate(90.000000) translate(-71.406295, -60.248814) "></path>
         <path d="M61.9069823,26.9985499 C61.9069823,26.9985499 51.3918098,37.3441186 35.6925787,30.6883239" id="Line" stroke="#FFFFFF" stroke-width="2" stroke-linecap="square" transform="translate(48.799780, 29.959805) scale(-1, -1) translate(-48.799780, -29.959805) "></path>
