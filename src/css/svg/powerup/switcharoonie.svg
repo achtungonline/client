@@ -6,14 +6,14 @@
     <defs></defs>
     <g id="switcharoonie" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <path d="M51,101 C78.6142375,101 101,78.6142375 101,51 C101,23.3857625 78.6142375,1 51,1 C23.3857625,1 1,23.3857625 1,51 C1,78.6142375 23.3857625,101 51,101 Z" id="Oval-1" fill="#3453BC"></path>
-        <circle id="Oval-2" fill="#8BC34A" cx="31" cy="39" r="4"></circle>
-        <circle id="Oval-2" fill="#FDD835" cx="52" cy="76" r="4"></circle>
-        <circle id="Oval-2" fill="#F44336" cx="72" cy="39" r="4"></circle>
-        <path d="M45.779858,75.3587297 C45.779858,75.3587297 23.9564024,69.8891886 27.447939,46.8575628" id="Line" stroke="#FFFFFF" stroke-linecap="square"></path>
-        <path d="M83.3612267,65.9521779 C83.3612267,65.9521779 62.8865596,72.5035366 53.1024543,51.5737556" id="Line" stroke="#FFFFFF" stroke-linecap="square" transform="translate(68.231841, 59.248520) scale(-1, -1) rotate(90.000000) translate(-68.231841, -59.248520) "></path>
-        <path d="M66.3593629,26.9090821 C66.3593629,26.9090821 51.9150938,41.7340152 34.3254656,28.8388763" id="Line" stroke="#FFFFFF" stroke-linecap="square" transform="translate(50.342414, 30.509153) scale(-1, -1) translate(-50.342414, -30.509153) "></path>
-        <polygon id="Triangle-1" fill="#FFFFFF" transform="translate(28.201656, 46.537697) rotate(18.000000) translate(-28.201656, -46.537697) " points="28.201656 43.5376974 31.201656 49.5376974 25.201656 49.5376974"></polygon>
-        <polygon id="Triangle-1" fill="#FFFFFF" transform="translate(66.335275, 32.814708) rotate(134.000000) translate(-66.335275, -32.814708) " points="66.3352752 29.8147077 69.3352752 35.8147077 63.3352752 35.8147077"></polygon>
-        <polygon id="Triangle-1" fill="#FFFFFF" transform="translate(60.213123, 74.116688) rotate(250.000000) translate(-60.213123, -74.116688) " points="60.2131226 71.1166876 63.2131226 77.1166876 57.2131226 77.1166876"></polygon>
+        <circle id="Oval-2" fill="#8BC34A" cx="29.6136002" cy="40.4385877" r="5.5"></circle>
+        <circle id="Oval-2" fill="#FDD835" cx="51.5" cy="76.0034242" r="5.5"></circle>
+        <circle id="Oval-2" fill="#F44336" cx="73.3534262" cy="40.5614123" r="5.5"></circle>
+        <path d="M41.9062536,73.9905168 C41.9062536,73.9905168 28.7736231,68.7853472 27.3369118,55.0325968" id="Line" stroke="#FFFFFF" stroke-width="2" stroke-linecap="square"></path>
+        <path d="M81.8156878,64.8210666 C81.8156878,64.8210666 70.0270589,66.3362893 60.9969027,55.6031055" id="Line" stroke="#FFFFFF" stroke-width="2" stroke-linecap="square" transform="translate(71.406295, 60.248814) scale(-1, -1) rotate(90.000000) translate(-71.406295, -60.248814) "></path>
+        <path d="M61.9069823,26.9985499 C61.9069823,26.9985499 51.3918098,37.3441186 35.6925787,30.6883239" id="Line" stroke="#FFFFFF" stroke-width="2" stroke-linecap="square" transform="translate(48.799780, 29.959805) scale(-1, -1) translate(-48.799780, -29.959805) "></path>
+        <polygon id="Triangle-1" fill="#FFFFFF" transform="translate(27.455260, 53.586001) rotate(-3.000000) translate(-27.455260, -53.586001) " points="27.4552601 49.1829255 31.8583358 57.9890767 23.0521845 57.9890767"></polygon>
+        <polygon id="Triangle-1" fill="#FFFFFF" transform="translate(64.222778, 31.165843) rotate(123.000000) translate(-64.222778, -31.165843) " points="64.2227784 26.7627671 68.6258541 35.5689184 59.8197028 35.5689184"></polygon>
+        <polygon id="Triangle-1" fill="#FFFFFF" transform="translate(63.472972, 72.183435) rotate(-119.000000) translate(-63.472972, -72.183435) " points="63.4729722 67.7803593 67.8760479 76.5865106 59.0698966 76.5865106"></polygon>
     </g>
 </svg>

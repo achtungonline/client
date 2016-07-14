@@ -4,30 +4,32 @@
     <title>drunk</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <rect id="path-1" x="46" y="39" width="39" height="24" rx="8"></rect>
+        <rect id="path-1" x="46" y="45" width="39" height="24" rx="8"></rect>
         <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="39" height="24" fill="white">
             <use xlink:href="#path-1"></use>
         </mask>
-        <rect id="path-3" x="33" y="27" width="36" height="48"></rect>
-        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="-1" y="-1" width="38" height="50">
-            <rect x="32" y="26" width="38" height="50" fill="white"></rect>
+        <rect id="path-3" x="33" y="33" width="36" height="48"></rect>
+        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="-2" y="-2" width="40" height="52">
+            <rect x="31" y="31" width="40" height="52" fill="white"></rect>
             <use xlink:href="#path-3" fill="black"></use>
         </mask>
     </defs>
     <g id="drunk" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <path d="M51,101 C78.6142375,101 101,78.6142375 101,51 C101,23.3857625 78.6142375,1 51,1 C23.3857625,1 1,23.3857625 1,51 C1,78.6142375 23.3857625,101 51,101 Z" id="Oval-1" fill="#FF0C0C"></path>
-        <ellipse id="Oval-2" stroke="#FFFFFF" cx="33.5" cy="23" rx="4.5" ry="4"></ellipse>
-        <ellipse id="Oval-2" stroke="#FFFFFF" cx="66.5" cy="24" rx="5.5" ry="4"></ellipse>
-        <ellipse id="Oval-2" stroke="#FFFFFF" cx="59.5" cy="19" rx="4.5" ry="4"></ellipse>
-        <ellipse id="Oval-2" stroke="#FFFFFF" cx="51" cy="17" rx="7" ry="6"></ellipse>
-        <ellipse id="Oval-2" stroke="#FFFFFF" cx="63.5" cy="19" rx="2.5" ry="2"></ellipse>
-        <ellipse id="Oval-2" stroke="#FFFFFF" cx="45.5" cy="14" rx="2.5" ry="2"></ellipse>
-        <ellipse id="Oval-2" stroke="#FFFFFF" cx="35.5" cy="19" rx="2.5" ry="4"></ellipse>
-        <ellipse id="Oval-2" stroke="#FFFFFF" cx="40.5" cy="19" rx="5.5" ry="6"></ellipse>
-        <rect id="Rectangle-5" fill="#FF0000" x="24" y="24" width="52" height="18"></rect>
         <use id="Rectangle-3" stroke="#FFFFFF" mask="url(#mask-2)" stroke-width="10" xlink:href="#path-1"></use>
-        <rect id="Rectangle-4" fill="#FF0000" x="45" y="36" width="27" height="30"></rect>
-        <rect id="Rectangle-1" fill="#FFFFFF" x="35" y="35" width="32" height="38"></rect>
-        <use id="Rectangle-2" stroke="#FFFFFF" mask="url(#mask-4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xlink:href="#path-3"></use>
+        <rect id="Rectangle-4" fill="#FF0000" x="45" y="42" width="27" height="30"></rect>
+        <rect id="Rectangle-1" fill="#FFFFFF" x="35" y="44" width="32" height="35"></rect>
+        <use id="Rectangle-2" stroke="#FFFFFF" mask="url(#mask-4)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" xlink:href="#path-3"></use>
+        <path d="M33.0559728,28.3327421 C32.7195902,28.3327417 33.8317606,21.1914057 38.2413795,23.0634308 C39.3410941,23.530295 39.9317527,17.2943467 47.0829602,20.5393164 C48.8622525,21.3466974 51.8247504,14.0119542 57.0374429,21.1546379 C57.6015192,21.9275627 62.4779049,17.0083692 63.9236737,24.1898546 C64.0327426,24.7316267 68.9999964,23.7346134 69,28.3327422 C69.0000002,28.5886164 33.5031116,28.3327425 33.0559728,28.3327421 Z" id="Path-1" stroke="#FFFFFF" stroke-width="2" fill="#FFFFFF"></path>
+        <circle id="Oval-10" fill="#FFFFFF" cx="64.5" cy="40.5" r="1.5"></circle>
+        <circle id="Oval-10" fill="#FFFFFF" cx="38.5" cy="40.5" r="1.5"></circle>
+        <circle id="Oval-10" fill="#FFFFFF" cx="43" cy="41" r="1"></circle>
+        <circle id="Oval-10" fill="#FFFFFF" cx="48" cy="40" r="1"></circle>
+        <circle id="Oval-10" fill="#FFFFFF" cx="59" cy="41" r="1"></circle>
+        <circle id="Oval-10" fill="#FFFFFF" cx="66" cy="36" r="1"></circle>
+        <circle id="Oval-10" fill="#FFFFFF" cx="37" cy="35" r="1"></circle>
+        <circle id="Oval-10" fill="#FFFFFF" cx="52.5" cy="37.5" r="1.5"></circle>
+        <circle id="Oval-10" fill="#FFFFFF" cx="43.5" cy="35.5" r="1.5"></circle>
+        <circle id="Oval-10" fill="#FFFFFF" cx="59" cy="37" r="2"></circle>
     </g>
 </svg>

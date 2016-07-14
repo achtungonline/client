@@ -4,8 +4,8 @@
     <title>clear</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <rect id="path-1" x="25" y="25" width="52" height="52"></rect>
-        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="52" height="52" fill="white">
+        <rect id="path-1" x="27" y="27" width="49" height="49"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="49" height="49" fill="white">
             <use xlink:href="#path-1"></use>
         </mask>
     </defs>
