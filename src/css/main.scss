@@ -9,6 +9,10 @@ $m1: 5px;
 $m2: 10px;
 $m3: 20px;
 
+$green: #689F38;
+
+$primary-color: $green;
+
 body {
   padding: 0;
   background-color: #faf7ed;
@@ -83,11 +87,11 @@ body {
 }
 
 .btn-primary {
-  background-color: #4CAF50; /* Green */
+  background-color: $primary-color;
 }
 
 .btn-secondary {
-  background-color: #777777;
+  background-color: #757575;
 }
 
 .btn-remove-player {
@@ -123,14 +127,14 @@ body {
     padding-left: 5px; /* If you add too much padding here, the options won't show in IE */
     width: 268px;
     option {
-      background-color:#4CAF50;
+      background-color: $primary-color;
       color: white;
     }
   }
 }
 
 .select-primary {
-  background-color: #4CAF50
+  background-color: $primary-color;
 }
 
 /**

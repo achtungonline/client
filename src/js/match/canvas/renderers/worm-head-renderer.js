@@ -1,6 +1,6 @@
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
-var WORM_HEAD_COLOR = "#ff9800";
+var WORM_HEAD_COLOR = "#FFB74D"; // 300 orange
 
 module.exports = function WormHeadRenderer(options) {
     var playerConfigs = options.playerConfigs;
