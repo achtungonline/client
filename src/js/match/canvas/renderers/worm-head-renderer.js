@@ -11,7 +11,7 @@ module.exports = function WormHeadRenderer(options) {
     function drawHead(x, y, size) {
         context.fillStyle = WORM_HEAD_COLOR;
         context.beginPath();
-        context.arc(x, y, size, 0, 2 * Math.PI);
+        context.arc(x, y, size / 2 + 1, 0, 2 * Math.PI);
         context.fill();
     }
 
