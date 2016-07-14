@@ -157,7 +157,7 @@ module.exports = React.createClass({
             ],
             matchConfig: null,
             match: null,
-            selectedMap: "Square 800",
+            selectedMap: "Square 400",
             roundsData: [],
             maxScore: 5,
             maxScoreManuallyChanged: false
