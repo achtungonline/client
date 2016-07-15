@@ -183,14 +183,11 @@ module.exports = React.createClass({
                         <div className="select select-primary side" style={{marginTop: "auto"}}>
                             <select value={this.props.selectedMap} onChange={this.onMapChange}>
                                 <option value="Square 500">Small Square</option>
-                                <option value="Square 800">Medium Square</option>
-                                <option value="Square 1100">Large Square</option>
+                                <option value="Square 800">Large Square</option>
                                 <option value="Circle 500">Small Circle</option>
-                                <option value="Circle 800">Medium Circle</option>
-                                <option value="Circle 1100">Large Circle</option>
+                                <option value="Circle 800">Large Circle</option>
                                 <option value="Rectangle 500 250">Small Rectangle</option>
-                                <option value="Rectangle 800 300">Medium Rectangle</option>
-                                <option value="Rectangle 1100 400">Large Rectangle</option>
+                                <option value="Rectangle 800 300">Large Rectangle</option>
                             </select>
                         </div>
                         <div className="flex max-score">
