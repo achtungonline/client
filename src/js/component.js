@@ -12,45 +12,46 @@ var ReplayComponent = require("./match/replayComponent.js");
 // Note: The length of this list is also the maximum amount of players. But make sure that there are enough keybindings and names as well
 var availableWormColors = [
     {
-        id: "black",
-        hexCode: "#444"
-    },
-    {
-        id: "yellow",
-        hexCode: "#FDD835"
-    },
-    {
-        id: "orange",
-        hexCode: "#FF9800"
-    },
-    {
-        id: "red",
-        hexCode: "#F44336"
+        id: "blue",
+        hexCode: "#03A9F4"
     },
     {
         id: "pink",
         hexCode: "#E91E63"
     },
     {
+        id: "green",
+        hexCode: "#4CAF50"
+    },
+    {
         id: "purple",
         hexCode: "#9C27B0"
+    },
+    {
+        id: "orange",
+        hexCode: "#FF9800"
+    },
+    {
+        id: "lime",
+        hexCode: "#CDDC39"
     },
     {
         id: "indigo",
         hexCode: "#3F51B5"
     },
     {
-        id: "blue",
-        hexCode: "#03A9F4"
-    },
-    {
-        id: "turquoise",
+        id: "teal",
         hexCode: "#009688"
     },
+
     {
-        id: "green",
-        hexCode: "#8BC34A"
-    }];
+        id: "black",
+        hexCode: "#444"
+    },
+    {
+        id: "bluegrey",
+        hexCode: "#607D8B"
+    },];
 
 var availableNames = [
     "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
@@ -156,7 +157,7 @@ module.exports = React.createClass({
             ],
             matchConfig: null,
             match: null,
-            selectedMap: "Square 800",
+            selectedMap: "Square 500",
             roundsData: [],
             maxScore: 5,
             maxScoreManuallyChanged: false
