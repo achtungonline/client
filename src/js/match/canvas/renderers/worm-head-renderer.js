@@ -19,16 +19,21 @@ module.exports = function WormHeadRenderer(options) {
         context.save();
         context.fillStyle = color;
         context.strokeStyle = color;
-        context.lineWidth = size;
+        context.lineWidth = 4;
         context.beginPath();
         context.translate(x, y);
-        context.rotate(direction - Math.PI/2);
-        context.moveTo(0,2);
-        context.lineTo(0,15);
-        context.lineTo(-5,15);
-        context.lineTo(0,25);
-        context.lineTo(5,15);
-        context.lineTo(0,15);
+        context.rotate(direction - Math.PI / 2);
+
+        var arrowBaseEndpoint = 25;
+        var arrowHeadEndpoint = 30;
+        var arrowHeadWidth = 3;
+
+        context.moveTo(0, 0);
+        context.lineTo(0, arrowBaseEndpoint);
+        context.lineTo(-arrowHeadWidth, arrowBaseEndpoint);
+        context.lineTo(0, arrowHeadEndpoint);
+        context.lineTo(arrowHeadWidth, arrowBaseEndpoint);
+        context.lineTo(0, arrowBaseEndpoint);
         context.closePath();
         context.fill();
         context.stroke();
