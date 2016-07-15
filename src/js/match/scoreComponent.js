@@ -3,7 +3,7 @@ var scoreUtils = require("./../score-utils.js");
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
 module.exports = function Score({ startScoreState, scoreState, players, gameState, maxScore }) {
-    var scoreTableRows = scoreUtils.sort(players, scoreState).map(function (player) {
+    var scoreTableRows = scoreUtils.sort(players.slice(0), scoreState).map(function (player) {
         var roundStartScore = startScoreState.score[player.id] || 0;
         var score = scoreState.score[player.id] || 0;
         var thisRoundScore = score - roundStartScore;
