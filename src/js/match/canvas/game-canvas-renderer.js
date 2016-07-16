@@ -43,11 +43,13 @@ module.exports = function GameCanvasHandler(options) {
         // Create the canvas needed
         var mapCanvas =  createBorderCanvas("mapCanvas", mapBoundingBox);
         var powerUpCanvas = createCanvas("powerUpCanvas", mapBoundingBox);
-        var wormBodyCanvas = createCanvas("wormBodyCanvas", mapBoundingBox);
+        var wormBodyCanvas1 = createCanvas("wormBodyCanvas1", mapBoundingBox);
+        var wormBodyCanvas2 = createCanvas("wormBodyCanvas2", mapBoundingBox);
         var wormHeadCanvas = createCanvas("wormHeadCanvas", mapBoundingBox);
         canvasContainer.appendChild(mapCanvas);
         canvasContainer.appendChild(powerUpCanvas);
-        canvasContainer.appendChild(wormBodyCanvas);
+        canvasContainer.appendChild(wormBodyCanvas1);
+        canvasContainer.appendChild(wormBodyCanvas2);
         canvasContainer.appendChild(wormHeadCanvas);
         playAreaContainer.appendChild(canvasContainer);
 
@@ -64,7 +66,8 @@ module.exports = function GameCanvasHandler(options) {
         });
         var wormBodyRenderer = WormBodyRenderer({
             playerConfigs: playerConfigs,
-            canvas: wormBodyCanvas
+            mainCanvas: wormBodyCanvas1,
+            secondaryCanvas: wormBodyCanvas2
         });
         var wormHeadRenderer = WormHeadRenderer({
             playerConfigs: playerConfigs,

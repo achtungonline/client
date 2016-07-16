@@ -2,17 +2,30 @@ var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
 module.exports = function WormBodyRenderer(options) {
     var playerConfigs = options.playerConfigs;
-    var canvas = options.canvas;
-    var context = canvas.getContext("2d");
+    var mainCanvas = options.mainCanvas;
+    var mainContext = mainCanvas.getContext("2d");
+    var secondaryCanvas = options.secondaryCanvas;
+    var secondaryContext = secondaryCanvas.getContext("2d");
+    var wormRenderData = {};
 
-    function renderWormSegment(gameState, renderStartTime, wormId, wormSegmentId) {
+    function getWormRenderData(wormId) {
+        if (wormRenderData[wormId] === undefined) {
+            wormRenderData[wormId] = {
+                mainSegmentIndex: 0
+            };
+        }
+        return wormRenderData[wormId];
+    }
+
+    function renderWormSegment(gameState, renderStartTime, wormId, wormSegmentId, context) {
         var worm = gameStateFunctions.getWorm(gameState, wormId);
         var wormSegment = worm.pathSegments[wormSegmentId];
-        if (wormSegment.jump) {
+        if (wormSegment.jump || renderStartTime >= wormSegment.endTime) {
             return;
         }
 
         var startPercentage = (renderStartTime - wormSegment.startTime) / wormSegment.duration;
+        startPercentage = 0;
 
         context.lineWidth = wormSegment.size;
         context.lineCap = "round";
@@ -35,7 +48,8 @@ module.exports = function WormBodyRenderer(options) {
     }
 
     function clear() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+        secondaryContext.clearRect(0, 0, secondaryCanvas.width, secondaryCanvas.height);
     }
 
     function render(gameState, renderStartTime, renderEndTime) {
@@ -43,21 +57,20 @@ module.exports = function WormBodyRenderer(options) {
         if (lastClearTime > renderStartTime && lastClearTime <= renderEndTime) {
             clear();
         }
+
+        secondaryContext.clearRect(0, 0, secondaryCanvas.width, secondaryCanvas.height);
         gameState.worms.forEach(function (worm) {
+            var renderData = getWormRenderData(worm.id);
             var segments = worm.pathSegments;
             if (segments.length > 0) {
-                if (renderStartTime === 0) {
-                    for (var i = 0; i < segments.length; i++) {
-                        if (lastClearTime < segments[i].endTime) {
-                            renderWormSegment(gameState, Math.max(segments[i].startTime, lastClearTime), worm.id, i);
-                        }
-                    }
-                } else {
-                    var lastSegment = segments[segments.length - 1];
-                    if (lastClearTime < lastSegment.endTime) {
-                        renderWormSegment(gameState, Math.max(lastSegment.startTime, lastClearTime), worm.id, segments.length - 1);
-                    }
+                var lastSegmentIndex = segments.length - 1;
+                // Render completed segments to the main canvas
+                for (var i = renderData.mainSegmentIndex; i < lastSegmentIndex; i++) {
+                    renderWormSegment(gameState, Math.max(segments[i].startTime, lastClearTime), worm.id, i, mainContext);
+                    renderData.mainSegmentIndex++;
                 }
+                // Render the last segment to the secondary canvas
+                renderWormSegment(gameState, Math.max(segments[lastSegmentIndex].startTime, lastClearTime), worm.id, lastSegmentIndex, secondaryContext);
             }
         });
     }
