@@ -6,6 +6,7 @@ module.exports = function WormHeadRenderer(options) {
     var playerConfigs = options.playerConfigs;
     var shapeRenderer = options.shapeRenderer;
     var canvas = options.canvas;
+    var drawTrajectories = options.drawTrajectories;
     var context = canvas.getContext("2d");
 
     function drawHead(x, y, size) {
@@ -40,6 +41,42 @@ module.exports = function WormHeadRenderer(options) {
         context.restore();
     }
 
+    function drawTrajectory(worm, color) {
+        if(!worm.trajectory) {
+            return;
+        }
+        context.save();
+        context.strokeStyle = color;
+        context.setLineDash([2,5]);
+        context.lineWidth = 2;
+        context.beginPath();
+        context.translate(worm.head.centerX, worm.head.centerY);
+        context.rotate(worm.direction - Math.PI/2);
+        worm.trajectory.forEach(function (move) {
+            var turnRadius;
+            if (move.turningSpeed !== 0) {
+                turnRadius = Math.abs(move.speed / move.turningSpeed);
+            }
+            context.moveTo(0, 0);
+            var distanceTravelled = move.speed * move.duration;
+            var angleTurned = move.turningSpeed * move.duration;
+            if (move.turningSpeed < 0) {
+                context.arc(turnRadius, 0, turnRadius, Math.PI, Math.PI + angleTurned, true);
+                context.translate(-turnRadius*(Math.cos(angleTurned) -  1), -turnRadius*Math.sin(angleTurned));
+                context.rotate(angleTurned);
+            } else if (move.turningSpeed > 0) {
+                context.arc(-turnRadius, 0, turnRadius, 0, angleTurned);
+                context.translate(turnRadius*(Math.cos(angleTurned) - 1), turnRadius*Math.sin(angleTurned));
+                context.rotate(angleTurned);
+            } else {
+                context.lineTo(0, distanceTravelled);
+                context.translate(0, distanceTravelled);
+            }
+        });
+        context.stroke();
+        context.restore();
+    }
+
     function render(gameState, renderStartTime, renderEndTime) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         gameState.worms.forEach(function (worm) {
@@ -56,6 +93,9 @@ module.exports = function WormHeadRenderer(options) {
                         drawArrow(x, y, direction, size, color);
                     }
                     drawHead(x, y, size, color);
+                    if(drawTrajectories) {
+                        drawTrajectory(worm, color);
+                    }
                 }
             }
         });

@@ -72,7 +72,8 @@ module.exports = function GameCanvasHandler(options) {
         var wormHeadRenderer = WormHeadRenderer({
             playerConfigs: playerConfigs,
             shapeRenderer: shapeRenderer,
-            canvas: wormHeadCanvas
+            canvas: wormHeadCanvas,
+            drawTrajectories: false
         });
 
         var prevUpdateTime = 0;
