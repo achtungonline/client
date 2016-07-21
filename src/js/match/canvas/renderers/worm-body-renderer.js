@@ -25,7 +25,6 @@ module.exports = function WormBodyRenderer(options) {
         }
 
         var startPercentage = (renderStartTime - wormSegment.startTime) / wormSegment.duration;
-        startPercentage = 0;
 
         context.lineWidth = wormSegment.size;
         context.lineCap = "round";
