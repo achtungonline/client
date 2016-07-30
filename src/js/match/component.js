@@ -1,7 +1,5 @@
 var React = require("react");
 var LocalGameHandler = require("./local-game/local-game-handler.js");
-var GameHistoryHandler = require("core/src/core/history/game-history-handler.js");
-var GameHistory = require("core/src/core/history/game-history.js");
 var clone = require("core/src/core/util/clone.js");
 var random = require("core/src/core/util/random.js");
 
@@ -16,7 +14,6 @@ module.exports = React.createClass({
         return {
             isReplaying: false,
             localGame: null,
-            gameHistory: null,
             roundStartScore: {score: {}, roundWinners: []},
             pausedDueToLostFocus: false,
             scoreState: {
@@ -42,7 +39,7 @@ module.exports = React.createClass({
                 <ReplayComponent
                     match={match}
                     roundStartScore={startScoreState}
-                    gameHistory={this.state.gameHistory}
+                    gameState={this.state.localGame.gameState}
                     players={players}
                     maxScore={this.props.match.matchState.maxScore}
                     onStartNextGameAction={this.startNextGame}
@@ -95,7 +92,6 @@ module.exports = React.createClass({
         this.props.onMatchOverAction();
     },
     startNextGame: function () {
-        var thisComponent = this;
         var seed = random.generateSeed();
         var game = this.props.match.prepareNextGame(seed);
         var roundStartScore = {};
@@ -106,13 +102,6 @@ module.exports = React.createClass({
         var match = this.props.match;
         match.getCurrentScoreHandler().on(match.getCurrentScoreHandler().events.SCORE_UPDATED, this.onScoreUpdated);
         //
-        function startGameHistoryRecording(game) {
-            var gameHistory = GameHistory(game.gameState.map, thisComponent.props.matchConfig.playerConfigs, game.gameState.seed);
-            thisComponent.setState({gameHistory: gameHistory});
-            GameHistoryHandler().recordGameHistory(game, gameHistory);
-        }
-
-        startGameHistoryRecording(game);
 
         var localGame = LocalGameHandler({game: game, playerConfigs: this.props.players});
         this.setState({localGame: localGame});
@@ -131,7 +120,7 @@ module.exports = React.createClass({
         this.forceUpdate();
     },
     onGameOver: function () {
-        this.props.onGameOver({gameHistory: this.state.gameHistory, roundStartScore: this.state.roundStartScore, gameState: this.state.localGame.gameState, roundWinners: this.props.match.matchState.roundWinners[this.props.match.matchState.roundWinners.length-1]});
+        this.props.onGameOver({roundStartScore: this.state.roundStartScore, gameState: this.state.localGame.gameState, roundWinners: this.props.match.matchState.roundWinners[this.props.match.matchState.roundWinners.length-1]});
         windowFocusHandler.stopListening();
         // So that the startNextGameButton shows
         this.forceUpdate();

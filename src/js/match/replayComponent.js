@@ -15,7 +15,7 @@ function ReplayControls({ match, replayGame, onStartNextGameAction, onPauseActio
     }
 
     function getPauseButton() {
-        return replayGame.isGameOver() ? null : <button className="btn btn-secondary" onClick={onPauseAction}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
+        return replayGame.isReplayOver() ? null : <button className="btn btn-secondary" onClick={onPauseAction}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
     }
 
     function getExitButton() {
@@ -38,6 +38,16 @@ function ReplayControls({ match, replayGame, onStartNextGameAction, onPauseActio
     );
 }
 
+var ProgressBar = React.createClass({
+    render: function () {
+        return (
+            <div className="progress-bar">
+                <div className="progress-bar-meter" style={{width: (100*this.props.progress) + "%"}}/>
+            </div>
+        );
+    },
+});
+
 module.exports = React.createClass({
     displayName: "Replay",
     render: function () {
@@ -45,7 +55,7 @@ module.exports = React.createClass({
         var replayGame = this.state.replayGame;
         var startScoreState = this.props.roundStartScore;
         var scoreState = this.state.scoreState;
-        var gameState = replayGame.gameState;
+        var gameState = this.props.gameState;
         var players = this.props.players;
         var maxScore = this.props.maxScore;
 
@@ -53,6 +63,7 @@ module.exports = React.createClass({
             <div className="flex flex-start">
                 <div className="m-b-2">
                     <div ref="gameCanvas"></div>
+                    <ProgressBar ref="progressBar" progress={replayGame.getReplayProgress()} />
                 </div>
                 <div className="m-l-2" style={{width: "290px"}}>
                     <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
@@ -62,36 +73,43 @@ module.exports = React.createClass({
         );
     },
     componentDidMount: function () {
-        var gameCanvasRenderer = GameCanvasRenderer({gameState: this.state.replayGame.gameState, playerConfigs: this.props.players});
-        this.state.replayGame.on(this.state.replayGame.events.GAME_UPDATED, gameCanvasRenderer.render);
         var container = this.refs.gameCanvas;
         container.innerHTML = "";
-        container.appendChild(gameCanvasRenderer.container);
+        container.appendChild(this.state.gameCanvasRenderer.container);
     },
     componentWillMount: function () {
         this.startReplay();
     },
     componentWillUnmount: function () {
         this.state.replayGame.stop();
-        var scoreHandler = this.scoreHandler;
-        this.scoreHandler && this.scoreHandler.off(scoreHandler.events.SCORE_UPDATED, this.onScoreUpdated);
+        // var scoreHandler = this.scoreHandler;
+        // this.scoreHandler && this.scoreHandler.off(scoreHandler.events.SCORE_UPDATED, this.onScoreUpdated);
     },
     startReplay: function () {
-        var gameHistory = this.props.gameHistory;
         var roundStartScore = this.props.roundStartScore;
+        var thisComponent = this;
 
-        var replayGame = ReplayGameHandler(gameHistory);
+        var gameCanvasRenderer = GameCanvasRenderer({gameState: this.props.gameState, playerConfigs: this.props.players});
+        var replayGame = ReplayGameHandler({
+            gameState: this.props.gameState,
+            onReplayUpdate: function (replayTime) {
+                gameCanvasRenderer.render({
+                    renderTime: replayTime
+                });
+                thisComponent.forceUpdate();
+            },
+            onReplayOver: this.props.onReplayGameOver
+        });
+
         var replayScoreState = {};
         replayScoreState.score = clone(roundStartScore.score);
         replayScoreState.roundWinners = roundStartScore.roundWinners.slice();
-        var scoreHandler = ScoreHandler({game: replayGame, scoreState: replayScoreState});
-        scoreHandler.on(scoreHandler.events.SCORE_UPDATED, this.onScoreUpdated);
-        this.scoreHandler = scoreHandler;
-
-        replayGame.on("gameOver", this.props.onReplayGameOver);
+        // var scoreHandler = ScoreHandler({game: replayGame, scoreState: replayScoreState});
+        // scoreHandler.on(scoreHandler.events.SCORE_UPDATED, this.onScoreUpdated);
+        // this.scoreHandler = scoreHandler;
 
         replayGame.start();
-        this.setState({scoreState: replayScoreState, replayGame: replayGame});
+        this.setState({scoreState: replayScoreState, replayGame: replayGame, gameCanvasRenderer: gameCanvasRenderer});
     },
     pauseGame: function () {
         if (this.state.replayGame.isPaused()) {

@@ -1,65 +1,55 @@
 var requestFrame = require("./../request-frame.js");
-var DeltaTimeHandler = require("./../delta-time-handler.js");
-var GameFactory = require("core/src/game-factory.js");
 
-/**
- * Game wrapper responsible of handling the game on the client. Other can listen on the LocalGameHandler for events and get the current state.
- * @constructor
- */
-
-//TODO: has shared functions with local-game-handler
-module.exports = function Replay(gameHistory) {
-    var deltaTimeHandler = DeltaTimeHandler(requestFrame);
-    var playerConfigs = gameHistory.playerConfigs.map(pc => ({id: pc.id, type: "human"}));
-
-    var game = GameFactory().create({
-        playerConfigs: playerConfigs,
-        map: gameHistory.map,
-        seed: gameHistory.seed
-    });
+module.exports = function Replay(options) {
+    var onReplayUpdate = options.onReplayUpdate;
+    var onReplayOver = options.onReplayOver;
+    var gameState = options.gameState;
 
     var localGameState = {
         paused: false,
-        replayUpdateIndex: 0
+        active: true,
+        replayTime: 0,
+        previousUpdateTime: 0
     };
 
-    function requestNextUpdate() {
-        deltaTimeHandler.update(localGameState, function onUpdateTick(deltaTime) {
-            update(deltaTime);
-        });
-    }
-
-    function start() {
-        game.start();
-        deltaTimeHandler.start(localGameState);
-        requestNextUpdate();
-    }
 
     function update() {
-        function setPlayerSteering(update) {
-            update.steering.forEach(function ApplySteering(steering, index) {
-                game.setPlayerSteering(game.gameState.players[index].id, steering); //TODO should only update when player actually pressed key
-            });
-        }
-
+        var currentTime = Date.now();
         if (!localGameState.paused) {
-            var replayUpdate = gameHistory.updates[localGameState.replayUpdateIndex];
-            var deltaTime = replayUpdate.deltaTime;
-            setPlayerSteering(replayUpdate);
+            var deltaTime = (currentTime - localGameState.previousUpdateTime) / 1000;
 
-            game.update(deltaTime);
-            localGameState.replayUpdateIndex++;
+            localGameState.replayTime += deltaTime;
+            onReplayUpdate(localGameState.replayTime);
 
-            if (localGameState.replayUpdateIndex === gameHistory.updates.length) {
-                game.stop();
+            if (localGameState.replayTime >= gameState.gameTime) {
+               stop();
             }
         }
+        localGameState.previousUpdateTime = currentTime;
 
-        if (game.isActive()) {
-            requestNextUpdate();
+        if (localGameState.active) {
+            requestFrame(update);
         }
     }
 
+
+    function start() {
+        localGameState.previousUpdateTime = Date.now();
+        requestFrame(update);
+    }
+
+    function stop() {
+        localGameState.active = false;
+        onReplayOver();
+    }
+
+    function setReplayProgress(progress) {
+        localGameState.replayTime = progress * gameState.gameTime;
+    }
+
+    function getReplayProgress() {
+        return Math.min(localGameState.replayTime / gameState.gameTime, 1);
+    }
 
     function pause() {
         localGameState.paused = true;
@@ -73,16 +63,18 @@ module.exports = function Replay(gameHistory) {
         return localGameState.paused;
     }
 
+    function isReplayOver() {
+        return !localGameState.active;
+    }
+
     return {
         start: start,
+        stop: stop,
+        setReplayProgress: setReplayProgress,
+        getReplayProgress: getReplayProgress,
         pause: pause,
         resume: resume,
-        stop: game.stop,
         isPaused: isPaused,
-        isGameOver: game.isGameOver,
-        on: game.on.bind(game),
-        off: game.off.bind(game),
-        events: game.events,
-        gameState: game.gameState
+        isReplayOver: isReplayOver
     };
 };

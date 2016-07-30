@@ -197,7 +197,7 @@ module.exports = React.createClass({
                     <ReplayComponent
                         match={this.state.match}
                         roundStartScore={roundData.roundStartScore}
-                        gameHistory={roundData.gameHistory}
+                        gameState={roundData.gameState}
                         players={this.state.players}
                         maxScore={this.state.match.matchState.maxScore}
                         onReplayGameOver={function() {}}

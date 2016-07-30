@@ -53,7 +53,9 @@ module.exports = React.createClass({
     componentDidMount: function () {
         var gameCanvasRenderer = GameCanvasRenderer({gameState: this.props.game.gameState, playerConfigs: this.props.players});
         gameCanvasRenderer.render();
-        this.props.game.on(this.props.game.events.GAME_UPDATED, gameCanvasRenderer.render);
+        this.props.game.on(this.props.game.events.GAME_UPDATED, function() {
+            gameCanvasRenderer.render();
+        });
         var container = this.refs.gameCanvas;
         container.innerHTML = "";
         container.appendChild(gameCanvasRenderer.container);
