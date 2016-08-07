@@ -21,6 +21,7 @@ var POWERUP_IMAGE_URLS = {
     "Super Jump": "src/css/svg/powerup/superjump.svg",
     "Switcharoonie": "src/css/svg/powerup/switcharoonie.svg",
     "Switch Keys": "src/css/svg/powerup/switchkeys.svg",
+    "Tron Turn": "src/css/svg/powerup/tronturn.svg",
     "Quick Turn": "src/css/svg/powerup/quickturn.svg"
 };
 
