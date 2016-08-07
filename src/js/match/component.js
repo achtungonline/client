@@ -137,19 +137,21 @@ module.exports = React.createClass({
         this.forceUpdate();
     },
     onWindowFocus: function () {
-        var thisComponent = this;
-        setTimeout(function () {
-            thisComponent.setState({
-                pausedDueToLostFocus: false
-            });
-            thisComponent.state.localGame.resume();
-        }, 1000);
+        //var thisComponent = this;
+        //setTimeout(function () {
+        //    thisComponent.setState({
+        //        pausedDueToLostFocus: false
+        //    });
+        //    this.pauseGame();
+        //}, 1000);
     },
     onWindowBlur: function () {
         this.setState({
             pausedDueToLostFocus: true
         });
-        this.pause();
+        if(!this.state.localGame.isPaused()) {
+            this.pauseGame();
+        }
     },
     startReplay: function () {
         this.setState({isReplaying: true});
