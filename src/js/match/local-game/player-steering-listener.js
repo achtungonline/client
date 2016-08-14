@@ -1,5 +1,4 @@
-var steering = require("core/src/core/player/player.js").steering;
-
+var constants = require("core/src/core/constants.js");
 
 /**
  * Note that this listener setups listening on document so we NEED to remove the listeners once we are done listening
@@ -42,7 +41,7 @@ module.exports = function PlayerSteeringListener(game) {
         });
 
         function updatePlayerSteering() {
-            var newSteering = leftKeyPressed * steering.LEFT + rightKeyPressed * steering.RIGHT;
+            var newSteering = leftKeyPressed * constants.STEERING_LEFT + rightKeyPressed * constants.STEERING_RIGHT;
             game.setPlayerSteering(playerId, newSteering);
         }
     }
