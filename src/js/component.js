@@ -4,7 +4,7 @@ var NewMatchComponent = require("./newMatch/component.js");
 var MatchComponent = require("./match/component.js");
 var MatchOverComponent = require("./matchOver/component.js");
 var CoreMatchFactory = require("core/src/match-factory.js");
-var CoreMapFactory = require("core/src/core/map/map-factory.js");
+var CoreGameStateFunctions = require("core/src/core/game-state-functions.js");
 var Header = require("./header/header.js");
 var ReplayComponent = require("./match/replayComponent.js");
 
@@ -243,21 +243,11 @@ module.exports = React.createClass({
         var mapWidth = Number(selectedMapData[1]);
         var mapHeight = Number(selectedMapData[2]);
         if (mapType === "Square") {
-            matchConfig.map = CoreMapFactory().createSquare({
-                name: selectedMap,
-                size: mapWidth
-            })
+            matchConfig.map = CoreGameStateFunctions.createMapSquare(selectedMap, mapWidth);
         } else if (mapType === "Rectangle") {
-            matchConfig.map = CoreMapFactory().createRectangle({
-                name: selectedMap,
-                width: mapWidth,
-                height: mapHeight
-            })
+            matchConfig.map = CoreGameStateFunctions.createMapRectangle(selectedMap, mapWidth, mapHeight);
         } else if (mapType === "Circle") {
-            matchConfig.map = CoreMapFactory().createCircle({
-                name: selectedMap,
-                size: mapWidth
-            })
+            matchConfig.map = CoreGameStateFunctions.createMapCircle(selectedMap, mapWidth);
         }
 
         matchConfig.maxScore = this.state.maxScore;
