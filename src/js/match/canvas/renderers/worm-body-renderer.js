@@ -35,8 +35,7 @@ module.exports = function WormBodyRenderer(options) {
         var wormSegmentId = renderOptions.wormSegmentId;
         var context = renderOptions.context;
 
-        var worm = gameStateFunctions.getWorm(gameState, wormId);
-        var wormSegment = worm.pathSegments[wormSegmentId];
+        var wormSegment = gameState.wormPathSegments[wormId][wormSegmentId];
         if (wormSegment.jump || wormSegment.type === "still_arc" || wormSegment.type === "clear" || renderStartTime >= wormSegment.endTime) {
             return;
         }
@@ -82,7 +81,7 @@ module.exports = function WormBodyRenderer(options) {
         var performClear = false;
         gameState.worms.forEach(function (worm) {
             var renderData = getWormRenderData(worm.id);
-            var segments = worm.pathSegments;
+            var segments = gameState.wormPathSegments[worm.id];
             for (var i = renderData.mainSegmentIndex; i < segments.length && segments[i].endTime <= renderEndTime; i++) {
                 if (segments[i].type === "clear") {
                     renderData.mainSegmentIndex = i + 1;
@@ -94,7 +93,7 @@ module.exports = function WormBodyRenderer(options) {
             // Move segmentIndex for each worm to be just after the last clear
             gameState.worms.forEach(function (worm) {
                 var renderData = getWormRenderData(worm.id);
-                var segments = worm.pathSegments;
+                var segments = gameState.wormPathSegments[worm.id];
                 while (renderData.mainSegmentIndex > 0 && segments[renderData.mainSegmentIndex - 1].type !== "clear") {
                     renderData.mainSegmentIndex--;
                 }
@@ -108,7 +107,7 @@ module.exports = function WormBodyRenderer(options) {
         // Now render normally
         gameState.worms.forEach(function (worm) {
             var renderData = getWormRenderData(worm.id);
-            var segments = worm.pathSegments;
+            var segments = gameState.wormPathSegments[worm.id];
             if (segments.length > 0) {
                 // Render completed segments to the main canvas
                 while (renderData.mainSegmentIndex < segments.length - 1 && segments[renderData.mainSegmentIndex].endTime <= renderEndTime) {

@@ -87,7 +87,7 @@ module.exports = function WormHeadRenderer(options) {
     function render(gameState, renderStartTime, renderEndTime) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         gameState.worms.forEach(function (worm) {
-            var segments = worm.pathSegments;
+            var segments = gameState.wormPathSegments[worm.id];
             var renderData = getWormRenderData(worm.id);
             while (renderData.segmentIndex < segments.length - 1 && segments[renderData.segmentIndex + 1].startTime < renderEndTime) {
                 renderData.segmentIndex++;

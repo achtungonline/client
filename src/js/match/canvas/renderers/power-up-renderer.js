@@ -37,7 +37,7 @@ module.exports = function PowerUpRenderer(options) {
         while (powerUpEventIndex < powerUpEvents.length && powerUpEvents[powerUpEventIndex].time <= renderEndTime) {
             var powerUpEvent = powerUpEvents[powerUpEventIndex];
             powerUpEventIndex++;
-            if (powerUpEvent.type === "powerup_spawn") {
+            if (powerUpEvent.type === "spawn") {
                 var powerUp = powerUpEvent.powerUp;
                 powerUpRenderData[powerUp.id] = {
                     centerX: powerUp.shape.centerX,
@@ -48,8 +48,10 @@ module.exports = function PowerUpRenderer(options) {
                     spawnTime: powerUpEvent.time,
                     despawnTime: Infinity
                 };
-            } else {
+            } else if (powerUpEvent.type === "despawn") {
                 powerUpRenderData[powerUpEvent.id].despawnTime = powerUpEvent.time;
+            } else {
+                throw new Error("Unknown powerUp event type: " + powerUpEvent.type);
             }
         }
         forEach(powerUpRenderData, function (renderData, id) {
