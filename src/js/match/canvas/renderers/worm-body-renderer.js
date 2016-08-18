@@ -1,12 +1,19 @@
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
+var forEach = require("core/src/core/util/for-each.js");
 
-module.exports = function WormBodyRenderer(options) {
-    var playerConfigs = options.playerConfigs;
-    var mainCanvas = options.mainCanvas;
+var CLEAR_FADE_DURATION = 0.2;
+
+module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanvas, secondaryCanvas }) {
+    var fadeContext = fadeCanvas.getContext("2d");
     var mainContext = mainCanvas.getContext("2d");
-    var secondaryCanvas = options.secondaryCanvas;
     var secondaryContext = secondaryCanvas.getContext("2d");
+    var temporaryCanvas = document.createElement("canvas");
+    temporaryCanvas.width = fadeCanvas.width;
+    temporaryCanvas.height = fadeCanvas.height;
+    var temporaryContext = temporaryCanvas.getContext("2d");
+
     var wormRenderData = {};
+    var fadeStartTime;
 
     function getWormRenderData(wormId) {
         if (wormRenderData[wormId] === undefined) {
@@ -17,14 +24,21 @@ module.exports = function WormBodyRenderer(options) {
         return wormRenderData[wormId];
     }
 
-    function renderWormSegment(gameState, renderStartTime, wormId, wormSegmentId, context) {
-        var worm = gameStateFunctions.getWorm(gameState, wormId);
-        var wormSegment = worm.pathSegments[wormSegmentId];
-        if (wormSegment.jump || renderStartTime >= wormSegment.endTime) {
+    function renderWormSegment({ gameState, renderStartTime, renderEndTime, wormId, wormSegmentId, context }) {
+        var wormSegment = gameState.wormPathSegments[wormId][wormSegmentId];
+        if (wormSegment.jump || wormSegment.type === "still_arc" || wormSegment.type === "clear" || renderStartTime >= wormSegment.endTime) {
             return;
         }
 
+        if (renderStartTime === undefined || renderStartTime < wormSegment.startTime) {
+            renderStartTime = wormSegment.startTime;
+        }
+        if (renderEndTime === undefined || renderEndTime > wormSegment.endTime) {
+            renderEndTime = wormSegment.endTime;
+        }
+
         var startPercentage = (renderStartTime - wormSegment.startTime) / wormSegment.duration;
+        var endPercentage = (renderEndTime - wormSegment.startTime) / wormSegment.duration;
 
         context.lineWidth = wormSegment.size;
         context.lineCap = "round";
@@ -34,47 +48,92 @@ module.exports = function WormBodyRenderer(options) {
         if (wormSegment.type === "straight") {
             var startX = wormSegment.startX + startPercentage*(wormSegment.endX - wormSegment.startX);
             var startY = wormSegment.startY + startPercentage*(wormSegment.endY - wormSegment.startY);
+            var endX = wormSegment.startX + endPercentage*(wormSegment.endX - wormSegment.startX);
+            var endY = wormSegment.startY + endPercentage*(wormSegment.endY - wormSegment.startY);
             context.moveTo(startX, startY);
-            context.lineTo(wormSegment.endX, wormSegment.endY);
+            context.lineTo(endX, endY);
         } else {
             // Arc
             if (wormSegment.speed > 0) {
                 var startAngle = wormSegment.arcStartAngle + startPercentage*wormSegment.arcAngleDiff;
-                context.arc(wormSegment.arcCenterX, wormSegment.arcCenterY, wormSegment.arcRadius, startAngle, wormSegment.arcEndAngle, wormSegment.arcAngleDiff < 0);
+                var endAngle = wormSegment.arcStartAngle + endPercentage*wormSegment.arcAngleDiff;
+                context.arc(wormSegment.arcCenterX, wormSegment.arcCenterY, wormSegment.arcRadius, startAngle, endAngle, wormSegment.arcAngleDiff < 0);
             }
         }
         context.stroke();
-    }
 
-    function clear() {
-        mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-        secondaryContext.clearRect(0, 0, secondaryCanvas.width, secondaryCanvas.height);
     }
 
     function render(gameState, renderStartTime, renderEndTime) {
-        var lastClearTime = gameStateFunctions.getLastClearTime(gameState, renderEndTime);
-        if (lastClearTime > renderStartTime && lastClearTime <= renderEndTime) {
-            clear();
+        secondaryContext.clearRect(0, 0, secondaryCanvas.width, secondaryCanvas.height);
+
+        // Check for clears
+        var performClear = false;
+        forEach(gameState.wormPathSegments, function (segments, wormId) {
+            var renderData = getWormRenderData(wormId);
+            for (var i = renderData.mainSegmentIndex; i < segments.length && segments[i].endTime <= renderEndTime; i++) {
+                if (segments[i].type === "clear") {
+                    renderData.mainSegmentIndex = i + 1;
+                    performClear = true;
+                }
+            }
+        });
+        if (performClear) {
+            // Move segmentIndex for each worm to be just after the last clear
+            forEach(gameState.wormPathSegments, function (segments, wormId) {
+                var renderData = getWormRenderData(wormId);
+                while (renderData.mainSegmentIndex > 0 && segments[renderData.mainSegmentIndex - 1].type !== "clear") {
+                    renderData.mainSegmentIndex--;
+                }
+            });
+            // Perform the clear
+            temporaryContext.drawImage(mainCanvas, 0, 0);
+            mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+            fadeStartTime = renderEndTime;
         }
 
-        secondaryContext.clearRect(0, 0, secondaryCanvas.width, secondaryCanvas.height);
-        gameState.worms.forEach(function (worm) {
-            var renderData = getWormRenderData(worm.id);
-            var segments = worm.pathSegments;
+        // Now render normally
+        forEach(gameState.wormPathSegments, function (segments, wormId) {
+            var renderData = getWormRenderData(wormId);
             if (segments.length > 0) {
-                var lastSegmentIndex = segments.length - 1;
                 // Render completed segments to the main canvas
-                for (var i = renderData.mainSegmentIndex; i < lastSegmentIndex; i++) {
-                    renderWormSegment(gameState, Math.max(segments[i].startTime, lastClearTime), worm.id, i, mainContext);
+                while (renderData.mainSegmentIndex < segments.length - 1 && segments[renderData.mainSegmentIndex].endTime <= renderEndTime) {
+                    renderWormSegment({
+                        gameState,
+                        wormId,
+                        wormSegmentId: renderData.mainSegmentIndex,
+                        context: mainContext
+                    });
                     renderData.mainSegmentIndex++;
                 }
                 // Render the last segment to the secondary canvas
-                renderWormSegment(gameState, Math.max(segments[lastSegmentIndex].startTime, lastClearTime), worm.id, lastSegmentIndex, secondaryContext);
+                if (renderData.mainSegmentIndex < segments.length) {
+                    renderWormSegment({
+                        gameState,
+                        renderEndTime,
+                        wormId,
+                        wormSegmentId: renderData.mainSegmentIndex,
+                        context: secondaryContext
+                    });
+                }
             }
         });
+
+        // Render fade animation
+        if (fadeStartTime !== undefined) {
+            fadeContext.clearRect(0, 0, fadeCanvas.width, fadeCanvas.height);
+            var fadeProgress = (renderEndTime - fadeStartTime) / CLEAR_FADE_DURATION;
+            if (fadeProgress > 1) {
+                fadeStartTime = undefined;
+                temporaryContext.clearRect(0, 0, temporaryCanvas.width, temporaryCanvas.height);
+            } else {
+                fadeContext.globalAlpha = 1 - fadeProgress;
+                fadeContext.drawImage(temporaryCanvas, 0, 0);
+            }
+        }
     }
 
     return {
         render: render
     };
-}
+};

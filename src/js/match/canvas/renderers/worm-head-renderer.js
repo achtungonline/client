@@ -1,13 +1,19 @@
+var WORM_HEAD_COLOR = "#FFB74D"; // 300 orange
+var forEach = require("core/src/core/util/for-each.js");
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
-var WORM_HEAD_COLOR = "#FFB74D"; // 300 orange
-
-module.exports = function WormHeadRenderer(options) {
-    var playerConfigs = options.playerConfigs;
-    var shapeRenderer = options.shapeRenderer;
-    var canvas = options.canvas;
-    var drawTrajectories = options.drawTrajectories;
+module.exports = function WormHeadRenderer({ playerConfigs, canvas, drawTrajectories }) {
     var context = canvas.getContext("2d");
+    var wormRenderData = {};
+
+    function getWormRenderData(wormId) {
+        if (wormRenderData[wormId] === undefined) {
+            wormRenderData[wormId] = {
+                segmentIndex: 0
+            };
+        }
+        return wormRenderData[wormId];
+    }
 
     function drawHead(x, y, size) {
         context.fillStyle = WORM_HEAD_COLOR;
@@ -79,22 +85,31 @@ module.exports = function WormHeadRenderer(options) {
 
     function render(gameState, renderStartTime, renderEndTime) {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        gameState.worms.forEach(function (worm) {
-            if (gameStateFunctions.isPlayerAlive(gameState, worm.playerId)) {
-                var segments = worm.pathSegments;
-                if (segments.length > 0) {
-                    var segment = segments[segments.length - 1];
-                    var x = segment.endX;
-                    var y = segment.endY;
-                    var direction = segment.endDirection;
+        forEach(gameState.wormPathSegments, function (segments, wormId) {
+            var renderData = getWormRenderData(wormId);
+            while (renderData.segmentIndex < segments.length - 1 && segments[renderData.segmentIndex + 1].startTime < renderEndTime) {
+                renderData.segmentIndex++;
+            }
+            if (segments.length > 0) {
+                var segment = segments[renderData.segmentIndex];
+                if (segment.type !== "clear") {
+                    var percentage = (Math.min(renderEndTime, segment.endTime) - segment.startTime) / (segment.endTime - segment.startTime);
+                    var x = segment.startX + percentage*(segment.endX - segment.startX);
+                    var y = segment.startY + percentage*(segment.endY - segment.startY);
+                    var direction = segment.startDirection + percentage*(segment.endDirection - segment.startDirection);
+                    if (segment.type === "arc") {
+                        var arcAngle = segment.arcStartAngle + percentage*(segment.arcEndAngle - segment.arcStartAngle);
+                        x = segment.arcCenterX + segment.arcRadius*Math.cos(arcAngle);
+                        y = segment.arcCenterY + segment.arcRadius*Math.sin(arcAngle);
+                    }
                     var size = segment.size;
                     var color = playerConfigs.find(pc => pc.id === segment.playerId).color.hexCode;
-                    if (gameState.phase === "startPhase") {
+                    if (segment.type === "still_arc") {
                         drawArrow(x, y, direction, size, color);
                     }
                     drawHead(x, y, size, color);
                     if(drawTrajectories) {
-                        drawTrajectory(worm, color);
+                        drawTrajectory(gameStateFunctions.getWorm(gameState, wormId), color);
                     }
                 }
             }

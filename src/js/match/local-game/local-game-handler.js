@@ -1,31 +1,15 @@
 var PlayerSteeringListener = require("./player-steering-listener.js");
-var DeltaTimeHandler = require("./delta-time-handler.js");
 var requestFrame = require("./request-frame.js");
 
 
-/**
- * Game wrapper responsible of handling the game on the client. Other can listen on the LocalGameHandler for events and get the current state.
- * NOTE: If the game is never stopped (paused forever or for some other reason), the playerSteeringListener can cause memory leaks.
- * @constructor
- */
-
-//TODO: has shared functions with replay-game-handler
-module.exports = function LocalGameHandler(options) {
-    var game = options.game;
-    var playerConfigs = options.playerConfigs;
-    var deltaTimeHandler = DeltaTimeHandler(requestFrame);
+module.exports = function LocalGameHandler({ game, playerConfigs }) {
 
     var playerSteeringListener = PlayerSteeringListener(game);
 
     var localGameState = {
-        paused: false
+        paused: false,
+        previousUpdateTime: 0
     };
-
-    function requestNextUpdate() {
-        deltaTimeHandler.update(localGameState, function onUpdateTick(deltaTime) {
-            update(deltaTime);
-        });
-    }
 
     function setupSteeringListenerEvents(game, playerConfigs) {
         var players = game.gameState.players;
@@ -39,18 +23,22 @@ module.exports = function LocalGameHandler(options) {
 
     function start() {
         setupSteeringListenerEvents(game, playerConfigs);
+        localGameState.previousUpdateTime = Date.now();
         game.start();
-        deltaTimeHandler.start(localGameState);
-        requestNextUpdate();
+        requestFrame(update);
     }
 
-    function update(deltaTime) {
+    function update() {
+        var currentTime = Date.now();
         if (!localGameState.paused) {
+            var deltaTime = (currentTime - localGameState.previousUpdateTime) / 1000;
+
             game.update(deltaTime);
         }
+        localGameState.previousUpdateTime = currentTime;
 
         if (game.isActive()) {
-            requestNextUpdate();
+            requestFrame(update);
         }
     }
 

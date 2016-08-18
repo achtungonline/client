@@ -1,4 +1,5 @@
 var React = require("react");
+var idGenerator = require("core/src/core/util/id-generator.js").indexCounterId(0);
 
 var NewMatchComponent = require("./newMatch/component.js");
 var MatchComponent = require("./match/component.js");
@@ -136,7 +137,6 @@ module.exports = React.createClass({
         var secondName = getRandomUnusedName([{name: firstName}]);
         return {
             view: this.props.initialView || "newMatch",
-            nextId: 2,
             players: [
                 {
                     bot: false,
@@ -144,7 +144,7 @@ module.exports = React.createClass({
                     name: firstName,
                     left: availableKeyBindings[0].left,
                     right: availableKeyBindings[0].right,
-                    id: 0
+                    id: idGenerator()
                 },
                 {
                     bot: true,
@@ -152,13 +152,12 @@ module.exports = React.createClass({
                     name: secondName,
                     left: availableKeyBindings[1].left,
                     right: availableKeyBindings[1].right,
-                    id: 1
+                    id: idGenerator()
                 }
             ],
             matchConfig: null,
             match: null,
             selectedMap: "Square 500",
-            roundsData: [],
             maxScore: 5,
             maxScoreManuallyChanged: false
         };
@@ -186,18 +185,18 @@ module.exports = React.createClass({
             page = <MatchComponent match={this.state.match}
                                    matchConfig={this.state.matchConfig}
                                    players={this.state.players}
-                                   onGameOver={this.addRoundsData}
+                                   onGameOver={this.state.match.addRoundData}
                                    onMatchOverAction={this.endMatch}
             />;
 
         } else if (this.state.view === "replayRound") {
-            var roundData = this.state.roundsData[this.state.replayRoundId];
+            var roundData = this.state.match.matchState.roundsData[this.state.replayRoundId];
             page = (
                 <div className="m-x-3">
                     <ReplayComponent
                         match={this.state.match}
-                        roundStartScore={roundData.roundStartScore}
-                        gameHistory={roundData.gameHistory}
+                        startScore={roundData.startScore}
+                        gameState={roundData.gameState}
                         players={this.state.players}
                         maxScore={this.state.match.matchState.maxScore}
                         onReplayGameOver={function() {}}
@@ -208,7 +207,6 @@ module.exports = React.createClass({
         } else if (this.state.view === "matchOver") {
             page = <MatchOverComponent matchState={this.state.match.matchState}
                                        players={this.state.players}
-                                       roundsData={this.state.roundsData}
                                        onRestartAction={this.startMatch}
                                        onExitAction={this.newMatch}
                                        onRoundClick={this.replayRound}
@@ -247,7 +245,7 @@ module.exports = React.createClass({
         } else if (mapType === "Rectangle") {
             matchConfig.map = CoreGameStateFunctions.createMapRectangle(selectedMap, mapWidth, mapHeight);
         } else if (mapType === "Circle") {
-            matchConfig.map = CoreGameStateFunctions.createMapCircle(selectedMap, mapWidth);
+            matchConfig.map = CoreGameStateFunctions.createMapCircle(selectedMap, mapWidth/2);
         }
 
         matchConfig.maxScore = this.state.maxScore;
@@ -256,7 +254,7 @@ module.exports = React.createClass({
     startMatch: function () {
         var matchConfig = this.getMatchConfig();
         var match = CoreMatchFactory().create({matchConfig: matchConfig});
-        this.setState({roundsData: [], matchConfig: matchConfig, match: match, view: "match"});
+        this.setState({matchConfig: matchConfig, match: match, view: "match"});
     },
     endMatch: function () {
         this.setState({view: "matchOver"})
@@ -286,15 +284,11 @@ module.exports = React.createClass({
                     name: name,
                     left: keyBinding.left,
                     right: keyBinding.right,
-                    id: prevState.nextId
+                    id: idGenerator()
                 }]),
-                nextId: prevState.nextId + 1,
                 maxScore: prevState.maxScoreManuallyChanged ? prevState.maxScore : prevState.maxScore + SCORE_INCREASE
             };
         });
-    },
-    addRoundsData: function (roundsData) {
-        this.state.roundsData.push(roundsData);
     },
     changeName: function (playerId, name) {
         this.setState(function (oldState) {

@@ -1,5 +1,3 @@
-var Animator = require("../animation/animator.js");
-
 var forEach = require("core/src/core/util/for-each.js");
 
 var POWERUP_SPAWN_DURATION = 0.3;
@@ -26,89 +24,72 @@ var POWERUP_IMAGE_URLS = {
 };
 
 
-module.exports = function PowerUpRenderer(options) {
+module.exports = function PowerUpRenderer({ canvas }) {
 
-    var canvas = options.canvas;
     var context = canvas.getContext("2d");
 
-    var animator = Animator();
-
+    var powerUpEventIndex = 0;
     var powerUpRenderData = {};
 
     function updateRenderData(gameState, renderStartTime, renderEndTime) {
-        forEach(powerUpRenderData, function (renderData) {
-            renderData.activeCurrentUpdate = false;
-        });
-        gameState.powerUps.forEach(function renderPowerUp(powerUp) {
-            if (powerUpRenderData[powerUp.id] === undefined) {
-                // New powerUp spawned
-                var renderData = {
+        var powerUpEvents = gameState.powerUpEvents;
+        while (powerUpEventIndex < powerUpEvents.length && powerUpEvents[powerUpEventIndex].time <= renderEndTime) {
+            var powerUpEvent = powerUpEvents[powerUpEventIndex];
+            powerUpEventIndex++;
+            if (powerUpEvent.type === "spawn") {
+                var powerUp = powerUpEvent.powerUp;
+                powerUpRenderData[powerUp.id] = {
                     centerX: powerUp.shape.centerX,
                     centerY: powerUp.shape.centerY,
-                    radius: 0,
+                    radius: powerUp.shape.radius,
                     color: POWERUP_COLORS[powerUp.affects],
                     name: powerUp.name,
-                    active: true,
-                    activeCurrentUpdate: true,
-                    visibleText: false
+                    spawnTime: powerUpEvent.time,
+                    despawnTime: Infinity
                 };
-                powerUpRenderData[powerUp.id] = renderData;
-
-                animator.startAnimation({
-                    item: renderData,
-                    property: "radius",
-                    change: powerUp.shape.radius,
-                    startTime: renderStartTime,
-                    duration: POWERUP_SPAWN_DURATION,
-                    endCallback: function () {
-                        renderData.visibleText = true;
-                    }
-                });
+            } else if (powerUpEvent.type === "despawn") {
+                powerUpRenderData[powerUpEvent.id].despawnTime = powerUpEvent.time;
             } else {
-                powerUpRenderData[powerUp.id].activeCurrentUpdate = true;
+                throw new Error("Unknown powerUp event type: " + powerUpEvent.type);
             }
-        });
+        }
         forEach(powerUpRenderData, function (renderData, id) {
-            if (renderData.active && !renderData.activeCurrentUpdate) {
-                // PowerUp despawned
-                renderData.visibleText = false;
-                renderData.active = false;
-                animator.startAnimation({
-                    item: renderData,
-                    property: "radius",
-                    change: -renderData.radius,
-                    startTime: renderStartTime,
-                    duration: POWERUP_DESPAWN_DURATION,
-                    endCallback: function () {
-                        delete powerUpRenderData[id];
-                    }
-                });
+            if (renderEndTime - renderData.despawnTime >= POWERUP_DESPAWN_DURATION) {
+                delete powerUpRenderData[id];
             }
         });
     }
 
-    function renderPowerUps() {
+    function renderPowerUps(renderTime) {
         forEach(powerUpRenderData, function (renderData) {
+            var radius = renderData.radius;
+            var text = "";
+            if (renderTime < renderData.spawnTime + POWERUP_SPAWN_DURATION) {
+                radius *= (renderTime - renderData.spawnTime) / POWERUP_SPAWN_DURATION;
+            } else if (renderTime > renderData.despawnTime) {
+                radius *= (renderData.despawnTime + POWERUP_DESPAWN_DURATION - renderTime) / POWERUP_DESPAWN_DURATION;
+            } else {
+                text = renderData.name;
+            }
+
             var powerUpImageUrl = POWERUP_IMAGE_URLS[renderData.name];
 
             if (powerUpImageUrl) {
                 var imageElement = document.createElement('img');
                 imageElement.src = powerUpImageUrl;
-                context.drawImage(imageElement, renderData.centerX - renderData.radius, renderData.centerY - renderData.radius, renderData.radius * 2, renderData.radius * 2);
+                context.drawImage(imageElement, renderData.centerX - radius, renderData.centerY - radius, radius * 2, radius * 2);
             } else {
                 // We have no image yet, use default behaviour
                 context.fillStyle = renderData.color;
                 context.beginPath();
-                context.arc(renderData.centerX, renderData.centerY, renderData.radius, 0, 2 * Math.PI);
+                context.arc(renderData.centerX, renderData.centerY, radius, 0, 2 * Math.PI);
                 context.fill();
 
-                if (renderData.visibleText) {
-                    context.font = "14px Arial";
-                    context.textAlign = "center";
-                    context.textBaseline = "middle";
-                    context.fillStyle = "white";
-                    context.fillText(renderData.name, renderData.centerX, renderData.centerY);
-                }
+                context.font = "14px Arial";
+                context.textAlign = "center";
+                context.textBaseline = "middle";
+                context.fillStyle = "white";
+                context.fillText(text, renderData.centerX, renderData.centerY);
             }
         });
     }
@@ -116,9 +97,8 @@ module.exports = function PowerUpRenderer(options) {
     function render(gameState, renderStartTime, renderEndTime) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         updateRenderData(gameState, renderStartTime, renderEndTime);
-        animator.update(renderStartTime, renderEndTime);
-        renderPowerUps();
-    };
+        renderPowerUps(renderEndTime);
+    }
 
     return {
         render: render

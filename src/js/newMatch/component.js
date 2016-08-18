@@ -112,7 +112,9 @@ var GamePreview = React.createClass({
 
 
         var gameCanvasRenderer = GameCanvasRenderer({gameState: localGame.gameState, playerConfigs: this.props.players, scale: scale, mapBorderWidth: mapBorderWidth});
-        this.localGame.on(localGame.events.GAME_UPDATED, gameCanvasRenderer.render);
+        this.localGame.on(localGame.events.GAME_UPDATED, function() {
+            gameCanvasRenderer.render();
+        });
         var container = this.refs.gameCanvas;
         container.innerHTML = "";
         container.appendChild(gameCanvasRenderer.container);

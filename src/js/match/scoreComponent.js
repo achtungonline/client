@@ -1,20 +1,23 @@
 var React = require("react");
-var scoreUtils = require("./../score-utils.js");
-var gameStateFunctions = require("core/src/core/game-state-functions.js");
+var scoreUtil = require("core/src/core/score/score-util.js");
 
-module.exports = function Score({ startScoreState, scoreState, players, gameState, maxScore }) {
-    var scoreTableRows = scoreUtils.sort(players.slice(0), scoreState).map(function (player) {
-        var roundStartScore = startScoreState.score[player.id] || 0;
-        var score = scoreState.score[player.id] || 0;
-        var thisRoundScore = score - roundStartScore;
-        var roundScore = (thisRoundScore ? " +" + thisRoundScore : "");
-        var opacity = gameStateFunctions.isPlayerAlive(gameState, player.id) ? 1 : 0.25;
+module.exports = function Score({ startScore, roundScore, players, maxScore }) {
+
+    var combinedScore = scoreUtil.combineScores(startScore, roundScore);
+    var highestRoundScore = scoreUtil.getHighestScore(roundScore);
+
+
+    var scoreTableRows = scoreUtil.createSortedList(combinedScore).map(function (playerScore) {
+        var opacity = roundScore[playerScore.id] === highestRoundScore ? 1 : 0.25;
+        var player = players.find(function(p) {
+            return p.id === playerScore.id;
+        });
 
         return (
             <tr key={player.id} style={{opacity: opacity}}>
                 <td style={{color: player.color.hexCode}}>{player.name}</td>
-                <td>{score}</td>
-                <td style={{minWidth: "34px"}}>{roundScore}</td>
+                <td>{playerScore.score}</td>
+                <td style={{minWidth: "34px"}}>{roundScore[playerScore.id] ? " +" + roundScore[playerScore.id] : ""}</td>
             </tr>
         )
     });
@@ -32,4 +35,4 @@ module.exports = function Score({ startScoreState, scoreState, players, gameStat
             </table>
         </div>
     );
-}
+};
