@@ -1,11 +1,11 @@
 var React = require("react");
 
 var ReplayGameHandler = require("./local-game/replay/replay-game-handler.js");
-var clone = require("core/src/core/util/clone.js");
-var ScoreHandler = require("core/src/core/score-handler.js");
-
 var Score = require("./scoreComponent.js");
 var GameCanvasRenderer = require("./canvas/game-canvas-renderer.js");
+
+var scoreUtil = require("core/src/core/score/score-util.js");
+var clone = require("core/src/core/util/clone.js");
 
 function ReplayControls({ match, replayGame, onStartNextGameAction, onPauseAction, onExitAction }) {
     var game = match.getCurrentGame();
@@ -50,12 +50,14 @@ var ProgressBar = React.createClass({
 
 module.exports = React.createClass({
     displayName: "Replay",
+    getInitialState: function () {
+        return {
+            roundScore: scoreUtil.getStartScore(this.props.players)
+        }
+    },
     render: function () {
         var match = this.props.match;
         var replayGame = this.state.replayGame;
-        var startScoreState = this.props.roundStartScore;
-        var scoreState = this.state.scoreState;
-        var gameState = this.props.gameState;
         var players = this.props.players;
         var maxScore = this.props.maxScore;
 
@@ -66,7 +68,7 @@ module.exports = React.createClass({
                     <ProgressBar ref="progressBar" progress={replayGame.getReplayProgress()} />
                 </div>
                 <div className="m-l-2" style={{width: "290px"}}>
-                    <Score startScoreState={startScoreState} scoreState={scoreState} gameState={gameState} players={players} maxScore={maxScore}/>
+                    <Score startScore={this.props.startScore} roundScore={this.state.roundScore} players={players} maxScore={maxScore}/>
                     <ReplayControls match={match} replayGame={replayGame} onStartNextGameAction={this.props.onStartNextGameAction} onPauseAction={this.pauseGame} onExitAction={this.props.onExitAction}/>
                 </div>
             </div>
@@ -82,11 +84,8 @@ module.exports = React.createClass({
     },
     componentWillUnmount: function () {
         this.state.replayGame.stop();
-        // var scoreHandler = this.scoreHandler;
-        // this.scoreHandler && this.scoreHandler.off(scoreHandler.events.SCORE_UPDATED, this.onScoreUpdated);
     },
     startReplay: function () {
-        var roundStartScore = this.props.roundStartScore;
         var thisComponent = this;
 
         var gameCanvasRenderer = GameCanvasRenderer({gameState: this.props.gameState, playerConfigs: this.props.players});
@@ -96,20 +95,15 @@ module.exports = React.createClass({
                 gameCanvasRenderer.render({
                     renderTime: replayTime
                 });
-                thisComponent.forceUpdate();
+                thisComponent.setState({ roundScore: scoreUtil.calculateRoundScore(thisComponent.props.gameState, replayTime)});
             },
             onReplayOver: this.props.onReplayGameOver
         });
 
-        var replayScoreState = {};
-        replayScoreState.score = clone(roundStartScore.score);
-        replayScoreState.roundWinners = roundStartScore.roundWinners.slice();
-        // var scoreHandler = ScoreHandler({game: replayGame, scoreState: replayScoreState});
-        // scoreHandler.on(scoreHandler.events.SCORE_UPDATED, this.onScoreUpdated);
-        // this.scoreHandler = scoreHandler;
+        var roundScore = scoreUtil.getStartScore(this.props.players);
 
         replayGame.start();
-        this.setState({scoreState: replayScoreState, replayGame: replayGame, gameCanvasRenderer: gameCanvasRenderer});
+        this.setState({ roundScore, replayGame, gameCanvasRenderer });
     },
     pauseGame: function () {
         if (this.state.replayGame.isPaused()) {

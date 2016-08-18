@@ -24,9 +24,8 @@ var POWERUP_IMAGE_URLS = {
 };
 
 
-module.exports = function PowerUpRenderer(options) {
+module.exports = function PowerUpRenderer({ canvas }) {
 
-    var canvas = options.canvas;
     var context = canvas.getContext("2d");
 
     var powerUpEventIndex = 0;

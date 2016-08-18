@@ -1,9 +1,6 @@
 var requestFrame = require("./../request-frame.js");
 
-module.exports = function Replay(options) {
-    var onReplayUpdate = options.onReplayUpdate;
-    var onReplayOver = options.onReplayOver;
-    var gameState = options.gameState;
+module.exports = function ReplayGameHandler({ onReplayUpdate, onReplayOver, gameState }) {
 
     var localGameState = {
         paused: false,
@@ -12,14 +9,13 @@ module.exports = function Replay(options) {
         previousUpdateTime: 0
     };
 
-
     function update() {
         var currentTime = Date.now();
         if (!localGameState.paused) {
             var deltaTime = (currentTime - localGameState.previousUpdateTime) / 1000;
 
+            onReplayUpdate(localGameState.replayTime, localGameState.replayTime + deltaTime);
             localGameState.replayTime += deltaTime;
-            onReplayUpdate(localGameState.replayTime);
 
             if (localGameState.replayTime >= gameState.gameTime) {
                stop();

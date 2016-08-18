@@ -1,9 +1,8 @@
 var WORM_HEAD_COLOR = "#FFB74D"; // 300 orange
+var forEach = require("core/src/core/util/for-each.js");
+var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
-module.exports = function WormHeadRenderer(options) {
-    var playerConfigs = options.playerConfigs;
-    var canvas = options.canvas;
-    var drawTrajectories = options.drawTrajectories;
+module.exports = function WormHeadRenderer({ playerConfigs, canvas, drawTrajectories }) {
     var context = canvas.getContext("2d");
     var wormRenderData = {};
 
@@ -86,9 +85,8 @@ module.exports = function WormHeadRenderer(options) {
 
     function render(gameState, renderStartTime, renderEndTime) {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        gameState.worms.forEach(function (worm) {
-            var segments = gameState.wormPathSegments[worm.id];
-            var renderData = getWormRenderData(worm.id);
+        forEach(gameState.wormPathSegments, function (segments, wormId) {
+            var renderData = getWormRenderData(wormId);
             while (renderData.segmentIndex < segments.length - 1 && segments[renderData.segmentIndex + 1].startTime < renderEndTime) {
                 renderData.segmentIndex++;
             }
@@ -111,7 +109,7 @@ module.exports = function WormHeadRenderer(options) {
                     }
                     drawHead(x, y, size, color);
                     if(drawTrajectories) {
-                        drawTrajectory(worm, color);
+                        drawTrajectory(gameStateFunctions.getWorm(gameState, wormId), color);
                     }
                 }
             }

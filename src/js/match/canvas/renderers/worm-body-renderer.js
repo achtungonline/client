@@ -1,14 +1,11 @@
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
+var forEach = require("core/src/core/util/for-each.js");
 
-var CLEAR_FADE_DURATION = 0.3;
+var CLEAR_FADE_DURATION = 0.2;
 
-module.exports = function WormBodyRenderer(options) {
-    var playerConfigs = options.playerConfigs;
-    var fadeCanvas = options.fadeCanvas;
+module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanvas, secondaryCanvas }) {
     var fadeContext = fadeCanvas.getContext("2d");
-    var mainCanvas = options.mainCanvas;
     var mainContext = mainCanvas.getContext("2d");
-    var secondaryCanvas = options.secondaryCanvas;
     var secondaryContext = secondaryCanvas.getContext("2d");
     var temporaryCanvas = document.createElement("canvas");
     temporaryCanvas.width = fadeCanvas.width;
@@ -27,14 +24,7 @@ module.exports = function WormBodyRenderer(options) {
         return wormRenderData[wormId];
     }
 
-    function renderWormSegment(renderOptions) {
-        var gameState = renderOptions.gameState;
-        var renderStartTime = renderOptions.renderStartTime;
-        var renderEndTime = renderOptions.renderEndTime;
-        var wormId = renderOptions.wormId;
-        var wormSegmentId = renderOptions.wormSegmentId;
-        var context = renderOptions.context;
-
+    function renderWormSegment({ gameState, renderStartTime, renderEndTime, wormId, wormSegmentId, context }) {
         var wormSegment = gameState.wormPathSegments[wormId][wormSegmentId];
         if (wormSegment.jump || wormSegment.type === "still_arc" || wormSegment.type === "clear" || renderStartTime >= wormSegment.endTime) {
             return;
@@ -79,9 +69,8 @@ module.exports = function WormBodyRenderer(options) {
 
         // Check for clears
         var performClear = false;
-        gameState.worms.forEach(function (worm) {
-            var renderData = getWormRenderData(worm.id);
-            var segments = gameState.wormPathSegments[worm.id];
+        forEach(gameState.wormPathSegments, function (segments, wormId) {
+            var renderData = getWormRenderData(wormId);
             for (var i = renderData.mainSegmentIndex; i < segments.length && segments[i].endTime <= renderEndTime; i++) {
                 if (segments[i].type === "clear") {
                     renderData.mainSegmentIndex = i + 1;
@@ -91,9 +80,8 @@ module.exports = function WormBodyRenderer(options) {
         });
         if (performClear) {
             // Move segmentIndex for each worm to be just after the last clear
-            gameState.worms.forEach(function (worm) {
-                var renderData = getWormRenderData(worm.id);
-                var segments = gameState.wormPathSegments[worm.id];
+            forEach(gameState.wormPathSegments, function (segments, wormId) {
+                var renderData = getWormRenderData(wormId);
                 while (renderData.mainSegmentIndex > 0 && segments[renderData.mainSegmentIndex - 1].type !== "clear") {
                     renderData.mainSegmentIndex--;
                 }
@@ -105,15 +93,14 @@ module.exports = function WormBodyRenderer(options) {
         }
 
         // Now render normally
-        gameState.worms.forEach(function (worm) {
-            var renderData = getWormRenderData(worm.id);
-            var segments = gameState.wormPathSegments[worm.id];
+        forEach(gameState.wormPathSegments, function (segments, wormId) {
+            var renderData = getWormRenderData(wormId);
             if (segments.length > 0) {
                 // Render completed segments to the main canvas
                 while (renderData.mainSegmentIndex < segments.length - 1 && segments[renderData.mainSegmentIndex].endTime <= renderEndTime) {
                     renderWormSegment({
-                        gameState: gameState,
-                        wormId: worm.id,
+                        gameState,
+                        wormId,
                         wormSegmentId: renderData.mainSegmentIndex,
                         context: mainContext
                     });
@@ -122,9 +109,9 @@ module.exports = function WormBodyRenderer(options) {
                 // Render the last segment to the secondary canvas
                 if (renderData.mainSegmentIndex < segments.length) {
                     renderWormSegment({
-                        gameState: gameState,
-                        renderEndTime: renderEndTime,
-                        wormId: worm.id,
+                        gameState,
+                        renderEndTime,
+                        wormId,
                         wormSegmentId: renderData.mainSegmentIndex,
                         context: secondaryContext
                     });

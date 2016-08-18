@@ -4,11 +4,9 @@ var WormHeadRenderer = require("./renderers/worm-head-renderer.js");
 var PowerUpRenderer = require("./renderers/power-up-renderer.js");
 var WormBodyRenderer = require("./renderers/worm-body-renderer.js");
 
-module.exports = function GameCanvasRenderer(options) {
-    var gameState = options.gameState;
-    var playerConfigs = options.playerConfigs;
-    var scale = options.scale || 1;
-    var mapBorderWidth = options.mapBorderWidth || 10;
+module.exports = function GameCanvasRenderer({ gameState, playerConfigs, scale, mapBorderWidth }) {
+    scale = scale || 1;
+    mapBorderWidth = mapBorderWidth || 10;
 
     var gameCanvasContainer = document.createElement("div");
     gameCanvasContainer.className = "ao-game-area";

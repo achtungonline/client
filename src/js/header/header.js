@@ -22,7 +22,6 @@ module.exports = React.createClass({
         )
     },
     componentDidMount: function () {
-        console.log("Mounted");
         (function (d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
             if (d.getElementById(id)) {

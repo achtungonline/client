@@ -1,12 +1,9 @@
 var MAP_BACKGROUND_COLOR = "#faf7ed";
 var MAP_BORDER_COLOR = "black";
 
-module.exports = function MapRenderer(options) {
+module.exports = function MapRenderer({ canvas, shapeRenderer, borderWidth }) {
 
-    var canvas = options.canvas;
     var context = canvas.getContext("2d");
-    var shapeRenderer = options.shapeRenderer;
-    var borderWidth = options.borderWidth;
     var rendered = false;
 
     var render = function (gameState, renderStartTime, renderEndTime) {
