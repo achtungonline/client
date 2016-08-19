@@ -5,9 +5,9 @@
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="slowturn" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <path d="M51,101 C78.6142375,101 101,78.6142375 101,51 C101,23.3857625 78.6142375,1 51,1 C23.3857625,1 1,23.3857625 1,51 C1,78.6142375 23.3857625,101 51,101 Z" id="Oval-1" fill="#FF0B0B"></path>
+        <!--<path d="M51,101 C78.6142375,101 101,78.6142375 101,51 C101,23.3857625 78.6142375,1 51,1 C23.3857625,1 1,23.3857625 1,51 C1,78.6142375 23.3857625,101 51,101 Z" id="Oval-1" fill="#FF0B0B"></path>-->
         <path d="M78.6935461,38.4487046 C41.3523388,48.5184306 31.4764838,64.8878335 24.9548741,71.492833" id="Path-2" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"></path>
-        <circle id="Oval-2" fill="#FF0000" cx="79.7748601" cy="38.7748601" r="7.77486009"></circle>
+        <!--<circle id="Oval-2" fill="#FF0000" cx="79.7748601" cy="38.7748601" r="7.77486009"></circle>-->
         <circle id="Oval-2" fill="#FFFFFF" cx="79.5" cy="38.5" r="5.5"></circle>
     </g>
 </svg>

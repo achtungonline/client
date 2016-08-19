@@ -5,7 +5,6 @@
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="quickturn" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <path d="M51,101 C78.6142375,101 101,78.6142375 101,51 C101,23.3857625 78.6142375,1 51,1 C23.3857625,1 1,23.3857625 1,51 C1,78.6142375 23.3857625,101 51,101 Z" id="Oval-1" fill="#008000"></path>
         <path d="M20.6808131,50.6225562 C25.6592767,45.6171866 35,36.2414887 35,36.2414887 C57.5237751,14.5733145 87.0837936,46.5718938 65.5914688,67.208167 C65.5914688,67.208167 57.5381245,74.7000756 55.1175025,76.7144224" id="Path-2" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"></path>
         <circle id="Oval-2" fill="#008000" cx="51.7748601" cy="79.7748601" r="6.77486009"></circle>
         <circle id="Oval-2" fill="#FFFFFF" cx="51.5" cy="79.5" r="5.5"></circle>

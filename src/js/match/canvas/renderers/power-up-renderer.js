@@ -3,9 +3,9 @@ var forEach = require("core/src/core/util/for-each.js");
 var POWERUP_SPAWN_DURATION = 0.3;
 var POWERUP_DESPAWN_DURATION = 0.1;
 var POWERUP_COLORS = {
-    "self": "green",
-    "others": "red",
-    "all": "blue"
+    "self": "#008000",
+    "others": "#FF0B0B",
+    "all": "#3453BC"
 };
 
 var POWERUP_IMAGE_URLS = {
@@ -73,18 +73,17 @@ module.exports = function PowerUpRenderer({ canvas }) {
             }
 
             var powerUpImageUrl = POWERUP_IMAGE_URLS[renderData.name];
-
+            context.fillStyle = renderData.color;
+            context.beginPath();
+            context.arc(renderData.centerX, renderData.centerY, radius, 0, 2 * Math.PI);
+            context.fill();
             if (powerUpImageUrl) {
+                context.beginPath();
                 var imageElement = document.createElement('img');
                 imageElement.src = powerUpImageUrl;
                 context.drawImage(imageElement, renderData.centerX - radius, renderData.centerY - radius, radius * 2, radius * 2);
             } else {
                 // We have no image yet, use default behaviour
-                context.fillStyle = renderData.color;
-                context.beginPath();
-                context.arc(renderData.centerX, renderData.centerY, radius, 0, 2 * Math.PI);
-                context.fill();
-
                 context.font = "14px Arial";
                 context.textAlign = "center";
                 context.textBaseline = "middle";
