@@ -14,10 +14,10 @@ module.exports = function ReplayGameHandler({ onReplayUpdate, onReplayOver, game
         if (!localGameState.paused) {
             var deltaTime = (currentTime - localGameState.previousUpdateTime) / 1000;
 
-            onReplayUpdate(localGameState.replayTime, localGameState.replayTime + deltaTime);
             localGameState.replayTime += deltaTime;
+            onReplayUpdate(localGameState.replayTime);
 
-            if (localGameState.replayTime >= gameState.gameTime) {
+            if (localGameState.replayTime > gameState.gameTime) {
                stop();
             }
         }

@@ -1,6 +1,8 @@
 var React = require("react");
 var scoreUtil = require("core/src/core/score/score-util.js");
+
 var GameCanvasRenderer = require("./../match/canvas/game-canvas-renderer.js");
+var ScoreGraph = require("./scoreGraph.js");
 
 var RoundCanvas = React.createClass({
     render: function () {
@@ -80,21 +82,34 @@ module.exports = React.createClass({
 
         return (
             <div className="m-x-2">
-                <div className="m-b-3 m-r-3" style={{width: "455px"}}>
-                    <table className="table table-score">
-                        <tbody>
-                        {scoreTableRows}
-                        </tbody>
-                    </table>
-                    <div className="flex flex-space-between">
-                        <button className="btn btn-primary" onClick={this.props.onRestartAction}>Restart</button>
-                        <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
+                <div className="flex flex-no-wrap">
+                    <div className="m-b-3 m-r-3 flex flex-column flex-space-between" style={{width: "455px"}}>
+                        <table className="table table-score">
+                            <tbody>
+                            {scoreTableRows}
+                            </tbody>
+                        </table>
+                        <div className="flex flex-space-between">
+                            <button className="btn btn-primary" onClick={this.props.onRestartAction}>Restart</button>
+                            <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
+                        </div>
                     </div>
+                    <div ref="scoreGraphContainer" className="m-b-3 flex-self-center"></div>
                 </div>
                 <div className="flex">
                     {roundElements}
                 </div>
             </div>
         );
+    },
+    componentDidMount: function () {
+        var scoreGraphContainer = this.refs.scoreGraphContainer;
+
+        var scoreGraph = ScoreGraph({
+            scoreGraphContainer,
+            roundsData: this.props.matchState.roundsData,
+            playerConfigs: this.props.players
+        });
+        scoreGraph.animate();
     }
 });

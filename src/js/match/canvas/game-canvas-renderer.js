@@ -6,7 +6,7 @@ var WormBodyRenderer = require("./renderers/worm-body-renderer.js");
 
 module.exports = function GameCanvasRenderer({ gameState, playerConfigs, scale, mapBorderWidth }) {
     scale = scale || 1;
-    mapBorderWidth = mapBorderWidth || 10;
+    mapBorderWidth = mapBorderWidth !== undefined ? mapBorderWidth : 10;
 
     var gameCanvasContainer = document.createElement("div");
     gameCanvasContainer.className = "ao-game-area";
