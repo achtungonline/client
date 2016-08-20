@@ -4,10 +4,10 @@ var scoreUtil = require("core/src/core/score/score-util.js");
 var GameCanvasRenderer = require("./canvas/game-canvas-renderer.js");
 var Score = require("./scoreComponent.js");
 
-function MatchControls({ match, onStartNextGameAction, isPaused, onPauseAction, onExitAction, onReplayAction }) {
+function MatchControls({ match, onStartNextGameAction, isPaused, onTogglePauseAction, onExitAction, onReplayAction }) {
     var game = match.getCurrentGame();
     var startNextGameButton = game && game.isGameOver() && !match.isMatchOver() ? <button className="btn btn-primary" onClick={onStartNextGameAction}>Start next game</button> : null;
-    var pauseButton = game.isGameOver() ? null : <button className="btn btn-primary" onClick={onPauseAction}>{isPaused ? "Resume" : "Pause"}</button>;
+    var pauseButton = game.isGameOver() ? null : <button className="btn btn-primary" onClick={onTogglePauseAction}>{isPaused ? "Resume" : "Pause"}</button>;
     var exitButton = match.isMatchOver() ? <button className="btn btn-primary" onClick={onExitAction}>Game Over</button> : <button className="btn btn-secondary" onClick={onExitAction}>Exit</button>;
     var replayButton = onReplayAction && game && game.isGameOver() ? <button className="btn btn-secondary" onClick={onReplayAction}>Watch replay</button> : null;
 
@@ -51,7 +51,7 @@ module.exports = React.createClass({
                 </div>
                 <div className="m-l-2" style={{width: "290px"}}>
                     <Score startScore={this.props.startScore} roundScore={roundScore} players={players} maxScore={maxScore}/>
-                    <MatchControls match={match} onStartNextGameAction={this.props.onStartNextGameAction} isPaused={this.props.isPaused} onPauseAction={this.props.onPauseAction} onExitAction={this.props.onExitAction} onReplayAction={this.props.onReplayAction}/>
+                    <MatchControls match={match} onStartNextGameAction={this.props.onStartNextGameAction} isPaused={this.props.isPaused} onTogglePauseAction={this.props.onTogglePauseAction} onExitAction={this.props.onExitAction} onReplayAction={this.props.onReplayAction}/>
                 </div>
             </div>
         );

@@ -53,6 +53,7 @@ module.exports = function ReplayGameHandler({ onReplayUpdate, onReplayOver, game
 
     function resume() {
         localGameState.paused = false;
+        localGameState.previousUpdateTime = Date.now();
     }
 
     function isPaused() {

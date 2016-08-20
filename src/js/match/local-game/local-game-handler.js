@@ -32,7 +32,6 @@ module.exports = function LocalGameHandler({ game, playerConfigs }) {
         var currentTime = Date.now();
         if (!localGameState.paused) {
             var deltaTime = (currentTime - localGameState.previousUpdateTime) / 1000;
-
             game.update(deltaTime);
         }
         localGameState.previousUpdateTime = currentTime;
@@ -48,6 +47,7 @@ module.exports = function LocalGameHandler({ game, playerConfigs }) {
 
     function resume() {
         localGameState.paused = false;
+        localGameState.previousUpdateTime = Date.now();
     }
 
     function isPaused() {

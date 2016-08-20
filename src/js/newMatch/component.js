@@ -3,6 +3,7 @@ var utils = require("./../utils.js");
 var CoreGameFactory = require("core/src/game-factory.js");
 var GameCanvasRenderer = require("../match/canvas/game-canvas-renderer.js");
 var LocalGameHandler = require("../match/local-game/local-game-handler.js");
+var windowFocusHandler = require("../window-focus-handler.js");
 
 var coreGameFactory = CoreGameFactory();
 
@@ -87,6 +88,9 @@ var GamePreview = React.createClass({
         );
     },
     componentDidMount: function () {
+        windowFocusHandler.startListening();
+        windowFocusHandler.on("focus", this.onWindowFocus);
+        windowFocusHandler.on("blur", this.onWindowBlur);
         this.componentDidUpdate();
     },
     componentDidUpdate: function () {
@@ -119,7 +123,14 @@ var GamePreview = React.createClass({
         container.innerHTML = "";
         container.appendChild(gameCanvasRenderer.container);
     },
+    onWindowFocus: function () {
+        this.localGame.resume();
+    },
+    onWindowBlur: function () {
+        this.localGame.pause();
+    },
     componentWillUnmount: function () {
+        windowFocusHandler.stopListening();
         if (this.localGame) {
             this.localGame.stop();
         }

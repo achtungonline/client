@@ -22,8 +22,6 @@ module.exports = React.createClass({
         }
     },
     render: function () {
-        var pausedDueToLostFocusElement = this.state.pausedDueToLostFocus ? <strong>Game lost focus!</strong> : null;
-
         var match = this.props.match;
         var game = this.state.localGame;
         var startScore = this.state.startScore;
@@ -53,7 +51,7 @@ module.exports = React.createClass({
                     startScore={startScore}
                     onStartNextGameAction={this.startNextGame}
                     isPaused={this.state.localGame.isPaused()}
-                    onPauseAction={this.pauseGame}
+                    onTogglePauseAction={this.togglePause}
                     onExitAction={this.exitGame}
                     onReplayAction={this.startReplay}
                 />
@@ -69,12 +67,15 @@ module.exports = React.createClass({
     },
     componentWillMount: function () {
         this.startNextGame();
+        windowFocusHandler.startListening();
+        windowFocusHandler.on("focus", this.onWindowFocus);
+        windowFocusHandler.on("blur", this.onWindowBlur);
     },
     componentWillUnmount: function () {
         windowFocusHandler.stopListening();
         this.state.localGame.stop();
     },
-    pauseGame: function () {
+    togglePause: function () {
         if (this.state.localGame.isPaused()) {
             this.state.localGame.resume();
         } else {
@@ -104,10 +105,6 @@ module.exports = React.createClass({
         localGame.on("gameOver", this.onGameOver);
 
         this.setState({isReplaying: false});
-
-        windowFocusHandler.startListening();
-        windowFocusHandler.on("focus", this.onWindowFocus);
-        windowFocusHandler.on("blur", this.onWindowBlur);
     },
     onScoreUpdated: function () {
         this.forceUpdate();
@@ -116,25 +113,23 @@ module.exports = React.createClass({
         var roundScore = scoreUtil.calculateRoundScore(this.state.localGame.gameState);
         var replayGameState = gameStateFunctions.extractReplayGameState(this.state.localGame.gameState);
         this.props.onGameOver({startScore: this.state.startScore, roundScore, gameState: replayGameState});
-        windowFocusHandler.stopListening();
         // So that the startNextGameButton shows
         this.forceUpdate();
     },
     onWindowFocus: function () {
-        //var thisComponent = this;
-        //setTimeout(function () {
-        //    thisComponent.setState({
-        //        pausedDueToLostFocus: false
-        //    });
-        //    this.pauseGame();
-        //}, 1000);
+        if (this.state.pausedDueToLostFocus) {
+            this.state.localGame.resume();
+            this.setState({
+                pausedDueToLostFocus: false
+            });
+        }
     },
     onWindowBlur: function () {
-        this.setState({
-            pausedDueToLostFocus: true
-        });
         if(!this.state.localGame.isPaused()) {
-            this.pauseGame();
+            this.state.localGame.pause();
+            this.setState({
+                pausedDueToLostFocus: true
+            });
         }
     },
     startReplay: function () {
