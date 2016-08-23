@@ -7,8 +7,8 @@ var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
 var windowFocusHandler = require("../window-focus-handler.js");
 
-var PlayComponent = require("./playComponent.js");
-var ReplayComponent = require("./replayComponent.js");
+var PlayComponent = require("./play-component.js");
+var ReplayComponent = require("./replay-component.js");
 
 module.exports = React.createClass({
     displayName: "Match",
@@ -67,12 +67,12 @@ module.exports = React.createClass({
     },
     componentWillMount: function () {
         this.startNextGame();
-        windowFocusHandler.startListening();
         windowFocusHandler.on("focus", this.onWindowFocus);
         windowFocusHandler.on("blur", this.onWindowBlur);
     },
     componentWillUnmount: function () {
-        windowFocusHandler.stopListening();
+        windowFocusHandler.off("focus", this.onWindowFocus);
+        windowFocusHandler.off("blur", this.onWindowBlur);
         this.state.localGame.stop();
     },
     togglePause: function () {

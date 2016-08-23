@@ -10,20 +10,20 @@ module.exports = function ReplayGameHandler({ onReplayUpdate, onReplayOver, game
     };
 
     function update() {
-        var currentTime = Date.now();
-        if (!localGameState.paused) {
-            var deltaTime = (currentTime - localGameState.previousUpdateTime) / 1000;
-
-            localGameState.replayTime += deltaTime;
-            onReplayUpdate(localGameState.replayTime);
-
-            if (localGameState.replayTime > gameState.gameTime) {
-               stop();
-            }
-        }
-        localGameState.previousUpdateTime = currentTime;
-
         if (localGameState.active) {
+            var currentTime = Date.now();
+            if (!localGameState.paused) {
+                var deltaTime = (currentTime - localGameState.previousUpdateTime) / 1000;
+
+                localGameState.replayTime += deltaTime;
+                onReplayUpdate(localGameState.replayTime);
+
+                if (localGameState.replayTime > gameState.gameTime) {
+                    stop();
+                }
+            }
+            localGameState.previousUpdateTime = currentTime;
+
             requestFrame(update);
         }
     }
@@ -41,6 +41,7 @@ module.exports = function ReplayGameHandler({ onReplayUpdate, onReplayOver, game
 
     function setReplayProgress(progress) {
         localGameState.replayTime = progress * gameState.gameTime;
+        onReplayUpdate(localGameState.replayTime);
     }
 
     function getReplayProgress() {

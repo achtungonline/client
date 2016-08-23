@@ -3,7 +3,7 @@ var forEach = require("core/src/core/util/for-each.js");
 
 var CLEAR_FADE_DURATION = 0.2;
 
-module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanvas, secondaryCanvas }) {
+module.exports = function WormBodyRenderer({ gameState, playerConfigs, fadeCanvas, mainCanvas, secondaryCanvas }) {
     var fadeContext = fadeCanvas.getContext("2d");
     var mainContext = mainCanvas.getContext("2d");
     var secondaryContext = secondaryCanvas.getContext("2d");
@@ -13,6 +13,7 @@ module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanv
     var temporaryContext = temporaryCanvas.getContext("2d");
 
     var wormRenderData = {};
+    var prevRenderTime = 0;
     var fadeStartTime;
 
     function getWormRenderData(wormId) {
@@ -24,21 +25,25 @@ module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanv
         return wormRenderData[wormId];
     }
 
-    function renderWormSegment({ gameState, renderStartTime, renderEndTime, wormId, wormSegmentId, context }) {
+    function clearRenderData() {
+        forEach(wormRenderData, function(renderData) {
+            renderData.mainSegmentIndex = 0;
+        });
+    }
+
+    function renderWormSegment({ renderTime, wormId, wormSegmentId, context }) {
         var wormSegment = gameState.wormPathSegments[wormId][wormSegmentId];
-        if (wormSegment.jump || wormSegment.type === "still_arc" || wormSegment.type === "clear" || renderStartTime >= wormSegment.endTime) {
+        if (wormSegment.jump || wormSegment.type === "still_arc" || wormSegment.type === "clear") {
             return;
         }
 
-        if (renderStartTime === undefined || renderStartTime < wormSegment.startTime) {
-            renderStartTime = wormSegment.startTime;
-        }
-        if (renderEndTime === undefined || renderEndTime > wormSegment.endTime) {
-            renderEndTime = wormSegment.endTime;
+        var renderStartTime = wormSegment.startTime;
+        if (renderTime === undefined || renderTime > wormSegment.endTime) {
+            renderTime = wormSegment.endTime;
         }
 
         var startPercentage = (renderStartTime - wormSegment.startTime) / wormSegment.duration;
-        var endPercentage = (renderEndTime - wormSegment.startTime) / wormSegment.duration;
+        var endPercentage = (renderTime - wormSegment.startTime) / wormSegment.duration;
 
         context.lineWidth = wormSegment.size;
         context.lineCap = "round";
@@ -64,14 +69,23 @@ module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanv
 
     }
 
-    function render(gameState, renderStartTime, renderEndTime) {
+    function render(renderTime) {
         secondaryContext.clearRect(0, 0, secondaryCanvas.width, secondaryCanvas.height);
+        if (renderTime < prevRenderTime) {
+            // TODO Perform this more efficiently
+            mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+            temporaryContext.clearRect(0, 0, temporaryCanvas.width, temporaryCanvas.height);
+            fadeContext.clearRect(0, 0, fadeCanvas.width, fadeCanvas.height);
+            fadeStartTime = undefined;
+            clearRenderData();
+        }
+
 
         // Check for clears
         var performClear = false;
         forEach(gameState.wormPathSegments, function (segments, wormId) {
             var renderData = getWormRenderData(wormId);
-            for (var i = renderData.mainSegmentIndex; i < segments.length && segments[i].endTime <= renderEndTime; i++) {
+            for (var i = renderData.mainSegmentIndex; i < segments.length && segments[i].endTime <= renderTime; i++) {
                 if (segments[i].type === "clear") {
                     renderData.mainSegmentIndex = i + 1;
                     performClear = true;
@@ -89,7 +103,7 @@ module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanv
             // Perform the clear
             temporaryContext.drawImage(mainCanvas, 0, 0);
             mainContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
-            fadeStartTime = renderEndTime;
+            fadeStartTime = renderTime;
         }
 
         // Now render normally
@@ -97,9 +111,8 @@ module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanv
             var renderData = getWormRenderData(wormId);
             if (segments.length > 0) {
                 // Render completed segments to the main canvas
-                while (renderData.mainSegmentIndex < segments.length - 1 && segments[renderData.mainSegmentIndex].endTime <= renderEndTime) {
+                while (renderData.mainSegmentIndex < segments.length - 1 && segments[renderData.mainSegmentIndex].endTime <= renderTime) {
                     renderWormSegment({
-                        gameState,
                         wormId,
                         wormSegmentId: renderData.mainSegmentIndex,
                         context: mainContext
@@ -109,8 +122,7 @@ module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanv
                 // Render the last segment to the secondary canvas
                 if (renderData.mainSegmentIndex < segments.length) {
                     renderWormSegment({
-                        gameState,
-                        renderEndTime,
+                        renderTime,
                         wormId,
                         wormSegmentId: renderData.mainSegmentIndex,
                         context: secondaryContext
@@ -122,7 +134,7 @@ module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanv
         // Render fade animation
         if (fadeStartTime !== undefined) {
             fadeContext.clearRect(0, 0, fadeCanvas.width, fadeCanvas.height);
-            var fadeProgress = (renderEndTime - fadeStartTime) / CLEAR_FADE_DURATION;
+            var fadeProgress = (renderTime - fadeStartTime) / CLEAR_FADE_DURATION;
             if (fadeProgress > 1) {
                 fadeStartTime = undefined;
                 temporaryContext.clearRect(0, 0, temporaryCanvas.width, temporaryCanvas.height);
@@ -131,6 +143,8 @@ module.exports = function WormBodyRenderer({ playerConfigs, fadeCanvas, mainCanv
                 fadeContext.drawImage(temporaryCanvas, 0, 0);
             }
         }
+
+        prevRenderTime = renderTime;
     }
 
     return {

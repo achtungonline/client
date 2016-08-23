@@ -1,24 +1,8 @@
 var React = require("react");
 var scoreUtil = require("core/src/core/score/score-util.js");
 
-var GameCanvasRenderer = require("./../match/canvas/game-canvas-renderer.js");
-var ScoreGraph = require("./scoreGraph.js");
-
-var RoundCanvas = React.createClass({
-    render: function () {
-        return <div ref="gameCanvas"></div>;
-    },
-    componentDidMount: function () {
-        var mapBorderWidth = 10;
-        var scale = this.props.width / (this.props.gameState.map.width + mapBorderWidth * 2);
-
-        var gameCanvasRenderer = GameCanvasRenderer({gameState: this.props.gameState, playerConfigs: this.props.playerConfigs, scale: scale, mapBorderWidth: mapBorderWidth});
-        gameCanvasRenderer.render();
-        var container = this.refs.gameCanvas;
-        container.innerHTML = "";
-        container.appendChild(gameCanvasRenderer.container);
-    }
-});
+var GameCanvas = require("./../match/canvas/game-canvas-component.js");
+var ScoreGraph = require("./score-graph-component.js");
 
 module.exports = React.createClass({
     displayName: "MatchOver",
@@ -65,6 +49,9 @@ module.exports = React.createClass({
 
         var roundElements = this.props.matchState.roundsData.map(function (roundData, index) {
             var width = 208;
+            var mapBorderWidth = 10;
+            var gameState = roundData.gameState;
+            var scale = width / (gameState.map.width + mapBorderWidth * 2);
             var winningPlayerId = scoreUtil.createSortedList(roundData.roundScore)[0].id;
             var winningPlayer = thisComponent.props.players.find(function(p) {
                 return p.id === winningPlayerId;
@@ -75,9 +62,10 @@ module.exports = React.createClass({
                     <div style={{textAlign: "center"}}><span style={{color: winningPlayer.color.hexCode}}>{winningPlayer.name}</span></div>
                     <div onClick={thisComponent.props.onRoundClick.bind(null, index)}>
                         <div className="round-watch-replay">Watch replay</div>
-                        <RoundCanvas width={width} gameState={roundData.gameState} playerConfigs={thisComponent.props.players}/>
+                        <GameCanvas gameState={gameState} playerConfigs={thisComponent.props.players} mapBorderWidth={mapBorderWidth} scale={scale} renderTime={gameState.gameTime}/>
                     </div>
-                </div>);
+                </div>
+            );
         });
 
         return (
@@ -94,22 +82,14 @@ module.exports = React.createClass({
                             <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
                         </div>
                     </div>
-                    <div ref="scoreGraphContainer" className="m-b-3 flex-self-center"></div>
+                    <div ref="scoreGraphContainer" className="m-b-3 flex-self-center">
+                        <ScoreGraph roundsData={this.props.matchState.roundsData} players={this.props.players}/>
+                    </div>
                 </div>
                 <div className="flex">
                     {roundElements}
                 </div>
             </div>
         );
-    },
-    componentDidMount: function () {
-        var scoreGraphContainer = this.refs.scoreGraphContainer;
-
-        var scoreGraph = ScoreGraph({
-            scoreGraphContainer,
-            roundsData: this.props.matchState.roundsData,
-            playerConfigs: this.props.players
-        });
-        scoreGraph.animate();
     }
 });

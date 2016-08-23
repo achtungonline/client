@@ -1,7 +1,7 @@
 var React = require("react");
 var utils = require("./../utils.js");
 var CoreGameFactory = require("core/src/game-factory.js");
-var GameCanvasRenderer = require("../match/canvas/game-canvas-renderer.js");
+var GameCanvas = require("../match/canvas/game-canvas-component.js");
 var LocalGameHandler = require("../match/local-game/local-game-handler.js");
 var windowFocusHandler = require("../window-focus-handler.js");
 
@@ -79,25 +79,23 @@ var ColorPicker = React.createClass({
 });
 
 var GamePreview = React.createClass({
-    shouldComponentUpdate: function (nextProps) {
-        return this.props.matchConfig.map.name !== nextProps.matchConfig.map.name || (this.props.players.length !== nextProps.players.length);
+    getInitialState: function() {
+        return {
+            renderTime: 0
+        };
     },
     render: function () {
+        var mapBorderWidth = 10;
+        var scale = 520 / (this.props.matchConfig.map.width + mapBorderWidth * 2);
         return (
-            <div ref="gameCanvas"></div>
+            <GameCanvas gameState={this.localGame.gameState} playerConfigs={this.props.players} renderTime={this.state.renderTime} mapBorderWidth={mapBorderWidth} scale={scale}/>
         );
     },
-    componentDidMount: function () {
-        windowFocusHandler.startListening();
-        windowFocusHandler.on("focus", this.onWindowFocus);
-        windowFocusHandler.on("blur", this.onWindowBlur);
-        this.componentDidUpdate();
-    },
-    componentDidUpdate: function () {
+    createGame: function(props) {
         var game = coreGameFactory.create({
             seed: Math.floor((Math.random() * 100000)),
-            map: this.props.matchConfig.map,
-            playerConfigs: this.props.matchConfig.playerConfigs.map(function (pc) {
+            map: props.matchConfig.map,
+            playerConfigs: props.matchConfig.playerConfigs.map(function (pc) {
                 return {
                     id: pc.id,
                     type: "bot"
@@ -107,21 +105,24 @@ var GamePreview = React.createClass({
         if (this.localGame) {
             this.localGame.stop();
         }
-        var localGame = LocalGameHandler({game: game, playerConfigs: this.props.players});
-        localGame.start();
-        this.localGame = localGame;
 
-        var mapBorderWidth = 10;
-        var scale = 520 / (this.props.matchConfig.map.width + mapBorderWidth * 2);
+        this.localGame = LocalGameHandler({game: game, playerConfigs: props.players});
+        this.localGame.start();
 
-
-        var gameCanvasRenderer = GameCanvasRenderer({gameState: localGame.gameState, playerConfigs: this.props.players, scale: scale, mapBorderWidth: mapBorderWidth});
-        this.localGame.on(localGame.events.GAME_UPDATED, function() {
-            gameCanvasRenderer.render();
+        var thisComponent = this;
+        this.localGame.on(this.localGame.events.GAME_UPDATED, function() {
+            thisComponent.setState({ renderTime: thisComponent.localGame.gameState.gameTime });
         });
-        var container = this.refs.gameCanvas;
-        container.innerHTML = "";
-        container.appendChild(gameCanvasRenderer.container);
+    },
+    componentWillMount: function () {
+        windowFocusHandler.on("focus", this.onWindowFocus);
+        windowFocusHandler.on("blur", this.onWindowBlur);
+        this.createGame(this.props);
+    },
+    componentWillReceiveProps: function(nextProps) {
+        if (this.props.matchConfig.map.name !== nextProps.matchConfig.map.name || this.props.players.length !== nextProps.players.length) {
+            this.createGame(nextProps);
+        }
     },
     onWindowFocus: function () {
         this.localGame.resume();
@@ -130,7 +131,8 @@ var GamePreview = React.createClass({
         this.localGame.pause();
     },
     componentWillUnmount: function () {
-        windowFocusHandler.stopListening();
+        windowFocusHandler.off("focus", this.onWindowFocus);
+        windowFocusHandler.off("blur", this.onWindowBlur);
         if (this.localGame) {
             this.localGame.stop();
         }

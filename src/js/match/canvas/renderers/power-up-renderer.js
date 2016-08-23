@@ -24,16 +24,22 @@ var POWERUP_IMAGE_URLS = {
 };
 
 
-module.exports = function PowerUpRenderer({ canvas }) {
+module.exports = function PowerUpRenderer({ gameState, canvas }) {
 
     var context = canvas.getContext("2d");
 
+    var prevRenderTime = 0;
     var powerUpEventIndex = 0;
     var powerUpRenderData = {};
 
-    function updateRenderData(gameState, renderStartTime, renderEndTime) {
+    function updateRenderData(renderTime) {
+        if (renderTime < prevRenderTime) {
+            // TODO do this more efficiently
+            powerUpRenderData = {};
+            powerUpEventIndex = 0;
+        }
         var powerUpEvents = gameState.powerUpEvents;
-        while (powerUpEventIndex < powerUpEvents.length && powerUpEvents[powerUpEventIndex].time <= renderEndTime) {
+        while (powerUpEventIndex < powerUpEvents.length && powerUpEvents[powerUpEventIndex].time <= renderTime) {
             var powerUpEvent = powerUpEvents[powerUpEventIndex];
             powerUpEventIndex++;
             if (powerUpEvent.type === "spawn") {
@@ -54,10 +60,12 @@ module.exports = function PowerUpRenderer({ canvas }) {
             }
         }
         forEach(powerUpRenderData, function (renderData, id) {
-            if (renderEndTime - renderData.despawnTime >= POWERUP_DESPAWN_DURATION) {
+            if (renderTime - renderData.despawnTime >= POWERUP_DESPAWN_DURATION) {
                 delete powerUpRenderData[id];
             }
         });
+
+        prevRenderTime = renderTime;
     }
 
     function renderPowerUps(renderTime) {
@@ -93,10 +101,10 @@ module.exports = function PowerUpRenderer({ canvas }) {
         });
     }
 
-    function render(gameState, renderStartTime, renderEndTime) {
+    function render(renderTime) {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        updateRenderData(gameState, renderStartTime, renderEndTime);
-        renderPowerUps(renderEndTime);
+        updateRenderData(renderTime);
+        renderPowerUps(renderTime);
     }
 
     return {

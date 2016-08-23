@@ -1,13 +1,14 @@
 var React = require("react");
 var idGenerator = require("core/src/core/util/id-generator.js").indexCounterId(0);
 
+var windowFocusHandler = require("./window-focus-handler.js");
 var NewMatchComponent = require("./newMatch/component.js");
 var MatchComponent = require("./match/component.js");
 var MatchOverComponent = require("./matchOver/component.js");
 var CoreMatchFactory = require("core/src/match-factory.js");
 var CoreGameStateFunctions = require("core/src/core/game-state-functions.js");
 var Header = require("./header/header.js");
-var ReplayComponent = require("./match/replayComponent.js");
+var ReplayComponent = require("./match/replay-component.js");
 
 
 // Note: The length of this list is also the maximum amount of players. But make sure that there are enough keybindings and names as well
@@ -199,7 +200,7 @@ module.exports = React.createClass({
                         gameState={roundData.gameState}
                         players={this.state.players}
                         maxScore={this.state.match.matchState.maxScore}
-                        onReplayGameOver={function() {}}
+                        onReplayGameOver={this.endMatch}
                         onExitAction={this.endMatch}
                     />
                 </div>)
@@ -222,6 +223,12 @@ module.exports = React.createClass({
                 {page}
             </div>
         );
+    },
+    componentWillMount: function () {
+        windowFocusHandler.startListening();
+    },
+    componentWillUnmount: function () {
+        windowFocusHandler.stopListening();
     },
     newMatch: function () {
         this.setState({matchConfig: null, match: null, view: "newMatch"});

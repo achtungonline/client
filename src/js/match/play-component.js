@@ -1,8 +1,8 @@
 var React = require("react");
 var scoreUtil = require("core/src/core/score/score-util.js");
 
-var GameCanvasRenderer = require("./canvas/game-canvas-renderer.js");
-var Score = require("./scoreComponent.js");
+var GameCanvas = require("./canvas/game-canvas-component.js");
+var Score = require("./score-component.js");
 
 function MatchControls({ match, onStartNextGameAction, isPaused, onTogglePauseAction, onExitAction, onReplayAction }) {
     var game = match.getCurrentGame();
@@ -33,6 +33,7 @@ module.exports = React.createClass({
     displayName: "Play",
     getInitialState: function () {
         return {
+            renderTime: this.props.game.gameState.gameTime,
             roundScore: scoreUtil.getStartScore(this.props.players)
         }
     },
@@ -42,12 +43,13 @@ module.exports = React.createClass({
         var gameState = game.gameState;
         var players = this.props.players;
         var maxScore = this.props.match.matchState.maxScore;
-        var roundScore = scoreUtil.calculateRoundScore(gameState);
+        var roundScore = this.state.roundScore;
+        var renderTime = this.state.renderTime;
 
         return (
             <div className="flex flex-start">
                 <div className="m-b-2">
-                    <div ref="gameCanvas"></div>
+                    <GameCanvas gameState={gameState} playerConfigs={this.props.players} renderTime={renderTime}/>
                 </div>
                 <div className="m-l-2" style={{width: "290px"}}>
                     <Score startScore={this.props.startScore} roundScore={roundScore} players={players} maxScore={maxScore}/>
@@ -58,15 +60,9 @@ module.exports = React.createClass({
     },
     componentDidMount: function () {
         var thisComponent = this;
-        var gameCanvasRenderer = GameCanvasRenderer({gameState: this.props.game.gameState, playerConfigs: this.props.players});
-        gameCanvasRenderer.render();
         this.props.game.on(this.props.game.events.GAME_UPDATED, function() {
-            gameCanvasRenderer.render();
-            thisComponent.setState({roundScore: scoreUtil.calculateRoundScore(thisComponent.props.game.gameState)});
+            thisComponent.setState({renderTime: thisComponent.props.game.gameState.gameTime, roundScore: scoreUtil.calculateRoundScore(thisComponent.props.game.gameState)});
         });
-        var container = this.refs.gameCanvas;
-        container.innerHTML = "";
-        container.appendChild(gameCanvasRenderer.container);
     },
     componentDidUpdate: function (prevProps) {
         if (this.props.game !== prevProps.game) {

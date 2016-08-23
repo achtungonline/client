@@ -1,10 +1,12 @@
-var WORM_HEAD_COLOR = "#FFB74D"; // 300 orange
 var forEach = require("core/src/core/util/for-each.js");
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
-module.exports = function WormHeadRenderer({ playerConfigs, canvas, drawTrajectories }) {
+var WORM_HEAD_COLOR = "#FFB74D"; // 300 orange
+
+module.exports = function WormHeadRenderer({ gameState, playerConfigs, canvas, drawTrajectories }) {
     var context = canvas.getContext("2d");
     var wormRenderData = {};
+    var prevRenderTime = 0;
 
     function getWormRenderData(wormId) {
         if (wormRenderData[wormId] === undefined) {
@@ -13,6 +15,12 @@ module.exports = function WormHeadRenderer({ playerConfigs, canvas, drawTrajecto
             };
         }
         return wormRenderData[wormId];
+    }
+
+    function clearRenderData() {
+        forEach(wormRenderData, function(renderData) {
+            renderData.segmentIndex = 0;
+        });
     }
 
     function drawHead(x, y, size) {
@@ -83,17 +91,21 @@ module.exports = function WormHeadRenderer({ playerConfigs, canvas, drawTrajecto
         context.restore();
     }
 
-    function render(gameState, renderStartTime, renderEndTime) {
+    function render(renderTime) {
         context.clearRect(0, 0, canvas.width, canvas.height);
+        if (renderTime < prevRenderTime) {
+            clearRenderData();
+        }
+
         forEach(gameState.wormPathSegments, function (segments, wormId) {
             var renderData = getWormRenderData(wormId);
-            while (renderData.segmentIndex < segments.length - 1 && segments[renderData.segmentIndex + 1].startTime < renderEndTime) {
+            while (renderData.segmentIndex < segments.length - 1 && segments[renderData.segmentIndex + 1].startTime < renderTime) {
                 renderData.segmentIndex++;
             }
             if (segments.length > 0) {
                 var segment = segments[renderData.segmentIndex];
                 if (segment.type !== "clear") {
-                    var percentage = (Math.min(renderEndTime, segment.endTime) - segment.startTime) / (segment.endTime - segment.startTime);
+                    var percentage = (Math.min(renderTime, segment.endTime) - segment.startTime) / (segment.endTime - segment.startTime);
                     var x = segment.startX + percentage*(segment.endX - segment.startX);
                     var y = segment.startY + percentage*(segment.endY - segment.startY);
                     var direction = segment.startDirection + percentage*(segment.endDirection - segment.startDirection);
@@ -114,6 +126,8 @@ module.exports = function WormHeadRenderer({ playerConfigs, canvas, drawTrajecto
                 }
             }
         });
+
+        prevRenderTime = renderTime;
     }
 
     return {
