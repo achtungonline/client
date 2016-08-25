@@ -3,7 +3,7 @@ var forEach = require("core/src/core/util/for-each.js");
 
 var CLEAR_FADE_DURATION = 0.2;
 
-module.exports = function WormBodyRenderer({ gameState, playerConfigs, fadeCanvas, mainCanvas, secondaryCanvas }) {
+module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mainCanvas, secondaryCanvas }) {
     var fadeContext = fadeCanvas.getContext("2d");
     var mainContext = mainCanvas.getContext("2d");
     var secondaryContext = secondaryCanvas.getContext("2d");
@@ -47,7 +47,7 @@ module.exports = function WormBodyRenderer({ gameState, playerConfigs, fadeCanva
 
         context.lineWidth = wormSegment.size;
         context.lineCap = "round";
-        context.strokeStyle = playerConfigs.find(pc => pc.id === wormSegment.playerId).color.hexCode;
+        context.strokeStyle = players.find(p => p.id === wormSegment.playerId).color.hexCode;
         // Draw path
         context.beginPath();
         if (wormSegment.type === "straight") {

@@ -1,7 +1,8 @@
 var React = require("react");
+
 var scoreUtil = require("core/src/core/score/score-util.js");
 
-module.exports = function Score({ startScore, roundScore, players, maxScore }) {
+module.exports = function Score({ match, startScore, roundScore }) {
 
     var combinedScore = scoreUtil.combineScores(startScore, roundScore);
     var highestRoundScore = scoreUtil.getHighestScore(roundScore);
@@ -9,7 +10,7 @@ module.exports = function Score({ startScore, roundScore, players, maxScore }) {
 
     var scoreTableRows = scoreUtil.createSortedList(combinedScore).map(function (playerScore) {
         var opacity = roundScore[playerScore.id] === highestRoundScore ? 1 : 0.25;
-        var player = players.find(function(p) {
+        var player = match.matchConfig.players.find(function(p) {
             return p.id === playerScore.id;
         });
 
@@ -26,7 +27,7 @@ module.exports = function Score({ startScore, roundScore, players, maxScore }) {
         <div>
             <div className="flex flex-center max-score m-b-2">
                 <img src="src/css/svg/trophy.svg" alt="Max score: "/>
-                <div className="flex-self-center">{maxScore}</div>
+                <div className="flex-self-center">{match.matchConfig.maxScore}</div>
             </div>
             <table style={{width: "100%"}}>
                 <tbody>

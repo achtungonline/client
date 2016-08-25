@@ -1,4 +1,4 @@
-var requestFrame = require("./../request-frame.js");
+var requestFrame = require("../game/local-game/request-frame.js");
 
 module.exports = function ReplayGameHandler({ onReplayUpdate, onReplayOver, gameState }) {
 

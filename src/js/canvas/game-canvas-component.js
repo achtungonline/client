@@ -8,13 +8,22 @@ var PowerUpRenderer = require("./renderers/power-up-renderer.js");
 var WormBodyRenderer = require("./renderers/worm-body-renderer.js");
 
 module.exports = React.createClass({
+    propTypes: {
+        gameState: React.PropTypes.object.isRequired,
+        players: React.PropTypes.array.isRequired,
+        renderTime: React.PropTypes.number,
+        scale: React.PropTypes.number,
+        mapBorderWidth: React.PropTypes.number
+    },
     getDefaultProps: function() {
         return {
-            gameState: null,
-            playerConfigs: null,
-            renderTime: 0,
             scale: 1,
             mapBorderWidth: 10
+        };
+    },
+    getInitialState: function() {
+        return {
+            renderers: []
         };
     },
     createCanvas: function(name, width, height, padding) {
@@ -48,41 +57,43 @@ module.exports = React.createClass({
         )
     },
     setupRenderers: function() {
-        this.mapRenderer = MapRenderer({
+        this.state.renderers.length = 0;
+        this.state.renderers.push(MapRenderer({
             map: this.props.gameState.map,
             canvas: this.refs.mapCanvas,
             gameState: this.props.gameState,
             borderWidth: this.props.mapBorderWidth
-        });
-        this.powerUpRenderer = PowerUpRenderer({
+        }));
+        this.state.renderers.push(PowerUpRenderer({
             gameState: this.props.gameState,
             canvas: this.refs.powerUpCanvas
-        });
-        this.wormBodyRenderer = WormBodyRenderer({
-            playerConfigs: this.props.playerConfigs,
+        }));
+        this.state.renderers.push(WormBodyRenderer({
+            players: this.props.players,
             gameState: this.props.gameState,
             fadeCanvas: this.refs.wormBodyCanvas1,
             mainCanvas: this.refs.wormBodyCanvas2,
             secondaryCanvas: this.refs.wormBodyCanvas3
-        });
-        this.wormHeadRenderer = WormHeadRenderer({
-            playerConfigs: this.props.playerConfigs,
+        }));
+        this.state.renderers.push(WormHeadRenderer({
+            players: this.props.players,
             gameState: this.props.gameState,
             canvas: this.refs.wormHeadCanvas,
             drawTrajectories: false
-        });
+        }));
         this.updateRenderers(this.props.renderTime);
     },
     updateRenderers: function(renderTime) {
-        this.mapRenderer.render(renderTime);
-        this.wormHeadRenderer.render(renderTime);
-        this.powerUpRenderer.render(renderTime);
-        this.wormBodyRenderer.render(renderTime);
+        if (renderTime === undefined) {
+            renderTime = this.props.gameState.gameTime;
+        }
+        this.state.renderers.forEach(function (renderer) {
+            renderer.render(renderTime);
+        });
     },
     clearCanvas: function() {
         forEach(this.refs, function (canvas) {
-            var context = canvas.getContext("2d");
-            context.clearRect(0, 0, canvas.width, canvas.height);
+            canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
         });
     },
     componentDidMount: function() {
@@ -93,9 +104,7 @@ module.exports = React.createClass({
         this.setupRenderers();
     },
     componentWillReceiveProps: function(nextProps) {
-        if (this.mapRenderer) { // TODO Why does this sometimes happen before mounting?
-            this.updateRenderers(nextProps.renderTime);
-        }
+        this.updateRenderers(nextProps.renderTime);
     },
     shouldComponentUpdate: function(nextProps, nextState) {
         return nextProps.gameState !== this.props.gameState;

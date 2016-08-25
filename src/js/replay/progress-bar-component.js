@@ -14,10 +14,13 @@ var BALL_COLOR = "green";
 var BALL_BORDER_COLOR = "black";
 
 module.exports = React.createClass({
+    propTypes: {
+        progress: React.PropTypes.number,
+        onProgressClick: React.PropTypes.func
+    },
     getDefaultProps: function() {
         return {
-            progress: 0,
-            onProgressClick: undefined
+            progress: 0
         };
     },
     getInitialState: function() {
@@ -102,7 +105,9 @@ module.exports = React.createClass({
         if (this.state.down) {
             var newProgress = (e.offsetX - X_MARGIN) / (this.refs.canvas.width - 2*X_MARGIN);
             newProgress = Math.max(0, Math.min(1, newProgress));
-            this.props.onProgressClick(newProgress);
+            if (this.props.onProgressClick) {
+                this.props.onProgressClick(newProgress);
+            }
         }
     },
     render: function () {

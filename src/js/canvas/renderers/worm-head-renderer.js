@@ -3,7 +3,7 @@ var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
 var WORM_HEAD_COLOR = "#FFB74D"; // 300 orange
 
-module.exports = function WormHeadRenderer({ gameState, playerConfigs, canvas, drawTrajectories }) {
+module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTrajectories }) {
     var context = canvas.getContext("2d");
     var wormRenderData = {};
     var prevRenderTime = 0;
@@ -115,7 +115,7 @@ module.exports = function WormHeadRenderer({ gameState, playerConfigs, canvas, d
                         y = segment.arcCenterY + segment.arcRadius*Math.sin(arcAngle);
                     }
                     var size = segment.size;
-                    var color = playerConfigs.find(pc => pc.id === segment.playerId).color.hexCode;
+                    var color = players.find(p => p.id === segment.playerId).color.hexCode;
                     if (segment.type === "still_arc") {
                         drawArrow(x, y, direction, size, color);
                     }

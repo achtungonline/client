@@ -2,23 +2,20 @@ var React = require("react");
 
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 var scoreUtil = require("core/src/core/score/score-util.js");
-var GameCanvas = require("../match/canvas/game-canvas-component.js");
-var ReplayGameHandler = require("../match/local-game/replay/replay-game-handler.js");
+var GameCanvas = require("../canvas/game-canvas-component.js");
+var ReplayGameHandler = require("../replay/replay-game-handler.js");
 
 var ANIMATION_DURATION = 0.5;
 var WIDTH = 600;
 var HEIGHT = 400;
-var MARGIN_X = 4;
+var MARGIN_X = 0.5;
 var MARGIN_Y = 0.5;
 var BORDER_WIDTH = 4;
 var LINE_WIDTH = 3;
 
 module.exports = React.createClass({
-    getDefaultProps: function() {
-        return {
-            roundsData: null,
-            players: null
-        };
+    propTypes: {
+        match: React.PropTypes.object.isRequired
     },
     getInitialState: function() {
         return {
@@ -28,11 +25,11 @@ module.exports = React.createClass({
     },
     render: function() {
         return (
-            <GameCanvas gameState={this.state.gameState} playerConfigs={this.props.players} renderTime={this.state.renderTime} mapBorderWidth={BORDER_WIDTH} />
+            <GameCanvas gameState={this.state.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.renderTime} mapBorderWidth={BORDER_WIDTH} />
         );
     },
     componentWillMount: function() {
-        var roundsData = this.props.roundsData;
+        var roundsData = this.props.match.matchState.roundsData;
         var lastRoundData = roundsData[roundsData.length - 1];
         var maxScore = Math.max(1, 1.15*scoreUtil.getHighestScore(scoreUtil.combineScores(lastRoundData.startScore, lastRoundData.roundScore)));
         var dx = WIDTH / roundsData.length;
@@ -41,7 +38,7 @@ module.exports = React.createClass({
 
         var gameState = {
             wormPathSegments: {},
-            players: this.props.players.map(pc => ({ id: pc.id })),
+            players: this.props.match.matchConfig.players.map(p => ({ id: p.id })),
             gameEvents: [],
             powerUpEvents: [],
             gameTime: ANIMATION_DURATION,
@@ -50,7 +47,7 @@ module.exports = React.createClass({
 
         for (var i = 0; i < roundsData.length; i++) {
             var roundData = roundsData[i];
-            this.props.players.forEach(function (player) {
+            this.props.match.matchConfig.players.forEach(function (player) {
                 if (i === 0) {
                     gameState.wormPathSegments[player.id] = [];
                 }
