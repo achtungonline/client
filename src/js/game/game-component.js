@@ -80,14 +80,16 @@ module.exports = React.createClass({
         var seed = random.generateSeed();
         var game = this.props.match.prepareNextGame(seed);
 
-        var localGame = LocalGameHandler({game: game, playerConfigs: this.props.match.matchConfig.players});
-        localGame.start();
-
         var thisComponent = this;
-        localGame.on("gameOver", this.onGameOver);
-        localGame.on(localGame.events.GAME_UPDATED, function() {
-            thisComponent.setState({ renderTime: localGame.gameState.gameTime, roundScore: scoreUtil.calculateRoundScore(localGame.gameState) });
+        var localGame = LocalGameHandler({
+            game,
+            playerConfigs: this.props.match.matchConfig.players,
+            onGameUpdated: function () {
+                thisComponent.setState({ renderTime: localGame.gameState.gameTime, roundScore: scoreUtil.calculateRoundScore(localGame.gameState) });
+            },
+            onGameOver: this.onGameOver
         });
+        localGame.start();
 
         this.setState({ localGame: localGame });
     },

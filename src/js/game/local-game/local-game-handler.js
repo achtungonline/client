@@ -1,8 +1,7 @@
 var PlayerSteeringListener = require("./player-steering-listener.js");
 var requestFrame = require("./request-frame.js");
 
-
-module.exports = function LocalGameHandler({ game, playerConfigs }) {
+module.exports = function LocalGameHandler({ game, playerConfigs, onGameUpdated, onGameOver }) {
 
     var playerSteeringListener = PlayerSteeringListener(game);
 
@@ -30,14 +29,22 @@ module.exports = function LocalGameHandler({ game, playerConfigs }) {
 
     function update() {
         var currentTime = Date.now();
-        if (!localGameState.paused) {
+        if (game.isActive() && !localGameState.paused) {
             var deltaTime = (currentTime - localGameState.previousUpdateTime) / 1000;
             game.update(deltaTime);
+            if (onGameUpdated) {
+                onGameUpdated(deltaTime);
+            }
         }
         localGameState.previousUpdateTime = currentTime;
 
         if (game.isActive()) {
             requestFrame(update);
+        } else {
+            playerSteeringListener.removeKeyListeners();
+            if (onGameOver) {
+                onGameOver();
+            }
         }
     }
 
@@ -58,20 +65,12 @@ module.exports = function LocalGameHandler({ game, playerConfigs }) {
         game.stop();
     }
 
-    game.on(game.events.GAME_OVER, function() {
-        playerSteeringListener.removeKeyListeners();
-    });
-
     return {
         start: start,
         pause: pause,
         resume: resume,
         stop: stop,
         isPaused: isPaused,
-        isGameOver: game.isGameOver,
-        on: game.on.bind(game),
-        off: game.off.bind(game),
-        events: game.events,
         gameState: game.gameState
     };
 };

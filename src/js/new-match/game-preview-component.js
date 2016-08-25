@@ -39,13 +39,15 @@ module.exports = React.createClass({
             this.localGame.stop();
         }
 
-        this.localGame = LocalGameHandler({game: game, playerConfigs: props.matchConfig.players});
-        this.localGame.start();
-
         var thisComponent = this;
-        this.localGame.on(this.localGame.events.GAME_UPDATED, function() {
-            thisComponent.setState({ renderTime: thisComponent.localGame.gameState.gameTime });
+        this.localGame = LocalGameHandler({
+            game: game,
+            playerConfigs: props.matchConfig.players,
+            onGameUpdated: function() {
+                thisComponent.setState({ renderTime: thisComponent.localGame.gameState.gameTime });
+            }
         });
+        this.localGame.start();
     },
     componentWillMount: function () {
         windowFocusHandler.on("focus", this.onWindowFocus);
