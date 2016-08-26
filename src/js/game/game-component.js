@@ -83,7 +83,7 @@ module.exports = React.createClass({
         var thisComponent = this;
         var localGame = LocalGameHandler({
             game,
-            playerConfigs: this.props.match.matchConfig.players,
+            players: this.props.match.matchConfig.players,
             onGameUpdated: function () {
                 thisComponent.setState({ renderTime: localGame.gameState.gameTime, roundScore: scoreUtil.calculateRoundScore(localGame.gameState) });
             },

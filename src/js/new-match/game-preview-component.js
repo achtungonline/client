@@ -1,6 +1,7 @@
 var React = require("react");
 
 var CoreGameFactory = require("core/src/game-factory.js");
+var clone = require("core/src/core/util/clone.js");
 
 var GameCanvas = require("../canvas/game-canvas-component.js");
 var LocalGameHandler = require("../game/local-game/local-game-handler.js");
@@ -25,15 +26,12 @@ module.exports = React.createClass({
         );
     },
     createGame: function(props) {
+        var botPlayers = props.matchConfig.players.map(player => clone(player));
+        botPlayers.forEach(p => p.type = "bot");
         var game = coreGameFactory.create({
             seed: Math.floor((Math.random() * 100000)),
             map: props.matchConfig.map,
-            players: props.matchConfig.players.map(function (pc) {
-                return {
-                    id: pc.id,
-                    type: "bot"
-                }
-            })
+            players: botPlayers
         });
         if (this.localGame) {
             this.localGame.stop();
@@ -42,7 +40,8 @@ module.exports = React.createClass({
         var thisComponent = this;
         this.localGame = LocalGameHandler({
             game: game,
-            playerConfigs: props.matchConfig.players,
+            players: botPlayers,
+
             onGameUpdated: function() {
                 thisComponent.setState({ renderTime: thisComponent.localGame.gameState.gameTime });
             },

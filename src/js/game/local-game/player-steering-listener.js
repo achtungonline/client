@@ -13,6 +13,7 @@ module.exports = function PlayerSteeringListener(game) {
     function addListener(event, keyName, callback) {
         function eventHandler (event) {
             if (parseEvent(event) === keyName) {
+                event.preventDefault();
                 callback();
             }
         }
