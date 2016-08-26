@@ -180,13 +180,14 @@ body {
 .table-player {
   padding-top: 40px;
 
-  .col-left {
+  .col-keybinding {
     text-align: center;
-    min-width: 60px;
+    min-width: 75px;
+    cursor: pointer;
   }
-  .col-right {
-    text-align: center;
-    min-width: 60px;
+  .col-selected {
+    outline: 4px solid;
+    outline-offset: -5px;
   }
   .col-remove {
     width: 40px

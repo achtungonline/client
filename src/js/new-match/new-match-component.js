@@ -1,13 +1,15 @@
 var React = require("react");
-var utils = require("./../utils.js");
 
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 var idGenerator = require("core/src/core/util/id-generator.js").indexCounterId(0);
 
+var availableKeyBindings = require("../key-util.js").keyPairs;
+
 var ColorPicker = require("./color-picker-component.js");
+var KeyPicker = require("./key-picker-component.js");
 var GamePreview = require("./game-preview-component.js");
 
-// Note: The length of this list is also the maximum amount of players. But make sure that there are enough keybindings and names as well
+// Note: The length of this list is also the maximum amount of players. But make sure that there are enough keybindings and keyCodeMapping as well
 var availableWormColors = [
     {
         id: "blue",
@@ -55,49 +57,6 @@ var availableNames = [
     "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
     "Adolf Hitler", "Donald Trump", "Vladimir Putin", "Osama bin Laden", "Kim Jong-un", "Mao Zedong", "Joseph Stalin", "Prophet Muhammad", "Steve Jobs", "Benito Mussolini"];
 
-var availableKeyBindings = [
-    {
-        left: 65,   //A
-        right: 83   //S
-    },
-    {
-        left: 40,   //DOWN
-        right: 39   //Right
-    },
-    {
-        left: 89,   //Y
-        right: 85   //U
-    },
-    {
-        left: 67,   //C
-        right: 86   //V
-    },
-    {
-        left: 90,   //Z
-        right: 88   //X
-    },
-    {
-        left: 75,   //K
-        right: 76   //L
-    },
-    {
-        left: 66,   //B
-        right: 78   //N
-    },
-    {
-        left: 81,   //Q
-        right: 87   //W
-    },
-    {
-        left: 72,   //H
-        right: 74   //J
-    },
-    {
-        left: 68,   //D
-        right: 70   //F
-    }
-];
-
 var playerTypeSvg = {
     "human": "src/css/svg/human.svg",
     "bot": "src/css/svg/computer.svg"
@@ -121,8 +80,7 @@ function getUnusedColor(players) {
 }
 
 function getUnusedKeyBindings(players) {
-    var usedLeftKeys = players.map(p => p.left);
-    return availableKeyBindings.filter(k => usedLeftKeys.indexOf(k.left) === -1);
+    return availableKeyBindings.filter(b => players.every(p => p.left !== b.left && p.right !== b.left && p.left !== b.right && p.right !== b.right));
 }
 
 function createMap(mapString) {
@@ -182,8 +140,13 @@ module.exports = React.createClass({
         };
 
         var rows = this.state.players.map(function (player) {
-            var left = player.type === "bot" ? null : utils.keyCodeToString(player.left);
-            var right = player.type === "bot" ? null : utils.keyCodeToString(player.right);
+            var leftKey, onLeftKeyPicked, rightKey, onRightKeyPicked;
+            if (player.type === "human") {
+                leftKey = player.left;
+                onLeftKeyPicked = this.onKeyChange.bind(this, player.id, "left");
+                rightKey = player.right;
+                onRightKeyPicked = this.onKeyChange.bind(this, player.id, "right");
+            }
             var removeButton = this.state.players.length > 2 ? <button className="btn-clean btn-remove-player" onClick={this.onRemoveClick.bind(this, player.id)}><img src="src/css/svg/cross.svg" alt="X"/></button> : null;
 
             return (
@@ -199,8 +162,8 @@ module.exports = React.createClass({
                     <td className="col-name">
                         <input className="input" type="text" onChange={this.onNameChange.bind(this, player.id)} value={player.name}/>
                     </td>
-                    <td className="col-left">{left}</td>
-                    <td className="col-right">{right}</td>
+                    <KeyPicker currentKey={leftKey} onKeyPicked={onLeftKeyPicked} />
+                    <KeyPicker currentKey={rightKey}  onKeyPicked={onRightKeyPicked} />
                     <td className="col-remove">
                         {removeButton}
                     </td>
@@ -255,6 +218,31 @@ module.exports = React.createClass({
     startMatch: function(matchConfig) {
         this.props.onStartMatchAction(matchConfig);
     },
+    onBotChange: function (playerId) {
+        this.setState(function (oldState) {
+            var player = oldState.players.find(p => p.id === playerId);
+            if (player.type === "bot") {
+                player.type = "human";
+            } else {
+                player.type = "bot";
+            }
+            return {players: oldState.players};
+        });
+    },
+    onKeyChange: function (playerId, target, newKey) {
+        this.setState(function (oldState) {
+            oldState.players.forEach(function (player) {
+                if (player.left === newKey) {
+                    player.left = null;
+                }
+                if (player.right === newKey) {
+                    player.right = null;
+                }
+            });
+            oldState.players.find(p => p.id === playerId)[target] = newKey;
+            return {players: oldState.players};
+        });
+    },
     onMaxScoreChange: function (event) {
         var parsedMaxScore = event.target.value.replace(/[^0-9]/g, "");
         var newMaxScore = parsedMaxScore === "" ? 0 : parseInt(parsedMaxScore);
@@ -270,17 +258,6 @@ module.exports = React.createClass({
             var player = oldState.players.find(p => p.id === playerId);
             player.name = name.substring(0, 16);
             return { players: oldState.players };
-        });
-    },
-    onBotChange: function (playerId) {
-        this.setState(function (oldState) {
-            var player = oldState.players.find(p => p.id === playerId);
-            if (player.type === "bot") {
-                player.type = "human";
-            } else {
-                player.type = "bot";
-            }
-            return {players: oldState.players};
         });
     },
     onRemoveClick: function (playerId) {

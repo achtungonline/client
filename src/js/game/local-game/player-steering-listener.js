@@ -1,6 +1,8 @@
 var constants = require("core/src/core/constants.js");
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
+var parseEvent = require("../../key-util.js").parseEvent;
+
 /**
  * Note that this listener setups listening on document so we NEED to remove the listeners once we are done listening
  */
@@ -8,9 +10,9 @@ module.exports = function PlayerSteeringListener(game) {
 
     var listeners = [];
 
-    function addListener(event, keyCode, callback) {
+    function addListener(event, keyName, callback) {
         function eventHandler (event) {
-            if (keyCode === event.keyCode) {
+            if (parseEvent(event) === keyName) {
                 callback();
             }
         }
