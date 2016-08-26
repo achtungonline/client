@@ -66,11 +66,12 @@ module.exports = function LocalGameHandler({ game, playerConfigs, onGameUpdated,
     }
 
     return {
-        start: start,
-        pause: pause,
-        resume: resume,
-        stop: stop,
-        isPaused: isPaused,
+        start,
+        pause,
+        resume,
+        stop,
+        isActive: game.isActive,
+        isPaused,
         gameState: game.gameState
     };
 };

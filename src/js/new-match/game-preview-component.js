@@ -45,6 +45,12 @@ module.exports = React.createClass({
             playerConfigs: props.matchConfig.players,
             onGameUpdated: function() {
                 thisComponent.setState({ renderTime: thisComponent.localGame.gameState.gameTime });
+            },
+            onGameOver: function() {
+                if (thisComponent.localGame && !thisComponent.localGame.isActive()) {
+                    // Game ended. Start it again
+                    thisComponent.createGame(thisComponent.props);
+                }
             }
         });
         this.localGame.start();
@@ -69,7 +75,9 @@ module.exports = React.createClass({
         windowFocusHandler.off("focus", this.onWindowFocus);
         windowFocusHandler.off("blur", this.onWindowBlur);
         if (this.localGame) {
-            this.localGame.stop();
+            var localGame = this.localGame;
+            this.localGame = null;
+            localGame.stop();
         }
     }
 });
