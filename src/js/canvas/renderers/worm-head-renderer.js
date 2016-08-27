@@ -1,5 +1,6 @@
 var forEach = require("core/src/core/util/for-each.js");
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
+var trajectoryUtil = require("core/src/core/geometry/trajectory/trajectory-util.js");
 
 var WORM_HEAD_COLOR = "#FFB74D"; // 300 orange
 
@@ -68,17 +69,17 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         context.rotate(worm.direction - Math.PI/2);
         worm.trajectory.forEach(function (move) {
             var turnRadius;
-            if (move.turningSpeed !== 0) {
-                turnRadius = Math.abs(move.speed / move.turningSpeed);
+            if (move.turningVelocity !== 0) {
+                turnRadius = Math.abs(move.speed / move.turningVelocity);
             }
             context.moveTo(0, 0);
             var distanceTravelled = move.speed * move.duration;
-            var angleTurned = move.turningSpeed * move.duration;
-            if (move.turningSpeed < 0) {
+            var angleTurned = move.turningVelocity * move.duration;
+            if (move.turningVelocity < 0) {
                 context.arc(turnRadius, 0, turnRadius, Math.PI, Math.PI + angleTurned, true);
                 context.translate(-turnRadius*(Math.cos(angleTurned) -  1), -turnRadius*Math.sin(angleTurned));
                 context.rotate(angleTurned);
-            } else if (move.turningSpeed > 0) {
+            } else if (move.turningVelocity > 0) {
                 context.arc(-turnRadius, 0, turnRadius, 0, angleTurned);
                 context.translate(turnRadius*(Math.cos(angleTurned) - 1), turnRadius*Math.sin(angleTurned));
                 context.rotate(angleTurned);
@@ -105,24 +106,16 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
             if (segments.length > 0) {
                 var segment = segments[renderData.segmentIndex];
                 if (segment.type !== "clear") {
-                    var percentage = (Math.min(renderTime, segment.endTime) - segment.startTime) / (segment.endTime - segment.startTime);
-                    var x = segment.startX + percentage*(segment.endX - segment.startX);
-                    var y = segment.startY + percentage*(segment.endY - segment.startY);
-                    var direction = segment.startDirection + percentage*(segment.endDirection - segment.startDirection);
-                    if (segment.type === "arc") {
-                        var arcAngle = segment.arcStartAngle + percentage*(segment.arcEndAngle - segment.arcStartAngle);
-                        x = segment.arcCenterX + segment.arcRadius*Math.cos(arcAngle);
-                        y = segment.arcCenterY + segment.arcRadius*Math.sin(arcAngle);
-                    }
+                    var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
                     var size = segment.size;
                     var color = players.find(p => p.id === segment.playerId).color.hexCode;
                     if (segment.type === "still_arc") {
-                        drawArrow(x, y, direction, size, color);
-                    }
-                    drawHead(x, y, size, color);
-                    if(drawTrajectories) {
+                        drawArrow(position.x, position.y, position.direction, size, color);
+                    } else if(drawTrajectories && gameState.worms) {
                         drawTrajectory(gameStateFunctions.getWorm(gameState, wormId), color);
                     }
+                    drawHead(position.x, position.y, size, color);
+
                 }
             }
         });
