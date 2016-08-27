@@ -36,7 +36,7 @@ module.exports = React.createClass({
             <div className="flex flex-start">
                 <div className="m-b-2">
                     <GameCanvas gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={this.state.renderTime}/>
-                    <ProgressBar progress={replayGame.getReplayProgress()} onProgressClick={replayGame.setReplayProgress} />
+                    <ProgressBar progress={replayGame.getReplayProgress()} onTogglePause={this.togglePause} onProgressChange={replayGame.setReplayProgress} />
                 </div>
                 <div className="m-l-2" style={{width: "290px"}}>
                     <Score match={match} startScore={this.state.roundData.startScore} roundScore={this.state.roundScore} />
