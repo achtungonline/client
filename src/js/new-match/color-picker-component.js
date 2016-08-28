@@ -10,14 +10,14 @@ module.exports = React.createClass({
         return {expanded: false};
     },
     componentDidMount: function () {
-        document.addEventListener("click", this.onDocumentClick);
+        document.addEventListener("mousedown", this.onMouseDown);
     },
     render: function () {
         var thisComponent = this;
 
         function getColorElements(colors) {
             return colors.map(function (color) {
-                return (<div key={color.id} className="color-picker" style={{backgroundColor: color.hexCode}} onClick={thisComponent.onAvailableColorClick.bind(thisComponent, color)}></div>);
+                return (<div key={color.id} className="color-picker" style={{backgroundColor: color.hexCode}} onMouseDown={thisComponent.onAvailableColorClick.bind(thisComponent, color)}></div>);
             });
         }
 
@@ -32,26 +32,28 @@ module.exports = React.createClass({
 
         return (
             <div ref="colorPicker" className="color-picker">
-                <div className="color-picker-selected" style={{backgroundColor: this.props.color.hexCode}} onClick={this.onSelectedColorClick}></div>
+                <div className="color-picker-selected" onMouseDown={this.onSelectedColorClick} style={{backgroundColor: this.props.color.hexCode}}></div>
                 {selectionList}
             </div>
         )
     },
     componentWillUnmount: function () {
-        document.removeEventListener("click", this.onDocumentClick);
+        document.removeEventListener("mousedown", this.onMouseDown);
     },
-    onSelectedColorClick: function () {
+    onSelectedColorClick: function (event) {
+        event.preventDefault();
         this.setState({
             expanded: !this.state.expanded
         });
     },
-    onAvailableColorClick: function (color) {
+    onAvailableColorClick: function (color, event) {
+        event.preventDefault();
         this.setState({
             expanded: false
         });
         this.props.onColorSelected(color);
     },
-    onDocumentClick: function (e) {
+    onMouseDown: function (event) {
         function isDescendant(child, parent) {
             var node = child.parentNode;
             while (node) {
@@ -63,7 +65,7 @@ module.exports = React.createClass({
             return false;
         }
 
-        if (!isDescendant(e.target, this.refs.colorPicker)) {
+        if (!isDescendant(event.target, this.refs.colorPicker)) {
             this.setState({
                 expanded: false
             });

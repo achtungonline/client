@@ -147,12 +147,12 @@ module.exports = React.createClass({
                 rightKey = player.right;
                 onRightKeyPicked = this.onKeyChange.bind(this, player.id, "right");
             }
-            var removeButton = this.state.players.length > 2 ? <button className="btn-clean btn-remove-player" onClick={this.onRemoveClick.bind(this, player.id)}><img src="src/css/svg/cross.svg" alt="X"/></button> : null;
+            var removeButton = this.state.players.length > 2 ? <button className="btn-clean btn-remove-player" onMouseDown={this.onRemoveClick.bind(this, player.id)}><img src="src/css/svg/cross.svg" alt="X"/></button> : null;
 
             return (
                 <tr key={player.id}>
                     <td className="col-bot">
-                        <button className="btn-clean" onClick={this.onBotChange.bind(this, player.id)}>
+                        <button className="btn-clean" onMouseDown={this.onBotChange.bind(this, player.id)}>
                             <img src={playerTypeSvg[player.type]} alt="X"/>
                         </button>
                     </td>
@@ -218,7 +218,8 @@ module.exports = React.createClass({
     startMatch: function(matchConfig) {
         this.props.onStartMatchAction(matchConfig);
     },
-    onBotChange: function (playerId) {
+    onBotChange: function (playerId, event) {
+        event.preventDefault();
         this.setState(function (oldState) {
             var player = oldState.players.find(p => p.id === playerId);
             if (player.type === "bot") {
@@ -260,7 +261,8 @@ module.exports = React.createClass({
             return { players: oldState.players };
         });
     },
-    onRemoveClick: function (playerId) {
+    onRemoveClick: function (playerId, event) {
+        event.preventDefault();
         var players = this.state.players.filter(function (player) {
             return player.id !== playerId;
         });
