@@ -22,21 +22,22 @@ module.exports = React.createClass({
             renderTime: 0,
             roundScore: scoreUtil.getStartScore(this.props.match.matchConfig.players),
             replayGame: null,
-            pausedDueToLostFocus: false
+            pausedDueToLostFocus: false,
+            pausedByButton: false
         }
     },
     render: function () {
         var match = this.props.match;
         var replayGame = this.state.replayGame;
 
-        var pauseButton = replayGame.isReplayOver() ? null : <button className="btn btn-secondary" onClick={this.togglePause}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
+        var pauseButton = replayGame.isReplayOver() ? null : <button className="btn btn-secondary" onClick={this.buttonTogglePause}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
         var endReplayButton = <button className="btn btn-primary" onClick={this.state.replayGame.stop}>End replay</button>;
 
         return (
             <div className="flex flex-start">
                 <div className="m-b-2">
                     <GameCanvas gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={this.state.renderTime}/>
-                    <ProgressBar progress={replayGame.getReplayProgress()} onTogglePause={this.togglePause} onProgressChange={replayGame.setReplayProgress} />
+                    <ProgressBar progress={replayGame.getReplayProgress()} onTogglePause={this.progressBarTogglePause} onProgressChange={replayGame.setReplayProgress} />
                 </div>
                 <div className="m-l-2" style={{width: "290px"}}>
                     <Score match={match} startScore={this.state.roundData.startScore} roundScore={this.state.roundScore} />
@@ -79,13 +80,23 @@ module.exports = React.createClass({
         replayGame.start();
         this.setState({ roundScore, replayGame });
     },
-    togglePause: function () {
+    buttonTogglePause: function () {
         if (this.state.replayGame.isPaused()) {
             this.state.replayGame.resume();
+            this.setState({ pausedByButton: false });
         } else {
             this.state.replayGame.pause();
+            this.setState({ pausedByButton: true });
         }
-        this.forceUpdate();
+    },
+    progressBarTogglePause: function() {
+        if (!this.state.pausedByButton) {
+            if (this.state.replayGame.isPaused()) {
+                this.state.replayGame.resume();
+            } else {
+                this.state.replayGame.pause();
+            }
+        }
     },
     onWindowFocus: function () {
         if (this.state.pausedDueToLostFocus) {
