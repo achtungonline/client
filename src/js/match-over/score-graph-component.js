@@ -41,6 +41,7 @@ module.exports = React.createClass({
             players: this.props.match.matchConfig.players.map(p => ({ id: p.id })),
             gameEvents: [],
             powerUpEvents: [],
+            effectEvents: [],
             gameTime: ANIMATION_DURATION,
             map: gameStateFunctions.createMapRectangle("ScoreGraph", WIDTH + 2*MARGIN_X, HEIGHT + 2*MARGIN_Y)
         };

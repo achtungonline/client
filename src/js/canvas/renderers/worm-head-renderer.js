@@ -2,12 +2,15 @@ var forEach = require("core/src/core/util/for-each.js");
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 var trajectoryUtil = require("core/src/core/geometry/trajectory/trajectory-util.js");
 
-var WORM_HEAD_COLOR = "#FFB74D"; // 300 orange
+var HEAD_COLOR = "#FFB74D"; // 300 orange
+var KEY_SWITCH_HEAD_COLOR = "#3388BB";
 
 module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTrajectories }) {
     var context = canvas.getContext("2d");
     var wormRenderData = {};
+    var activeEffects = [];
     var prevRenderTime = 0;
+    var effectEventIndex = 0;
 
     function getWormRenderData(wormId) {
         if (wormRenderData[wormId] === undefined) {
@@ -22,13 +25,40 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         forEach(wormRenderData, function(renderData) {
             renderData.segmentIndex = 0;
         });
+        effectEventIndex = 0;
+        activeEffects = [];
     }
 
-    function drawHead(x, y, size) {
-        context.fillStyle = WORM_HEAD_COLOR;
-        context.beginPath();
-        context.arc(x, y, size / 2 + 1, 0, 2 * Math.PI);
-        context.fill();
+    function updateEffectData(renderTime) {
+        var effectEvents = gameState.effectEvents;
+        while (effectEventIndex < effectEvents.length && effectEvents[effectEventIndex].time <= renderTime) {
+            var effectEvent = effectEvents[effectEventIndex];
+            effectEventIndex++;
+            if (effectEvent.type === "spawn") {
+                activeEffects.push(effectEvent.effect);
+            } else if (effectEvent.type === "despawn") {
+                var effect = activeEffects.splice(activeEffects.findIndex(effect => effect.id === effectEvent.id), 1);
+            } else {
+                throw Error("Unknown effect event type: " + effectEvent.type);
+            }
+        }
+    }
+
+    function drawHead({ x, y, direction, size, headColor, headShape }) {
+        context.fillStyle = headColor;
+        if (headShape === "circle") {
+            context.beginPath();
+            context.arc(x, y, size / 2 + 1, 0, 2 * Math.PI);
+            context.fill();
+        } else if (headShape == "square") {
+            context.save();
+            context.translate(x, y);
+            context.rotate(direction - Math.PI / 2);
+            context.fillRect(-size/2 - 0.5, -size/2 - 0.5, size + 1, size + 1);
+            context.restore();
+        } else {
+            throw Error("Unknown head shape: " + headShape);
+        }
     }
 
     function drawArrow(x, y, direction, size, color) {
@@ -97,6 +127,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         if (renderTime < prevRenderTime) {
             clearRenderData();
         }
+        updateEffectData(renderTime);
 
         forEach(gameState.wormPathSegments, function (segments, wormId) {
             var renderData = getWormRenderData(wormId);
@@ -108,14 +139,32 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
                 if (segment.type !== "clear") {
                     var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
                     var size = segment.size;
-                    var color = players.find(p => p.id === segment.playerId).color.hexCode;
-                    if (segment.type === "still_arc") {
-                        drawArrow(position.x, position.y, position.direction, size, color);
-                    } else if(drawTrajectories && gameState.worms) {
-                        drawTrajectory(gameStateFunctions.getWorm(gameState, wormId), color);
-                    }
-                    drawHead(position.x, position.y, size, color);
+                    var playerColor = players.find(p => p.id === segment.playerId).color.hexCode;
+                    var headColor = HEAD_COLOR;
+                    var headShape = "circle";
+                    activeEffects.forEach(function (effect) {
+                        if (effect.wormId === wormId) {
+                            if (effect.name === "key_switch") {
+                                headColor = KEY_SWITCH_HEAD_COLOR;
+                            } else if (effect.name === "tron_turn") {
+                                headShape = "square";
+                            }
+                        }
+                    });
 
+                    if (segment.type === "still_arc") {
+                        drawArrow(position.x, position.y, position.direction, size, playerColor);
+                    } else if(drawTrajectories && gameState.worms) {
+                        drawTrajectory(gameStateFunctions.getWorm(gameState, wormId), playerColor);
+                    }
+                    drawHead({
+                        x: position.x,
+                        y: position.y,
+                        direction: position.direction,
+                        size,
+                        headColor,
+                        headShape
+                    });
                 }
             }
         });
