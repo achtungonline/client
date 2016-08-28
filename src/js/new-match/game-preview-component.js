@@ -4,6 +4,7 @@ var CoreGameFactory = require("core/src/game-factory.js");
 var clone = require("core/src/core/util/clone.js");
 
 var GameCanvas = require("../canvas/game-canvas-component.js");
+var GamePreviewOverlay = require("../canvas/overlays/game-preview-overlay.js");
 var LocalGameHandler = require("../game/local-game/local-game-handler.js");
 var windowFocusHandler = require("../window-focus-handler.js");
 
@@ -22,7 +23,7 @@ module.exports = React.createClass({
         var mapBorderWidth = 10;
         var scale = 520 / (this.props.matchConfig.map.width + mapBorderWidth * 2);
         return (
-            <GameCanvas gameState={this.localGame.gameState} players={this.props.matchConfig.players} renderTime={this.state.renderTime} mapBorderWidth={mapBorderWidth} scale={scale}/>
+            <GameCanvas gameState={this.localGame.gameState} players={this.props.matchConfig.players} renderTime={this.state.renderTime} mapBorderWidth={mapBorderWidth} scale={scale} overlay={GamePreviewOverlay}/>
         );
     },
     createGame: function(props) {

@@ -13,7 +13,8 @@ module.exports = React.createClass({
         players: React.PropTypes.array.isRequired,
         renderTime: React.PropTypes.number,
         scale: React.PropTypes.number,
-        mapBorderWidth: React.PropTypes.number
+        mapBorderWidth: React.PropTypes.number,
+        overlay: React.PropTypes.func
     },
     getDefaultProps: function() {
         return {
@@ -52,6 +53,7 @@ module.exports = React.createClass({
                     {this.createCanvas("wormBodyCanvas2", canvasWidth, canvasHeight, padding)}
                     {this.createCanvas("wormBodyCanvas3", canvasWidth, canvasHeight, padding)}
                     {this.createCanvas("wormHeadCanvas", canvasWidth, canvasHeight, padding)}
+                    {this.props.overlay ? this.createCanvas("overlayCanvas", canvasWidth, canvasHeight, padding) : null}
                 </div>
             </div>
         )
@@ -59,9 +61,8 @@ module.exports = React.createClass({
     setupRenderers: function() {
         this.state.renderers.length = 0;
         this.state.renderers.push(MapRenderer({
-            map: this.props.gameState.map,
-            canvas: this.refs.mapCanvas,
             gameState: this.props.gameState,
+            canvas: this.refs.mapCanvas,
             borderWidth: this.props.mapBorderWidth
         }));
         this.state.renderers.push(PowerUpRenderer({
@@ -69,18 +70,25 @@ module.exports = React.createClass({
             canvas: this.refs.powerUpCanvas
         }));
         this.state.renderers.push(WormBodyRenderer({
-            players: this.props.players,
             gameState: this.props.gameState,
+            players: this.props.players,
             fadeCanvas: this.refs.wormBodyCanvas1,
             mainCanvas: this.refs.wormBodyCanvas2,
             secondaryCanvas: this.refs.wormBodyCanvas3
         }));
         this.state.renderers.push(WormHeadRenderer({
-            players: this.props.players,
             gameState: this.props.gameState,
+            players: this.props.players,
             canvas: this.refs.wormHeadCanvas,
             drawTrajectories: false
         }));
+        if (this.props.overlay) {
+            this.state.renderers.push(this.props.overlay({
+                gameState: this.props.gameState,
+                players: this.props.players,
+                canvas: this.refs.overlayCanvas
+            }));
+        }
         this.updateRenderers(this.props.renderTime);
     },
     updateRenderers: function(renderTime) {
