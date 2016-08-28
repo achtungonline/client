@@ -1,6 +1,6 @@
 var React = require("react");
 
-var HEIGHT = 20;
+var HEIGHT = 19;
 var BAR_RADIUS = 3;
 var X_MARGIN = HEIGHT / 2;
 var BALL_RADIUS = 5;
@@ -68,8 +68,8 @@ module.exports = React.createClass({
         context.lineCap = "round";
         context.strokeStyle = BAR_FILLED_COLOR;
         context.beginPath();
-        context.moveTo(X_MARGIN, canvas.height / 2);
-        context.lineTo(X_MARGIN + (canvas.width - 2*X_MARGIN) * progress, canvas.height / 2);
+        context.moveTo(X_MARGIN, canvas.height / 2 + (this.state.mouse.hover ? 0.5: 0));
+        context.lineTo(X_MARGIN + (canvas.width - 2*X_MARGIN) * progress, canvas.height / 2 + (this.state.mouse.hover ? 0.5: 0));
         context.stroke();
 
         // Ball
