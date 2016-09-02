@@ -288,7 +288,7 @@ module.exports = React.createClass({
     addPlayer: function () {
         this.setState(function (prevState) {
             var name = getRandomUnusedName(prevState.players);
-            var keyBinding = getUnusedKeyBindings(prevState.players)[0];
+            var keyBinding = getUnusedKeyBindings(prevState.players)[0] || {left: null, right: null};
             return {
                 players: prevState.players.concat([{
                     type: "human",
