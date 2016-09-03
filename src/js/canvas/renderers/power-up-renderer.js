@@ -87,7 +87,7 @@ module.exports = function PowerUpRenderer({ gameState, canvas }) {
             context.fill();
             if (powerUpImageUrl) {
                 context.beginPath();
-                var imageElement = document.createElement('img');
+                var imageElement = document.createElement("img");
                 imageElement.src = powerUpImageUrl;
                 context.drawImage(imageElement, renderData.centerX - radius, renderData.centerY - radius, radius * 2, radius * 2);
             } else {

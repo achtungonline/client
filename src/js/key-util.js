@@ -45,7 +45,7 @@ var keyCodeMapping = {
 };
 
 // Letters
-for (i = 60; i < 91; i++) {
+for (var i = 60; i < 91; i++) {
     keyCodeMapping[i] = String.fromCharCode(i);
 }
 
@@ -55,12 +55,12 @@ for (var i = 48; i < 58; i++) {
 }
 
 // function keys
-for (i = 1; i < 13; i++) {
+for (var i = 1; i < 13; i++) {
     keyCodeMapping[i + 111] = "F" + i;
 }
 
 // numpad keys
-for (i = 0; i < 10; i++) {
+for (var i = 0; i < 10; i++) {
     keyCodeMapping[i + 96] = "NUM" + i;
 }
 
