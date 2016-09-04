@@ -48,13 +48,13 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         context.fillStyle = headColor;
         if (headShape === "circle") {
             context.beginPath();
-            context.arc(x, y, size / 2 + 1, 0, 2 * Math.PI);
+            context.arc(x, y, size + 1, 0, 2 * Math.PI);
             context.fill();
         } else if (headShape === "square") {
             context.save();
             context.translate(x, y);
             context.rotate(direction - Math.PI / 2);
-            context.fillRect(-size / 2 - 0.5, -size / 2 - 0.5, size + 1, size + 1);
+            context.fillRect(-size - 0.5, -size - 0.5, size * 2 + 1, size * 2 + 1);
             context.restore();
         } else {
             throw Error("Unknown head shape: " + headShape);
@@ -95,7 +95,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         context.setLineDash([2,5]);
         context.lineWidth = 2;
         context.beginPath();
-        context.translate(worm.head.centerX, worm.head.centerY);
+        context.translate(worm.centerX, worm.centerY);
         context.rotate(worm.direction - Math.PI/2);
         worm.trajectory.forEach(function (move) {
             var turnRadius;

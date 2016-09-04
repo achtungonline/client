@@ -45,7 +45,7 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
         var startPercentage = (renderStartTime - wormSegment.startTime) / wormSegment.duration;
         var endPercentage = (renderTime - wormSegment.startTime) / wormSegment.duration;
 
-        context.lineWidth = wormSegment.size;
+        context.lineWidth = wormSegment.size*2;
         context.lineCap = "round";
         context.strokeStyle = players.find(p => p.id === wormSegment.playerId).color.hexCode;
         // Draw path
