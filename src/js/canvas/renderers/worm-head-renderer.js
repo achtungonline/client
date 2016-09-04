@@ -136,7 +136,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
             }
             if (segments.length > 0) {
                 var segment = segments[renderData.segmentIndex];
-                if (segment.type !== "clear") {
+                if (segment.startTime <= renderTime && segment.type !== "clear") {
                     var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
                     var size = segment.size;
                     var playerColor = players.find(p => p.id === segment.playerId).color.hexCode;

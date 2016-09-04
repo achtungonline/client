@@ -120,7 +120,7 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
                     renderData.mainSegmentIndex++;
                 }
                 // Render the last segment to the secondary canvas
-                if (renderData.mainSegmentIndex < segments.length) {
+                if (renderData.mainSegmentIndex < segments.length && segments[renderData.mainSegmentIndex].startTime <= renderTime) {
                     renderWormSegment({
                         renderTime,
                         wormId,
