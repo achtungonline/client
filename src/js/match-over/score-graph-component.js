@@ -11,7 +11,7 @@ var HEIGHT = 400;
 var MARGIN_X = 0.5;
 var MARGIN_Y = 0.5;
 var BORDER_WIDTH = 4;
-var LINE_WIDTH = 3;
+var LINE_WIDTH = 1.5;
 
 module.exports = React.createClass({
     propTypes: {
