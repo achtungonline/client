@@ -20,7 +20,8 @@ var POWERUP_IMAGE_URLS = {
     "switcharoonie": "src/css/svg/powerup/switcharoonie.svg",
     "key_switch": "src/css/svg/powerup/switchkeys.svg",
     "tron_turn": "src/css/svg/powerup/tronturn.svg",
-    "quick_turn": "src/css/svg/powerup/quickturn.svg"
+    "quick_turn": "src/css/svg/powerup/quickturn.svg",
+    "twin": "src/css/svg/powerup/twin.svg"
 };
 
 

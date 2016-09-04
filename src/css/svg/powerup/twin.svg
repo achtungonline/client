@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="102px" height="102px" viewBox="0 0 102 102" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
+    <title>twin</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="twin" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M56.2900391,50 C28.988704,50.0761839 21.7681547,50.2000289 17,50.25" id="Path-2" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"></path>
+        <path d="M81.9601551,60.4601551 C61.1141577,60.536339 55.6008907,60.6601841 51.9601551,60.7101551" id="Path-2" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" transform="translate(66.960155, 60.960155) rotate(45.000000) translate(-66.960155, -60.960155) "></path>
+        <path d="M78.0364267,29 C63.3499508,43.7942163 59.5390539,47.7802565 57,50.3899801" id="Path-2" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"></path>
+        <circle id="Oval-2" fill="#008000" cx="77.9921452" cy="72.1117742" r="7.77486009"></circle>
+        <circle id="Oval-2" fill="#FFFFFF" cx="77.5" cy="71.5" r="5.5"></circle>
+        <path d="M70.1684512,29.2265202 C70.168448,33.5204569 73.6493739,37.0013803 77.9433168,37.0013803 C82.2372597,37.0013803 85.7181857,33.5204569 85.7181827,29.2265202 C85.7181797,24.9325836 82.2372538,21.4516602 77.9433171,21.4516602 C73.6493805,21.4516602 70.1684544,24.9325836 70.1684512,29.2265202 Z" id="Oval-2" fill="#008000"></path>
+        <circle id="Oval-2" fill="#FFFFFF" cx="77.5" cy="29.5" r="5.5"></circle>
+    </g>
+</svg>
