@@ -30,7 +30,7 @@
     "lint": "eslint src/**",
     "clean": "rimraf build",
     "prebuild": "rimraf build && mkdirp build",
-    "build": "npm run build:css -s && npm run build:js -s",
+    "build": "npm run build:css && npm run build:js",
     "build:js": "browserify -t [ babelify --presets [ es2015 react ] ] --outfile build/index.js -d src/js/index.js",
     "build:css": "node-sass src/css/main.scss build/index.css",
     "watch:js": "npm run build:js -s && watchify -t [ babelify --presets [ es2015 react ] ] --outfile build/index.js -d src/js/index.js",
