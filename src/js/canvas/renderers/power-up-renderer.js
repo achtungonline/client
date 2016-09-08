@@ -9,19 +9,19 @@ var POWERUP_COLORS = {
 };
 
 var POWERUP_IMAGE_URLS = {
-    "clear": "src/css/svg/powerup/clear.svg",
-    "drunk": "src/css/svg/powerup/drunk.svg",
-    "fat": "src/css/svg/powerup/fat.svg",
-    "slim": "src/css/svg/powerup/slim.svg",
-    "slow": "src/css/svg/powerup/slow.svg",
-    "slow_turn": "src/css/svg/powerup/slowturn.svg",
-    "speed": "src/css/svg/powerup/speed.svg",
-    "super_jump": "src/css/svg/powerup/superjump.svg",
-    "switcharoonie": "src/css/svg/powerup/switcharoonie.svg",
-    "key_switch": "src/css/svg/powerup/switchkeys.svg",
-    "tron_turn": "src/css/svg/powerup/tronturn.svg",
-    "quick_turn": "src/css/svg/powerup/quickturn.svg",
-    "twin": "src/css/svg/powerup/twin.svg"
+    "clear": "svg/powerup/clear.svg",
+    "drunk": "svg/powerup/drunk.svg",
+    "fat": "svg/powerup/fat.svg",
+    "slim": "svg/powerup/slim.svg",
+    "slow": "svg/powerup/slow.svg",
+    "slow_turn": "svg/powerup/slowturn.svg",
+    "speed": "svg/powerup/speed.svg",
+    "super_jump": "svg/powerup/superjump.svg",
+    "switcharoonie": "svg/powerup/switcharoonie.svg",
+    "key_switch": "svg/powerup/switchkeys.svg",
+    "tron_turn": "svg/powerup/tronturn.svg",
+    "quick_turn": "svg/powerup/quickturn.svg",
+    "twin": "svg/powerup/twin.svg"
 };
 
 

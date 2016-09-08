@@ -31,11 +31,11 @@ module.exports = React.createClass({
 
             var placementElement;
             if (placement === 1) {
-                placementElement = <img style={{height: "27px", width: "27px"}} src="src/css/svg/gold-trophy.svg" alt="Max score: "/>
+                placementElement = <img style={{height: "27px", width: "27px"}} src="svg/gold-trophy.svg" alt="Max score: "/>
             } else if (placement === 2) {
-                placementElement = <img style={{height: "27px", width: "27px"}} src="src/css/svg/silver-trophy.svg" alt="Max score: "/>
+                placementElement = <img style={{height: "27px", width: "27px"}} src="svg/silver-trophy.svg" alt="Max score: "/>
             } else if (placement === 3) {
-                placementElement = <img style={{height: "27px", width: "27px"}} src="src/css/svg/bronze-trophy.svg" alt="Max score: "/>
+                placementElement = <img style={{height: "27px", width: "27px"}} src="svg/bronze-trophy.svg" alt="Max score: "/>
             } else {
                 placementElement = placement;
             }

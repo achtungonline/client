@@ -26,7 +26,7 @@ module.exports = function Score({ match, startScore, roundScore }) {
     return (
         <div>
             <div className="flex flex-center max-score m-b-2">
-                <img src="src/css/svg/trophy.svg" alt="Max score: "/>
+                <img src="svg/trophy.svg" alt="Max score: "/>
                 <div className="flex-self-center">{match.matchConfig.maxScore}</div>
             </div>
             <table style={{width: "100%"}}>
