@@ -58,8 +58,8 @@ var availableNames = [
     "Adolf Hitler", "Donald Trump", "Vladimir Putin", "Osama bin Laden", "Kim Jong-un", "Mao Zedong", "Joseph Stalin", "Prophet Muhammad", "Steve Jobs", "Benito Mussolini"];
 
 var playerTypeSvg = {
-    "human": "src/css/svg/human.svg",
-    "bot": "src/css/svg/computer.svg"
+    "human": "svg/human.svg",
+    "bot": "svg/computer.svg"
 };
 
 var SCORE_INCREASE = 5;
@@ -147,7 +147,7 @@ module.exports = React.createClass({
                 rightKey = player.right;
                 onRightKeyPicked = this.onKeyChange.bind(this, player.id, "right");
             }
-            var removeButton = this.state.players.length > 2 ? <button className="btn-clean btn-remove-player" onMouseDown={this.onRemoveClick.bind(this, player.id)}><img src="src/css/svg/cross.svg" alt="X"/></button> : null;
+            var removeButton = this.state.players.length > 2 ? <button className="btn-clean btn-remove-player" onMouseDown={this.onRemoveClick.bind(this, player.id)}><img src="svg/cross.svg" alt="X"/></button> : null;
 
             return (
                 <tr key={player.id}>
@@ -204,7 +204,7 @@ module.exports = React.createClass({
                             </select>
                         </div>
                         <div className="flex max-score">
-                            <img style={{marginTop: "auto"}} src="src/css/svg/trophy.svg" alt="Max score: "/>
+                            <img style={{marginTop: "auto"}} src="svg/trophy.svg" alt="Max score: "/>
                             <input style={{marginTop: "auto"}} className="input" type="number" value={this.state.maxScore} onChange={this.onMaxScoreChange}/>
                         </div>
                     </div>

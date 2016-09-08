@@ -28,18 +28,17 @@
     "watch": "parallelshell 'npm run watch:js' 'npm run watch:css' 'npm run watch:test'",
     "test": "npm run lint -s",
     "lint": "eslint src/**",
-    "clean": "rimraf build",
-    "prebuild": "rimraf build && mkdirp build",
+    "clean": "rimraf public/build",
+    "prebuild": "rimraf public/build && mkdirp public/build",
     "build": "npm run build:css && npm run build:js",
-    "build:js": "browserify -t [ babelify --presets [ es2015 react ] ] --outfile build/index.js -d src/js/index.js",
-    "build:css": "node-sass src/css/main.scss build/index.css",
-    "watch:js": "npm run build:js -s && watchify -t [ babelify --presets [ es2015 react ] ] --outfile build/index.js -d src/js/index.js",
+    "build:js": "browserify -t [ babelify --presets [ es2015 react ] ] --outfile public/build/index.js -d src/js/index.js",
+    "build:css": "node-sass src/css/main.scss public/build/index.css",
+    "watch:js": "npm run build:js -s && watchify -t [ babelify --presets [ es2015 react ] ] --outfile public/build/index.js -d src/js/index.js",
     "watch:css": "nodemon -q -w src/css/ --ext '.scss' --exec 'npm run build:css'",
     "watch:test": "nodemon -q -w src --ext '.js' --exec 'npm run test'"
   },
   "dependencies": {
     "core": "achtungonline/core",
-    "normalize.css": "^4.2.0",
     "react": "^0.14.6",
     "react-dom": "^0.14.6"
   },
