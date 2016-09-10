@@ -30,7 +30,7 @@
     "lint": "eslint src/**",
     "clean": "rimraf public/build",
     "prebuild": "rimraf public/build && mkdirp public/build",
-    "build": "npm run build:css && npm run build:js",
+    "build": "npm run build:css && npm run build:js && uglifyjs public/build/index.js -o public/build/index.js",
     "build:js": "browserify -t [ babelify --presets [ es2015 react ] ] --outfile public/build/index.js src/js/index.js",
     "build:css": "node-sass src/css/main.scss public/build/index.css",
     "watch:js": "npm run build:js && watchify -t [ babelify --presets [ es2015 react ] ] --outfile public/build/index.js -d src/js/index.js",
@@ -53,6 +53,7 @@
     "parallelshell": "^2.0.0",
     "rimraf": "^2.5.2",
     "uglify-js": "^2.6.2",
+    "uglifycss": "0.0.21",
     "watchify": "^3.7.0"
   }
 }
