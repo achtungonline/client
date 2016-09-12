@@ -5,6 +5,8 @@ var trajectoryUtil = require("core/src/core/geometry/trajectory/trajectory-util.
 var HEAD_COLOR = "#FFB74D"; // 300 orange
 var KEY_SWITCH_HEAD_COLOR = "#3388BB";
 
+var blinkingStartTime = Date.now() / 1000;
+
 module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTrajectories }) {
     var context = canvas.getContext("2d");
     var wormRenderData = {};
@@ -44,7 +46,15 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         }
     }
 
-    function drawHead({ x, y, direction, size, headColor, headShape }) {
+    function drawHead({ x, y, direction, size, headColor, headShape, blinking}) {
+        if(blinking) {
+            var BLINK_DURATION = 1;
+            var FADE_LOW_POINT = 0;
+            var timeDiff = (Date.now() / 1000 - blinkingStartTime) % BLINK_DURATION;
+            var a = timeDiff / BLINK_DURATION * Math.PI;
+            context.globalAlpha = FADE_LOW_POINT + Math.sin(a) * (1 - FADE_LOW_POINT);
+        }
+
         context.fillStyle = headColor;
         if (headShape === "circle") {
             context.beginPath();
@@ -142,12 +152,15 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
                     var playerColor = players.find(p => p.id === segment.playerId).color.hexCode;
                     var headColor = HEAD_COLOR;
                     var headShape = "circle";
+                    var blinking = false;
                     activeEffects.forEach(function (effect) {
                         if (effect.wormId === wormId) {
                             if (effect.name === "key_switch") {
                                 headColor = KEY_SWITCH_HEAD_COLOR;
                             } else if (effect.name === "tron_turn") {
                                 headShape = "square";
+                            } else if (effect.name === "wall_hack") {
+                                blinking = true;
                             }
                         }
                     });
@@ -163,7 +176,8 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
                         direction: position.direction,
                         size,
                         headColor,
-                        headShape
+                        headShape,
+                        blinking
                     });
                 }
             }
