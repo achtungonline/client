@@ -8,15 +8,15 @@ module.exports = React.createClass({
     propType: {
         match: React.PropTypes.object.isRequired,
         onStartNextGameAction: React.PropTypes.func,
-        onReplayAction: React.PropTypes.func.isRequired,
-        onMatchOverAction: React.PropTypes.func.isRequired
+        onReplayAction: React.PropTypes.func,
+        onMatchOverAction: React.PropTypes.func
     },
     render: function () {
         var match = this.props.match;
         var roundData = match.matchState.roundsData[match.matchState.roundsData.length - 1];
-        var startNextGameButton = !match.isMatchOver() ? <button className="btn btn-primary" onClick={this.props.onStartNextGameAction}>Start next game</button> : null;
-        var replayButton = <button className="btn btn-secondary" onClick={this.props.onReplayAction}>Watch replay</button>;
-        var endMatchButton =  <button className={match.isMatchOver() ? "btn btn-primary" : "btn btn-secondary"} onClick={this.props.onMatchOverAction}>End match</button>;
+        var startNextGameButton = this.props.onStartNextGameAction && !match.isMatchOver() ? <button className="btn btn-primary" onClick={this.props.onStartNextGameAction}>Start next game</button> : null;
+        var replayButton = this.props.onReplayAction ? <button className="btn btn-secondary" onClick={this.props.onReplayAction}>Watch replay</button> : null;
+        var endMatchButton = this.props.onMatchOverAction ?  <button className={match.isMatchOver() ? "btn btn-primary" : "btn btn-secondary"} onClick={this.props.onMatchOverAction}>End match</button> : null;
 
         return (
             <div className="m-x-3">

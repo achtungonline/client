@@ -47,6 +47,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
     }
 
     function drawHead({ x, y, direction, size, headColor, headShape, blinking}) {
+        context.save();
         if(blinking) {
             var BLINK_DURATION = 1;
             var FADE_LOW_POINT = 0;
@@ -61,14 +62,13 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
             context.arc(x, y, size + 1, 0, 2 * Math.PI);
             context.fill();
         } else if (headShape === "square") {
-            context.save();
             context.translate(x, y);
             context.rotate(direction - Math.PI / 2);
             context.fillRect(-size - 0.5, -size - 0.5, size * 2 + 1, size * 2 + 1);
-            context.restore();
         } else {
             throw Error("Unknown head shape: " + headShape);
         }
+        context.restore();
     }
 
     function drawArrow(x, y, direction, size, color) {
@@ -146,7 +146,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
             }
             if (segments.length > 0) {
                 var segment = segments[renderData.segmentIndex];
-                if (segment.startTime <= renderTime && segment.type !== "clear") {
+                if (segment.startTime <= renderTime && segment.type !== "clear" && (wormId.indexOf("#") === -1 || segment.endTime > renderTime)) {
                     var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
                     var size = segment.size;
                     var playerColor = players.find(p => p.id === segment.playerId).color.hexCode;

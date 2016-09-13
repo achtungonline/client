@@ -2,31 +2,27 @@ var React = require("react");
 
 var clone = require("core/src/core/util/clone.js");
 var random = require("core/src/core/util/random.js");
-var gameStateFunctions = require("core/src/core/game-state-functions.js");
 var scoreUtil = require("core/src/core/score/score-util.js");
 
-var windowFocusHandler = require("../window-focus-handler.js");
-var LocalGameHandler = require("./local-game/local-game-handler.js");
-var GameCanvas = require("./../canvas/game-canvas-component.js");
-var Score = require("./score-component.js");
+var windowFocusHandler = require("../../window-focus-handler.js");
+var LocalGameHandler = require("./local-game-handler.js");
+var GameCanvas = require("../../canvas/game-canvas-component.js");
+var Score = require("../score-component.js");
 
 module.exports = React.createClass({
-    displayName: "Match",
+    displayName: "Local Game",
     propType: {
         match: React.PropTypes.object.isRequired,
-        onGameOverAction: React.PropTypes.func.isRequired,
-        onMatchOverAction: React.PropTypes.func.isRequired
+        onGameOverAction: React.PropTypes.func
     },
     getInitialState: function () {
         var startScore = scoreUtil.getStartScore(this.props.match.matchConfig.players);
         if (this.props.match.matchState.roundsData.length > 0) {
-            var lastRoundData = this.props.match.matchState.roundsData[this.props.match.matchState.roundsData.length - 1];
-            startScore = scoreUtil.combineScores(lastRoundData.startScore, lastRoundData.roundScore);
+            startScore = this.props.match.matchState.roundsData[this.props.match.matchState.roundsData.length - 1].endScore;
         }
         return {
             localGame: null,
             startScore: startScore,
-            roundScore: scoreUtil.getStartScore(this.props.match.matchConfig.players),
             renderTime: 0,
             pausedDueToLostFocus: false
         }
@@ -35,6 +31,7 @@ module.exports = React.createClass({
         var match = this.props.match;
         var game = this.state.localGame;
         var players = match.matchConfig.players;
+        var roundScore = scoreUtil.calculateRoundScore(game.gameState);
         var pauseButton = <button className="btn btn-primary" onClick={this.togglePause}>{game.isPaused() ? "Resume" : "Pause"}</button>;
         var endGameButton = <button className="btn btn-secondary" onClick={this.state.localGame.stop}>End game</button>;
 
@@ -45,7 +42,7 @@ module.exports = React.createClass({
                         <GameCanvas gameState={game.gameState} players={players} renderTime={this.state.renderTime}/>
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
-                        <Score match={match} startScore={this.state.startScore} roundScore={this.state.roundScore} />
+                        <Score match={match} startScore={this.state.startScore} roundScore={roundScore} />
                         <div className="m-t-2">
                             <div>
                                 {pauseButton}
@@ -85,7 +82,7 @@ module.exports = React.createClass({
             game,
             players: this.props.match.matchConfig.players,
             onGameUpdated: function () {
-                thisComponent.setState({ renderTime: localGame.gameState.gameTime, roundScore: scoreUtil.calculateRoundScore(localGame.gameState) });
+                thisComponent.setState({ renderTime: localGame.gameState.gameTime });
             },
             onGameOver: this.onGameOver
         });
@@ -93,14 +90,11 @@ module.exports = React.createClass({
 
         this.setState({ localGame: localGame });
     },
-    collectRoundData: function () {
-        var roundScore = scoreUtil.calculateRoundScore(this.state.localGame.gameState);
-        var replayGameState = gameStateFunctions.extractReplayGameState(this.state.localGame.gameState);
-        this.props.match.addRoundData({ startScore: this.state.startScore, roundScore, gameState: replayGameState });
-    },
     onGameOver: function () {
-        this.collectRoundData();
-        this.props.onGameOverAction();
+        this.props.match.addFinishedGameState(this.state.localGame.gameState);
+        if (this.props.onGameOverAction) {
+            this.props.onGameOverAction();
+        }
     },
     onWindowFocus: function () {
         if (this.state.pausedDueToLostFocus) {

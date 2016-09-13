@@ -18,7 +18,7 @@ module.exports = React.createClass({
         var equalScoreCounter = 0;
         var prevScore = -1;
         var index = 0;
-        var scoreTableRows = scoreUtil.createSortedList(this.props.match.matchState.score).map(function (playerScore) {
+        var scoreTableRows = scoreUtil.createSortedList(this.props.match.getCurrentScore()).map(function (playerScore) {
             if (prevScore === playerScore.score) {
                 equalScoreCounter++;
             } else {
