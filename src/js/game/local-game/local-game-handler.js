@@ -1,9 +1,11 @@
-var PlayerSteeringListener = require("./player-steering-listener.js");
-var requestFrame = require("./request-frame.js");
+var gameStateFunctions = require("core/src/core/game-state-functions.js");
+
+var PlayerSteeringListener = require("../player-steering-listener.js");
+var requestFrame = require("../request-frame.js");
 
 module.exports = function LocalGameHandler({ game, players, onGameUpdated, onGameOver }) {
 
-    var playerSteeringListener = PlayerSteeringListener(game);
+    var playerSteeringListener = PlayerSteeringListener();
 
     var localGameState = {
         paused: false,
@@ -13,7 +15,10 @@ module.exports = function LocalGameHandler({ game, players, onGameUpdated, onGam
     function setupSteeringListenerEvents() {
         players.forEach(function (player) {
             if (player.type === "human") {
-                playerSteeringListener.addKeyListeners(player.id, player.left, player.right);
+                var onSteeringUpdate = steering => {
+                    gameStateFunctions.setPlayerSteering(game.gameState, player.id, steering);
+                };
+                playerSteeringListener.addKeyListeners({ left: player.left, right: player.right, onSteeringUpdate });
             }
         });
     }

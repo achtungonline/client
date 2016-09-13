@@ -1,17 +1,35 @@
+var ReactDOM = require("react-dom");
 var React = require("react");
 
 var Match = require("core/src/core/match.js");
 
 var windowFocusHandler = require("./window-focus-handler.js");
 var NewMatchComponent = require("./new-match/new-match-component.js");
-var GameComponent = require("./game/local-game/local-game-component.js");
+var RemoteGameComponent = require("./game/remote-game/remote-game-component.js");
 var MatchOverComponent = require("./match-over/match-over-component.js");
 var Header = require("./header/header-component.js");
 var ReplayComponent = require("./replay/replay-component.js");
 var GameOverComponent = require("./game-over/game-over-component.js");
 
-module.exports = React.createClass({
-    displayName: "TopComponent",
+var io = require("socket.io-client");
+
+function setupSocket() {
+    var socket = io("http://localhost:3000");
+    socket.on("connect", function() {
+        console.log("Connected to server");
+    });
+    socket.on("disconnect", function() {
+        console.log("Disconnected from server");
+    });
+    return socket;
+}
+
+var Component = React.createClass({
+    displayName: "ServerTestComponent",
+    propTypes: {
+        socket: React.PropTypes.object.isRequired,
+        initialView: React.PropTypes.string
+    },
     getDefaultProps: function() {
         return {
             initialView: "new-match"
@@ -22,6 +40,7 @@ module.exports = React.createClass({
             previousView: this.props.initialView,
             currentView: this.props.initialView,
             match: null,
+            gameState: null,
             replayRoundId: undefined
         };
     },
@@ -35,8 +54,10 @@ module.exports = React.createClass({
                 />;
         } else if (this.state.currentView === "game") {
             page =
-                <GameComponent
+                <RemoteGameComponent
                     match={this.state.match}
+                    gameState={this.state.gameState}
+                    socket={this.props.socket}
                     onGameOverAction={this.gameOver}
                 />;
         } else if (this.state.currentView === "replay-round") {
@@ -51,7 +72,7 @@ module.exports = React.createClass({
         } else if (this.state.currentView === "game-over") {
             page = <GameOverComponent
                 match={this.state.match}
-                onStartNextGameAction={this.startNextGame}
+                onStartNextGameAction={this.requestStartGame}
                 onReplayAction={this.replayLastRound}
                 onMatchOverAction={this.endMatch}
             />;
@@ -78,8 +99,10 @@ module.exports = React.createClass({
     },
     componentWillMount: function () {
         windowFocusHandler.startListening();
+        this.props.socket.on("start_game", this.startGame);
     },
     componentWillUnmount: function () {
+        this.props.socket.off("start_game", this.startGame);
         windowFocusHandler.stopListening();
     },
     newMatch: function () {
@@ -88,9 +111,14 @@ module.exports = React.createClass({
     startMatch: function (matchConfig) {
         var match = Match({ matchConfig });
         this.setState({ match: match });
-        this.startNextGame();
+        this.props.socket.emit("match_config", matchConfig);
+        this.requestStartGame();
     },
-    startNextGame: function() {
+    requestStartGame: function() {
+        this.props.socket.emit("start_game");
+    },
+    startGame: function(gameState) {
+        this.setState({gameState});
         this.changeView("game");
     },
     gameOver: function() {
@@ -106,4 +134,9 @@ module.exports = React.createClass({
     replayLastRound: function () {
         this.replayRound(this.state.match.matchState.roundsData.length - 1);
     }
+});
+
+document.addEventListener("DOMContentLoaded", function (event) {
+    var mainContainer = document.getElementById("main");
+    ReactDOM.render(<Component socket={setupSocket()}/>, mainContainer);
 });

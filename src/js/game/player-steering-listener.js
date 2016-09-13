@@ -1,12 +1,11 @@
 var constants = require("core/src/core/constants.js");
-var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
-var parseEvent = require("../../key-util.js").parseEvent;
+var parseEvent = require("../key-util.js").parseEvent;
 
 /**
  * Note that this listener setups listening on document so we NEED to remove the listeners once we are done listening
  */
-module.exports = function PlayerSteeringListener(game) {
+module.exports = function PlayerSteeringListener() {
 
     var listeners = [];
 
@@ -21,32 +20,32 @@ module.exports = function PlayerSteeringListener(game) {
         document.addEventListener(event, eventHandler);
     }
 
-    function addKeyListeners(playerId, leftKey, rightKey) {
+    function addKeyListeners({ left, right, onSteeringUpdate }) {
         var leftKeyPressed = false;
         var rightKeyPressed = false;
-        addListener("keydown", leftKey, function () {
+        addListener("keydown", left, function () {
             leftKeyPressed = true;
             updatePlayerSteering();
         });
 
-        addListener("keyup", leftKey, function () {
+        addListener("keyup", left, function () {
             leftKeyPressed = false;
             updatePlayerSteering();
         });
 
-        addListener("keydown", rightKey, function () {
+        addListener("keydown", right, function () {
             rightKeyPressed = true;
             updatePlayerSteering();
         });
 
-        addListener("keyup", rightKey, function () {
+        addListener("keyup", right, function () {
             rightKeyPressed = false;
             updatePlayerSteering();
         });
 
         function updatePlayerSteering() {
             var newSteering = leftKeyPressed * constants.STEERING_LEFT + rightKeyPressed * constants.STEERING_RIGHT;
-            gameStateFunctions.setPlayerSteering(game.gameState, playerId, newSteering);
+            onSteeringUpdate(newSteering);
         }
     }
 

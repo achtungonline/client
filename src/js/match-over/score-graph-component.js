@@ -30,8 +30,7 @@ module.exports = React.createClass({
     },
     componentWillMount: function() {
         var roundsData = this.props.match.matchState.roundsData;
-        var lastRoundData = roundsData[roundsData.length - 1];
-        var maxScore = Math.max(1, 1.15*scoreUtil.getHighestScore(scoreUtil.combineScores(lastRoundData.startScore, lastRoundData.roundScore)));
+        var maxScore = Math.max(1, 1.15*scoreUtil.getHighestScore(this.props.match.getCurrentScore()));
         var dx = WIDTH / roundsData.length;
         var dy = HEIGHT / maxScore;
         var dt = ANIMATION_DURATION / roundsData.length;
