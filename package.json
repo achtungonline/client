@@ -36,7 +36,8 @@
     "watch:js": "npm run build:js && watchify src/js/index.js -o public/js/index.js -d",
     "watch:css": "nodemon -q -w src/css/ --ext '.scss' --exec 'npm run build:css'",
     "watch:test": "nodemon -q -w src --ext '.js' --exec 'npm run test'",
-    "server-test": "watchify src/js/server-test.js -o public/js/server-test.js -d"
+    "server-test": "watchify src/js/server-test.js -o public/js/server-test.js -d",
+    "multi": "watchify src/js/multi.js -o public/js/multi.js -d"
   },
   "dependencies": {
     "core": "achtungonline/core",
