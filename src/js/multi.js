@@ -13,7 +13,7 @@ var GameOverComponent = require("./game-over/game-over-component.js");
 var io = require("socket.io-client");
 
 function setupSocket() {
-    var socket = io("http://localhost:3000");
+    var socket = io("http://achtungonline.com:3000");
     socket.on("connect", function() {
         console.log("Connected to server");
     });
