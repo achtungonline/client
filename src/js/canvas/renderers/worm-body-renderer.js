@@ -1,5 +1,6 @@
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 var forEach = require("core/src/core/util/for-each.js");
+var wormColors = require("core/src/core/constants.js").wormColors;
 
 var CLEAR_FADE_DURATION = 0.2;
 
@@ -47,7 +48,7 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
 
         context.lineWidth = wormSegment.size*2;
         context.lineCap = "round";
-        context.strokeStyle = players.find(p => p.id === wormSegment.playerId).color.hexCode;
+        context.strokeStyle = wormColors[players.find(p => p.id === wormSegment.playerId).colorId];
         // Draw path
         context.beginPath();
         if (wormSegment.type === "straight") {

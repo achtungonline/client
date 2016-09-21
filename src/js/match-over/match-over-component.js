@@ -1,5 +1,7 @@
 var React = require("react");
+
 var scoreUtil = require("core/src/core/score/score-util.js");
+var wormColors = require("core/src/core/constants.js").wormColors;
 
 var GameCanvas = require("./../canvas/game-canvas-component.js");
 var ScoreGraph = require("./score-graph-component.js");
@@ -47,7 +49,7 @@ module.exports = React.createClass({
             return (
                 <tr key={player.id}>
                     <td style={{textAlign: "center"}}>{placementElement}</td>
-                    <td style={{color: player.color.hexCode}}>{player.name}</td>
+                    <td style={{color: wormColors[player.colorId]}}>{player.name}</td>
                     <td>{playerScore.score}</td>
                 </tr>
             )
@@ -65,7 +67,7 @@ module.exports = React.createClass({
 
             return (
                 <div key={index} className="m-x-2 m-b-3 round-replay" style={{width: width}}>
-                    <div style={{textAlign: "center"}}><span style={{color: winningPlayer.color.hexCode}}>{winningPlayer.name}</span></div>
+                    <div style={{textAlign: "center"}}><span style={{color: wormColors[winningPlayer.colorId]}}>{winningPlayer.name}</span></div>
                     <div onClick={thisComponent.props.onRoundClick.bind(null, index)}>
                         <div className="round-watch-replay">Watch replay</div>
                         <GameCanvas gameState={gameState} players={thisComponent.props.match.matchConfig.players} mapBorderWidth={mapBorderWidth} scale={scale} />

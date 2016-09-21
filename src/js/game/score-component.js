@@ -1,6 +1,7 @@
 var React = require("react");
 
 var scoreUtil = require("core/src/core/score/score-util.js");
+var wormColors = require("core/src/core/constants.js").wormColors;
 
 module.exports = function Score({ match, startScore, roundScore }) {
 
@@ -16,7 +17,7 @@ module.exports = function Score({ match, startScore, roundScore }) {
 
         return (
             <tr key={player.id} style={{opacity: opacity}}>
-                <td style={{color: player.color.hexCode}}>{player.name}</td>
+                <td style={{color: wormColors[player.colorId]}}>{player.name}</td>
                 <td>{playerScore.score}</td>
                 <td style={{minWidth: "34px"}}>{roundScore[playerScore.id] ? " +" + roundScore[playerScore.id] : ""}</td>
             </tr>

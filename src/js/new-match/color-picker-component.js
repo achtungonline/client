@@ -1,10 +1,12 @@
 var React = require("react");
 
+var wormColors = require("core/src/core/constants.js").wormColors;
+
 module.exports = React.createClass({
     propTypes: {
-        color: React.PropTypes.object.isRequired,
-        availableWormColors: React.PropTypes.array.isRequired,
-        onColorSelected: React.PropTypes.func.isRequired
+        colorId: React.PropTypes.string.isRequired,
+        availableWormColorIds: React.PropTypes.array.isRequired,
+        onColorSelected: React.PropTypes.func
     },
     getInitialState: function () {
         return {expanded: false};
@@ -15,24 +17,24 @@ module.exports = React.createClass({
     render: function () {
         var thisComponent = this;
 
-        function getColorElements(colors) {
-            return colors.map(function (color) {
-                return (<div key={color.id} className="color-picker" style={{backgroundColor: color.hexCode}} onMouseDown={thisComponent.onAvailableColorClick.bind(thisComponent, color)}></div>);
-            });
+        function getColorElements(colorIds) {
+            return colorIds.map(colorId =>
+                <div key={colorId} className="color-picker" style={{backgroundColor: wormColors[colorId]}} onMouseDown={thisComponent.onAvailableColorClick.bind(thisComponent, colorId)}></div>
+            );
         }
 
         var selectionList;
         if (this.state.expanded) {
             selectionList = (
                 <div className="color-picker-list">
-                    {getColorElements(this.props.availableWormColors.filter(c => c.id !== thisComponent.props.color.id))}
+                    {getColorElements(this.props.availableWormColorIds.filter(colorId => colorId !== thisComponent.props.colorId))}
                 </div>
             );
         }
 
         return (
             <div ref="colorPicker" className="color-picker">
-                <div className="color-picker-selected" onMouseDown={this.onSelectedColorClick} style={{backgroundColor: this.props.color.hexCode}}></div>
+                <div className="color-picker-selected" onMouseDown={this.props.onColorSelected ? this.onSelectedColorClick : undefined} style={{backgroundColor: wormColors[this.props.colorId]}}></div>
                 {selectionList}
             </div>
         )
@@ -46,12 +48,12 @@ module.exports = React.createClass({
             expanded: !this.state.expanded
         });
     },
-    onAvailableColorClick: function (color, event) {
+    onAvailableColorClick: function (colorId, event) {
         event.preventDefault();
         this.setState({
             expanded: false
         });
-        this.props.onColorSelected(color);
+        this.props.onColorSelected(colorId);
     },
     onMouseDown: function (event) {
         function isDescendant(child, parent) {

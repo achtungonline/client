@@ -3,6 +3,7 @@ var React = require("react");
 
 var Match = require("core/src/core/match.js");
 
+var availableKeyBindings = require("./key-util.js").keyPairs;
 var windowFocusHandler = require("./window-focus-handler.js");
 var NewMatchComponent = require("./new-match/new-remote-match-component.js");
 var RemoteGameComponent = require("./game/remote-game/remote-game-component.js");
@@ -31,14 +32,19 @@ var Component = React.createClass({
     },
     getDefaultProps: function() {
         return {
-            initialView: "waiting"
+            initialView: "enter"
         };
     },
     getInitialState: function () {
         return {
             previousView: this.props.initialView,
             currentView: this.props.initialView,
-            playerId: undefined,
+            playerData: {
+                name: "John Doe",
+                left: availableKeyBindings[0].left,
+                right: availableKeyBindings[0].right
+            },
+            matchConfig: null,
             match: null,
             gameState: null,
             replayRoundId: undefined
@@ -46,18 +52,27 @@ var Component = React.createClass({
     },
     render: function () {
         var page;
-        if (this.state.currentView === "waiting") {
-            page = <div>Waiting for server...</div>;
+        if (this.state.currentView === "enter") {
+            page =
+                <div style={{width: "30%", margin: "auto"}}>
+                    <input className="input" type="text" onChange={this.onNameChange} value={this.state.playerData.name}/>
+                    <button className="btn btn-primary" onClick={this.enter}>Enter</button>
+                </div>;
+        } else if (this.state.currentView === "waiting") {
+            page = <div style={{width: "30%", margin: "auto"}}>Waiting for server...</div>;
         } else if (this.state.currentView === "new-match") {
             page =
                 <NewMatchComponent
+                    matchConfig={this.state.matchConfig}
+                    playerData={this.state.playerData}
                     onReadyAction={this.ready}
-                    playerId={this.state.playerId}
+                    onColorChange={newColorId => this.props.socket.emit("color_change", newColorId)}
                 />;
         } else if (this.state.currentView === "game") {
             page =
                 <RemoteGameComponent
                     match={this.state.match}
+                    playerData={this.state.playerData}
                     gameState={this.state.gameState}
                     socket={this.props.socket}
                     onGameOverAction={this.gameOver}
@@ -92,28 +107,30 @@ var Component = React.createClass({
     },
     componentWillMount: function () {
         windowFocusHandler.startListening();
-        this.props.socket.on("start_game", this.startGame);
-        this.props.socket.on("player_id", this.setPlayerId);
+        this.props.socket.on("game_start", this.startGame);
+        this.props.socket.on("lobby_enter", this.newMatch);
+        this.props.socket.on("lobby_update", this.receiveMatchConfig);
     },
     componentWillUnmount: function () {
-        this.props.socket.off("start_game", this.startGame);
-        this.props.socket.off("player_id", this.setPlayerId);
+        this.props.socket.off("game_start", this.startGame);
+        this.props.socket.off("lobby_enter", this.newMatch);
+        this.props.socket.off("lobby_update", this.receiveMatchConfig);
         windowFocusHandler.stopListening();
     },
-    newMatch: function () {
+    newMatch: function ({ playerId, matchConfig }) {
+        this.state.playerData.playerId = playerId;
+        this.setState({matchConfig});
         this.changeView("new-match");
     },
-    ready: function (matchConfig) {
-        var match = Match({ matchConfig });
-        this.setState({ match: match });
+    receiveMatchConfig: function(matchConfig) {
+        this.setState({matchConfig});
+    },
+    ready: function () {
         this.props.socket.emit("ready");
     },
-    setPlayerId: function(playerId) {
-        console.log("Setting player id: " + playerId);
-        this.setState({ playerId });
-        this.changeView("new-match");
-    },
     startGame: function(gameState) {
+        var match = Match({ matchConfig: this.state.matchConfig });
+        this.setState({ match, gameState });
         this.setState({gameState});
         this.changeView("game");
     },
@@ -126,6 +143,14 @@ var Component = React.createClass({
     },
     replayLastRound: function () {
         this.replayRound(this.state.match.matchState.roundsData.length - 1);
+    },
+    onNameChange: function(event) {
+        this.state.playerData.name = event.target.value;
+        this.forceUpdate();
+    },
+    enter: function() {
+        this.props.socket.emit("enter", this.state.playerData);
+        this.changeView("waiting");
     }
 });
 

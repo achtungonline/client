@@ -11,6 +11,7 @@ module.exports = React.createClass({
     displayName: "Remote Game",
     propType: {
         match: React.PropTypes.object.isRequired,
+        playerData: React.PropTypes.object.isRequired,
         gameState: React.PropTypes.object.isRequired,
         socket: React.PropTypes.object.isRequired,
         onGameOverAction: React.PropTypes.func
@@ -31,7 +32,6 @@ module.exports = React.createClass({
         var match = this.props.match;
         var players = match.matchConfig.players;
         var roundScore = scoreUtil.calculateRoundScore(this.props.gameState);
-
 
         return (
             <div className="m-x-3">
@@ -56,23 +56,19 @@ module.exports = React.createClass({
                 thisComponent.setState({renderTime});
             }
         });
-        this.props.socket.on("game_updated", gameHandler.updateGameState);
+        this.props.socket.on("game_update", gameHandler.updateGameState);
         this.props.socket.on("game_over", this.onGameOver);
-        this.props.match.matchConfig.players.forEach(function (player) {
-            if (player.type === "human") {
-                var onSteeringUpdate = steering => {
-                    thisComponent.props.socket.emit("player_steering", {[player.id]: steering});
-                };
-                playerSteeringListener.addKeyListeners({ left: player.left, right: player.right, onSteeringUpdate });
-            }
-        });
+        var onSteeringUpdate = steering => {
+            thisComponent.props.socket.emit("player_steering", {[this.props.playerData.playerId]: steering});
+        };
+        playerSteeringListener.addKeyListeners({ left: this.props.playerData.left, right: this.props.playerData.right, onSteeringUpdate });
         this.setState({gameHandler});
     },
     componentDidMount: function() {
         this.state.gameHandler.start();
     },
     componentWillUnmount: function() {
-        this.props.socket.off("game_updated", this.updateGameState);
+        this.props.socket.off("game_update", this.updateGameState);
         this.props.socket.off("game_over", this.onGameOver);
         playerSteeringListener.removeKeyListeners();
     },

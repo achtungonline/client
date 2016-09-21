@@ -2,56 +2,13 @@ var React = require("react");
 
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 var idGenerator = require("core/src/core/util/id-generator.js").indexCounterId(0);
+var wormColorIds = require("core/src/core/constants.js").wormColorIds;
 
 var availableKeyBindings = require("../key-util.js").keyPairs;
 
 var ColorPicker = require("./color-picker-component.js");
 var KeyPicker = require("./key-picker-component.js");
 var GamePreview = require("./game-preview-component.js");
-
-// Note: The length of this list is also the maximum amount of players. But make sure that there are enough keybindings and keyCodeMapping as well
-var availableWormColors = [
-    {
-        id: "blue",
-        hexCode: "#03A9F4"
-    },
-    {
-        id: "pink",
-        hexCode: "#E91E63"
-    },
-    {
-        id: "green",
-        hexCode: "#4CAF50"
-    },
-    {
-        id: "purple",
-        hexCode: "#9C27B0"
-    },
-    {
-        id: "orange",
-        hexCode: "#FF9800"
-    },
-    {
-        id: "lime",
-        hexCode: "#CDDC39"
-    },
-    {
-        id: "indigo",
-        hexCode: "#3F51B5"
-    },
-    {
-        id: "teal",
-        hexCode: "#009688"
-    },
-
-    {
-        id: "black",
-        hexCode: "#444"
-    },
-    {
-        id: "bluegrey",
-        hexCode: "#607D8B"
-    },];
 
 var availableNames = [
     "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
@@ -72,11 +29,6 @@ function getUnusedNames(players) {
 function getRandomUnusedName(players) {
     var unusedNames = getUnusedNames(players);
     return unusedNames[Math.floor(Math.random() * unusedNames.length)];
-}
-
-function getUnusedColor(players) {
-    var usedColors = players.map(p => p.color.id);
-    return availableWormColors.filter(c => usedColors.indexOf(c.id) === -1);
 }
 
 function getUnusedKeyBindings(players) {
@@ -112,7 +64,7 @@ module.exports = React.createClass({
             players: this.props.startMatchConfig ? this.props.startMatchConfig.players : [
                 {
                     type: "human",
-                    color: availableWormColors[0],
+                    colorId: wormColorIds[0],
                     name: firstName,
                     left: availableKeyBindings[0].left,
                     right: availableKeyBindings[0].right,
@@ -120,7 +72,7 @@ module.exports = React.createClass({
                 },
                 {
                     type: "bot",
-                    color: availableWormColors[1],
+                    colorId: wormColorIds[1],
                     name: secondName,
                     left: availableKeyBindings[1].left,
                     right: availableKeyBindings[1].right,
@@ -157,7 +109,7 @@ module.exports = React.createClass({
                         </button>
                     </td>
                     <td className="col-color">
-                        <ColorPicker color={player.color} availableWormColors={availableWormColors} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/>
+                        <ColorPicker colorId={player.colorId} availableWormColorIds={wormColorIds} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/>
                     </td>
                     <td className="col-name">
                         <input className="input" type="text" onChange={this.onNameChange.bind(this, player.id)} value={player.name}/>
@@ -171,7 +123,7 @@ module.exports = React.createClass({
             );
         }, this);
 
-        var maxPlayersReached = this.state.players.length >= availableWormColors.length;
+        var maxPlayersReached = this.state.players.length >= wormColorIds.length;
         var addPlayerButton = maxPlayersReached ? null : <button className="btn btn-secondary btn-add-player" onClick={this.addPlayer}>Add player</button>;
 
         return (
@@ -268,17 +220,17 @@ module.exports = React.createClass({
         });
         this.setState({players: players, maxScore: this.state.maxScoreManuallyChanged ? this.state.maxScore : this.state.maxScore - SCORE_INCREASE});
     },
-    onPlayerColorChange: function (playerId, color) {
+    onPlayerColorChange: function (playerId, newColorId) {
         this.setState(function (oldState) {
-            var oldPlayerWithColor = oldState.players.find(p => p.color.id === color.id);
+            var oldPlayerWithColor = oldState.players.find(p => p.colorId === newColorId);
             var newPlayerWithColor = oldState.players.find(p => p.id === playerId);
 
             if (oldPlayerWithColor) {
                 // The picked color is occupied, so the players need to swap colors.
-                oldPlayerWithColor.color = newPlayerWithColor.color;
+                oldPlayerWithColor.colorId = newPlayerWithColor.colorId;
             }
 
-            newPlayerWithColor.color = color;
+            newPlayerWithColor.colorId = newColorId;
 
             return {
                 players: oldState.players
@@ -292,7 +244,7 @@ module.exports = React.createClass({
             return {
                 players: prevState.players.concat([{
                     type: "human",
-                    color: getUnusedColor(prevState.players)[0],
+                    colorId: wormColorIds.find(id => prevState.players.every(p => p.colorId !== id)),
                     name: name,
                     left: keyBinding.left,
                     right: keyBinding.right,

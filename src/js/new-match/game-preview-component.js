@@ -37,7 +37,6 @@ module.exports = React.createClass({
         if (this.localGame) {
             this.localGame.stop();
         }
-
         var thisComponent = this;
         this.localGame = LocalGameHandler({
             game: game,
@@ -53,7 +52,9 @@ module.exports = React.createClass({
                 }
             }
         });
-        this.localGame.start();
+        if (props.matchConfig.players.length > 1) {
+            this.localGame.start();
+        }
     },
     componentWillMount: function () {
         windowFocusHandler.on("focus", this.onWindowFocus);

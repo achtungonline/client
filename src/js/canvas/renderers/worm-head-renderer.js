@@ -1,6 +1,7 @@
 var forEach = require("core/src/core/util/for-each.js");
 var gameStateFunctions = require("core/src/core/game-state-functions.js");
 var trajectoryUtil = require("core/src/core/geometry/trajectory/trajectory-util.js");
+var wormColors = require("core/src/core/constants.js").wormColors;
 
 var HEAD_COLOR = "#FFB74D"; // 300 orange
 var KEY_SWITCH_HEAD_COLOR = "#3388BB";
@@ -149,7 +150,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
                 if (segment.startTime <= renderTime && segment.type !== "clear" && (wormId.indexOf("#") === -1 || segment.endTime > renderTime)) {
                     var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
                     var size = segment.size;
-                    var playerColor = players.find(p => p.id === segment.playerId).color.hexCode;
+                    var playerColor = wormColors[players.find(p => p.id === segment.playerId).colorId];
                     var headColor = HEAD_COLOR;
                     var headShape = "circle";
                     var blinking = false;
