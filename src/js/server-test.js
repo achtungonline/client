@@ -99,10 +99,10 @@ var Component = React.createClass({
     },
     componentWillMount: function () {
         windowFocusHandler.startListening();
-        this.props.socket.on("start_game", this.startGame);
+        this.props.socket.on("start_game", this.gameStart);
     },
     componentWillUnmount: function () {
-        this.props.socket.off("start_game", this.startGame);
+        this.props.socket.off("start_game", this.gameStart);
         windowFocusHandler.stopListening();
     },
     newMatch: function () {
@@ -117,7 +117,7 @@ var Component = React.createClass({
     requestStartGame: function() {
         this.props.socket.emit("start_game");
     },
-    startGame: function(gameState) {
+    gameStart: function(gameState) {
         this.setState({gameState});
         this.changeView("game");
     },

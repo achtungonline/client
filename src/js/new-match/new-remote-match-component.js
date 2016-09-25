@@ -12,7 +12,8 @@ module.exports = React.createClass({
         matchConfig: React.PropTypes.object.isRequired,
         playerData: React.PropTypes.object.isRequired,
         onReadyAction: React.PropTypes.func.isRequired,
-        onColorChange: React.PropTypes.func
+        onColorChange: React.PropTypes.func,
+        onLeaveAction: React.PropTypes.func
     },
     render: function () {
         var availableWormColorIds = wormColorIds.filter(colorId => this.props.matchConfig.players.every(p => p.colorId !== colorId));
@@ -39,12 +40,16 @@ module.exports = React.createClass({
                     </td>
                     <KeyPicker currentKey={leftKey} onKeyPicked={onLeftKeyPicked} />
                     <KeyPicker currentKey={rightKey} onKeyPicked={onRightKeyPicked} />
+                    <td className="col-ready">
+                        {player.ready ? "ready" : null}
+                    </td>
                 </tr>
             );
         }, this);
 
         var controlledPlayer = this.props.matchConfig.players.find(p => p.id === this.props.playerData.playerId);
         var readyButton = controlledPlayer.ready ? null : <button className="btn btn-primary" onClick={this.props.onReadyAction}>Ready</button>;
+        var leaveButton = this.props.onLeaveAction ? <button className="btn btn-secondary" onClick={this.props.onLeaveAction}>Leave</button> : null;
 
         return (
             <div className="flex flex-space-between new-match">
@@ -56,7 +61,12 @@ module.exports = React.createClass({
                         <tfoot>
                         <tr>
                             <td colSpan="5">
-                                {readyButton}
+                                <div>
+                                    {readyButton}
+                                </div>
+                                <div>
+                                    {leaveButton}
+                                </div>
                             </td>
                         </tr>
                         </tfoot>

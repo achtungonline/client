@@ -191,6 +191,9 @@ body {
   .col-remove {
     min-width: 40px
   }
+  .col-ready {
+    color: $green;
+  }
 
   tbody tr:hover {
     td:not(:last-child) {
@@ -337,6 +340,16 @@ body {
 
 .hidden {
   display: none;
+}
+
+.multi-player-enter {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  margin: auto;
+  input {
+    text-align: center;
+  }
 }
 
 .round-watch-replay {

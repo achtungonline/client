@@ -1,6 +1,6 @@
 var requestFrame = require("../game/request-frame.js");
 
-module.exports = function ReplayGameHandler({ onReplayUpdate, onReplayOver, gameState }) {
+module.exports = function ReplayGameHandler({ onReplayOver, gameState }) {
 
     var localGameState = {
         paused: false,
@@ -16,7 +16,6 @@ module.exports = function ReplayGameHandler({ onReplayUpdate, onReplayOver, game
                 var deltaTime = (currentTime - localGameState.previousUpdateTime) / 1000;
 
                 localGameState.replayTime += deltaTime;
-                onReplayUpdate(localGameState.replayTime);
 
                 if (localGameState.replayTime > gameState.gameTime) {
                     stop();
@@ -39,9 +38,12 @@ module.exports = function ReplayGameHandler({ onReplayUpdate, onReplayOver, game
         onReplayOver();
     }
 
+    function getReplayTime() {
+        return localGameState.replayTime;
+    }
+
     function setReplayProgress(progress) {
         localGameState.replayTime = progress * gameState.gameTime;
-        onReplayUpdate(localGameState.replayTime);
     }
 
     function getReplayProgress() {
@@ -66,13 +68,15 @@ module.exports = function ReplayGameHandler({ onReplayUpdate, onReplayOver, game
     }
 
     return {
-        start: start,
-        stop: stop,
-        setReplayProgress: setReplayProgress,
-        getReplayProgress: getReplayProgress,
-        pause: pause,
-        resume: resume,
-        isPaused: isPaused,
-        isReplayOver: isReplayOver
+        gameState,
+        getReplayTime,
+        start,
+        stop,
+        setReplayProgress,
+        getReplayProgress,
+        pause,
+        resume,
+        isPaused,
+        isReplayOver
     };
 };

@@ -71,6 +71,9 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
     }
 
     function render(renderTime) {
+        if (renderTime === prevRenderTime) {
+            return;
+        }
         secondaryContext.clearRect(0, 0, secondaryCanvas.width, secondaryCanvas.height);
         if (renderTime < prevRenderTime) {
             // TODO Perform this more efficiently

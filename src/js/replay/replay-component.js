@@ -14,13 +14,12 @@ module.exports = React.createClass({
     propTypes: {
         match: React.PropTypes.object.isRequired,
         roundId: React.PropTypes.number.isRequired,
-        onReplayOver: React.PropTypes.func.isRequired,
+        overlay: React.PropTypes.func,
+        onReplayOver: React.PropTypes.func.isRequired
     },
     getInitialState: function () {
         return {
             roundData: this.props.match.matchState.roundsData[this.props.roundId],
-            renderTime: 0,
-            roundScore: scoreUtil.getStartScore(this.props.match.matchConfig.players),
             replayGame: null,
             pausedDueToLostFocus: false,
             pausedByButton: false
@@ -29,6 +28,7 @@ module.exports = React.createClass({
     render: function () {
         var match = this.props.match;
         var replayGame = this.state.replayGame;
+        var roundScore = scoreUtil.calculateRoundScore(replayGame.gameState);
 
         var pauseButton = replayGame.isReplayOver() ? null : <button className="btn btn-secondary" onClick={this.buttonTogglePause}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
         var endReplayButton = <button className="btn btn-primary" onClick={this.state.replayGame.stop}>End replay</button>;
@@ -36,11 +36,11 @@ module.exports = React.createClass({
         return (
             <div className="flex flex-start">
                 <div className="m-b-2">
-                    <GameCanvas gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={this.state.renderTime}/>
-                    <ProgressBar progress={replayGame.getReplayProgress()} onTogglePause={this.progressBarTogglePause} onProgressChange={replayGame.setReplayProgress} />
+                    <GameCanvas gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} overlay={this.props.overlay}/>
+                    <ProgressBar progress={replayGame.getReplayProgress} onTogglePause={this.progressBarTogglePause} onProgressChange={replayGame.setReplayProgress} />
                 </div>
                 <div className="m-l-2" style={{width: "290px"}}>
-                    <Score match={match} startScore={this.state.roundData.startScore} roundScore={this.state.roundScore} />
+                    <Score match={match} startScore={this.state.roundData.startScore} roundScore={roundScore} />
                     <div className="m-t-2">
                         <div>
                             {pauseButton}
@@ -59,6 +59,7 @@ module.exports = React.createClass({
         windowFocusHandler.on("blur", this.onWindowBlur);
     },
     componentWillUnmount: function () {
+        this.state.replayGame.stop();
         windowFocusHandler.off("focus", this.onWindowFocus);
         windowFocusHandler.off("blur", this.onWindowBlur);
     },
@@ -67,9 +68,6 @@ module.exports = React.createClass({
 
         var replayGame = ReplayGameHandler({
             gameState: this.state.roundData.gameState,
-            onReplayUpdate: function (replayTime) {
-                thisComponent.setState({ renderTime: replayTime, roundScore: scoreUtil.calculateRoundScore(thisComponent.state.roundData.gameState, replayTime)});
-            },
             onReplayOver: function() {
                 thisComponent.props.onReplayOver();
             }

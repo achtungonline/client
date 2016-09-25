@@ -1,5 +1,7 @@
 var React = require("react");
 
+var requestAnimationFrame = require("../game/request-frame.js");
+
 var HEIGHT = 19;
 var BAR_RADIUS = 3;
 var X_MARGIN = HEIGHT / 2;
@@ -15,14 +17,9 @@ var BALL_BORDER_COLOR = "black";
 
 module.exports = React.createClass({
     propTypes: {
-        progress: React.PropTypes.number,
+        progress: React.PropTypes.any.isRequired,
         onTogglePause: React.PropTypes.func,
         onProgressChange: React.PropTypes.func
-    },
-    getDefaultProps: function() {
-        return {
-            progress: 0
-        };
     },
     getInitialState: function() {
         return {
@@ -38,9 +35,10 @@ module.exports = React.createClass({
             <canvas ref="canvas" style={{width: "100%", height: HEIGHT, cursor: "pointer"}}/>
         );
     },
-    updateCanvas: function(progress) {
-        if (progress === undefined) {
-            progress = this.props.progress;
+    update: function() {
+        var progress = this.props.progress;
+        if (typeof progress === "function") {
+            progress = progress();
         }
         var canvas = this.refs.canvas;
 
@@ -81,6 +79,7 @@ module.exports = React.createClass({
         context.arc(X_MARGIN + (canvas.width - 2*X_MARGIN) * ballProgress, canvas.height / 2, BALL_RADIUS + (this.state.mouse.hover ? HOVER_ADDED_RADIUS : 0), 0, 2 * Math.PI);
         context.fill();
         context.stroke();
+        this._requestId = requestAnimationFrame(this.update);
     },
     componentWillMount: function() {
         document.addEventListener("mousedown", this.onMouseDown);
@@ -88,21 +87,16 @@ module.exports = React.createClass({
         document.addEventListener("mousemove", this.onMouseMove);
     },
     componentWillUnmount: function() {
+        window.cancelAnimationFrame(this._requestId);
         document.removeEventListener("mousedown", this.onMouseDown);
         document.removeEventListener("mouseup", this.onMouseUp);
         document.removeEventListener("mousemove", this.onMouseMove);
-    },
-    componentWillReceiveProps: function(nextProps) {
-        this.updateCanvas(nextProps.progress);
-    },
-    shouldComponentUpdate: function() {
-        return false;
     },
     componentDidMount() {
         var canvas = this.refs.canvas;
         canvas.width  = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
-        this.updateCanvas();
+        this._requestId = requestAnimationFrame(this.update);
     },
     getProgressFromEvent: function(event) {
         var offsetX = event.pageX - this.refs.canvas.getBoundingClientRect().left;
@@ -115,7 +109,6 @@ module.exports = React.createClass({
             event.preventDefault();
             this.state.mouse.down = true;
             this.state.mouse.progress = this.getProgressFromEvent(event);
-            this.updateCanvas();
             if (this.props.onTogglePause) {
                 this.props.onTogglePause();
             }
@@ -134,24 +127,9 @@ module.exports = React.createClass({
         }
     },
     onMouseMove: function (event) {
-        var shouldUpdate = false;
-        if (event.target === this.refs.canvas) {
-            if (!this.state.mouse.hover) {
-                this.state.mouse.hover = true;
-                shouldUpdate = true;
-            }
-        } else {
-            if (this.state.mouse.hover) {
-                this.state.mouse.hover = false;
-                shouldUpdate = true;
-            }
-        }
+        this.state.mouse.hover = event.target === this.refs.canvas;
         if (this.state.mouse.down) {
             this.state.mouse.progress = this.getProgressFromEvent(event);
-            shouldUpdate = true;
-        }
-        if (shouldUpdate) {
-            this.updateCanvas();
         }
     }
 });

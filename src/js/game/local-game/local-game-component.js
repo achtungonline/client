@@ -3,7 +3,9 @@ var React = require("react");
 var clone = require("core/src/core/util/clone.js");
 var random = require("core/src/core/util/random.js");
 var scoreUtil = require("core/src/core/score/score-util.js");
+var gameStateFunctions = require("core/src/core/game-state-functions.js");
 
+var playerSteeringListener = require("../player-steering-listener.js")();
 var windowFocusHandler = require("../../window-focus-handler.js");
 var LocalGameHandler = require("./local-game-handler.js");
 var GameCanvas = require("../../canvas/game-canvas-component.js");
@@ -23,7 +25,6 @@ module.exports = React.createClass({
         return {
             localGame: null,
             startScore: startScore,
-            renderTime: 0,
             pausedDueToLostFocus: false
         }
     },
@@ -33,13 +34,13 @@ module.exports = React.createClass({
         var players = match.matchConfig.players;
         var roundScore = scoreUtil.calculateRoundScore(game.gameState);
         var pauseButton = <button className="btn btn-primary" onClick={this.togglePause}>{game.isPaused() ? "Resume" : "Pause"}</button>;
-        var endGameButton = <button className="btn btn-secondary" onClick={this.state.localGame.stop}>End game</button>;
+        var endGameButton = <button className="btn btn-secondary" onClick={this.endGame}>End game</button>;
 
         return (
             <div className="m-x-3">
                 <div className="flex flex-start">
                     <div className="m-b-2">
-                        <GameCanvas gameState={game.gameState} players={players} renderTime={this.state.renderTime}/>
+                        <GameCanvas gameState={game.gameState} players={players} renderTime={() => game.gameState.gameTime}/>
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
                         <Score match={match} startScore={this.state.startScore} roundScore={roundScore} />
@@ -57,11 +58,21 @@ module.exports = React.createClass({
         );
     },
     componentWillMount: function () {
+        var thisComponent = this;
         this.createGame();
+        this.props.match.matchConfig.players.forEach(function (player) {
+            if (player.type === "human") {
+                var onSteeringUpdate = steering => {
+                    gameStateFunctions.setPlayerSteering(thisComponent.state.localGame.gameState, player.id, steering);
+                };
+                playerSteeringListener.addKeyListeners({ left: player.left, right: player.right, onSteeringUpdate });
+            }
+        });
         windowFocusHandler.on("focus", this.onWindowFocus);
         windowFocusHandler.on("blur", this.onWindowBlur);
     },
     componentWillUnmount: function () {
+        playerSteeringListener.removeKeyListeners();
         windowFocusHandler.off("focus", this.onWindowFocus);
         windowFocusHandler.off("blur", this.onWindowBlur);
     },
@@ -77,18 +88,17 @@ module.exports = React.createClass({
         var seed = random.generateSeed();
         var game = this.props.match.prepareNextGame(seed);
 
-        var thisComponent = this;
         var localGame = LocalGameHandler({
             game,
-            players: this.props.match.matchConfig.players,
-            onGameUpdated: function () {
-                thisComponent.setState({ renderTime: localGame.gameState.gameTime });
-            },
             onGameOver: this.onGameOver
         });
         localGame.start();
 
         this.setState({ localGame: localGame });
+    },
+    endGame: function() {
+        this.state.localGame.stop();
+        this.onGameOver();
     },
     onGameOver: function () {
         this.props.match.addFinishedGameState(this.state.localGame.gameState);

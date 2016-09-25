@@ -104,9 +104,11 @@ module.exports = function PowerUpRenderer({ gameState, canvas }) {
     }
 
     function render(renderTime) {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        updateRenderData(renderTime);
-        renderPowerUps(renderTime);
+        if (renderTime !== prevRenderTime) {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            updateRenderData(renderTime);
+            renderPowerUps(renderTime);
+        }
     }
 
     return {

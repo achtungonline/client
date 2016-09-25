@@ -134,6 +134,9 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
     }
 
     function render(renderTime) {
+        if (renderTime === prevRenderTime) {
+            return;
+        }
         context.clearRect(0, 0, canvas.width, canvas.height);
         if (renderTime < prevRenderTime) {
             clearRenderData();

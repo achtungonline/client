@@ -2,6 +2,7 @@ var React = require("react");
 
 var forEach = require("core/src/core/util/for-each.js");
 
+var requestAnimationFrame = require("../game/request-frame.js");
 var MapRenderer = require("./renderers/map-renderer.js");
 var WormHeadRenderer = require("./renderers/worm-head-renderer.js");
 var PowerUpRenderer = require("./renderers/power-up-renderer.js");
@@ -11,7 +12,7 @@ module.exports = React.createClass({
     propTypes: {
         gameState: React.PropTypes.object.isRequired,
         players: React.PropTypes.array.isRequired,
-        renderTime: React.PropTypes.number,
+        renderTime: React.PropTypes.any.isRequired,
         scale: React.PropTypes.number,
         mapBorderWidth: React.PropTypes.number,
         overlay: React.PropTypes.func
@@ -24,7 +25,11 @@ module.exports = React.createClass({
     },
     getInitialState: function() {
         return {
-            renderers: []
+            renderData: {
+                renderers: [],
+                overlay: undefined,
+                requestId: undefined
+            }
         };
     },
     createCanvas: function(name, width, height, padding) {
@@ -59,45 +64,50 @@ module.exports = React.createClass({
         )
     },
     setupRenderers: function() {
-        this.state.renderers.length = 0;
-        this.state.renderers.push(MapRenderer({
+        var renderers = this.state.renderData.renderers;
+        renderers.length = 0;
+        renderers.push(MapRenderer({
             gameState: this.props.gameState,
             canvas: this.refs.mapCanvas,
             borderWidth: this.props.mapBorderWidth
         }));
-        this.state.renderers.push(PowerUpRenderer({
+        renderers.push(PowerUpRenderer({
             gameState: this.props.gameState,
             canvas: this.refs.powerUpCanvas
         }));
-        this.state.renderers.push(WormBodyRenderer({
+        renderers.push(WormBodyRenderer({
             gameState: this.props.gameState,
             players: this.props.players,
             fadeCanvas: this.refs.wormBodyCanvas1,
             mainCanvas: this.refs.wormBodyCanvas2,
             secondaryCanvas: this.refs.wormBodyCanvas3
         }));
-        this.state.renderers.push(WormHeadRenderer({
+        renderers.push(WormHeadRenderer({
             gameState: this.props.gameState,
             players: this.props.players,
             canvas: this.refs.wormHeadCanvas,
             drawTrajectories: false
         }));
         if (this.props.overlay) {
-            this.state.renderers.push(this.props.overlay({
+            this.state.renderData.overlay = this.props.overlay({
                 gameState: this.props.gameState,
                 players: this.props.players,
                 canvas: this.refs.overlayCanvas
-            }));
+            });
         }
-        this.updateRenderers(this.props.renderTime);
     },
-    updateRenderers: function(renderTime) {
-        if (renderTime === undefined) {
-            renderTime = this.props.gameState.gameTime;
+    update: function() {
+        var renderTime = this.props.renderTime;
+        if (typeof renderTime === "function") {
+            renderTime = renderTime();
         }
-        this.state.renderers.forEach(function (renderer) {
+        this.state.renderData.renderers.forEach(function (renderer) {
             renderer.render(renderTime);
         });
+        if (this.props.overlay) {
+            this.state.renderData.overlay.render(renderTime);
+        }
+        this.state.renderData.requestId = requestAnimationFrame(this.update);
     },
     clearCanvas: function() {
         forEach(this.refs, function (canvas) {
@@ -106,15 +116,13 @@ module.exports = React.createClass({
     },
     componentDidMount: function() {
         this.setupRenderers();
+        this.update();
     },
     componentDidUpdate: function() {
         this.clearCanvas();
         this.setupRenderers();
     },
-    componentWillReceiveProps: function(nextProps) {
-        this.updateRenderers(nextProps.renderTime);
-    },
-    shouldComponentUpdate: function(nextProps, nextState) {
-        return nextProps.gameState !== this.props.gameState;
-    },
+    componentWillUnmount: function() {
+        window.cancelAnimationFrame(this.state.renderData.requestId);
+    }
 });

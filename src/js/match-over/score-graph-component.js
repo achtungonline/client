@@ -19,13 +19,12 @@ module.exports = React.createClass({
     },
     getInitialState: function() {
         return {
-            gameState: null,
-            renderTime: 0
+            replayGame: null
         };
     },
     render: function() {
         return (
-            <GameCanvas gameState={this.state.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.renderTime} mapBorderWidth={BORDER_WIDTH} />
+            <GameCanvas gameState={this.state.replayGame.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.replayGame.getReplayTime} mapBorderWidth={BORDER_WIDTH} />
         );
     },
     componentWillMount: function() {
@@ -67,15 +66,11 @@ module.exports = React.createClass({
             });
         }
 
-        var thisComponent = this;
-        var replayGameHandler = ReplayGameHandler({
+        var replayGame = ReplayGameHandler({
             gameState,
-            onReplayUpdate: function (replayTime) {
-                thisComponent.setState({ renderTime: replayTime });
-            },
             onReplayOver: function() {}
         });
-        replayGameHandler.start();
-        this.setState({ gameState });
+        replayGame.start();
+        this.setState({ replayGame });
     }
 });

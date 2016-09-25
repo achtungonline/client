@@ -13,8 +13,9 @@ module.exports = React.createClass({
         match: React.PropTypes.object.isRequired,
         playerData: React.PropTypes.object.isRequired,
         gameState: React.PropTypes.object.isRequired,
-        socket: React.PropTypes.object.isRequired,
-        onGameOverAction: React.PropTypes.func
+        overlay: React.PropTypes.func,
+        onSteeringUpdate: React.PropTypes.func.isRequired,
+        onLeaveAction: React.PropTypes.func
     },
     getInitialState: function () {
         var startScore = scoreUtil.getStartScore(this.props.match.matchConfig.players);
@@ -24,7 +25,6 @@ module.exports = React.createClass({
         return {
             gameHandler: null,
             startScore: startScore,
-            renderTime: 0,
             pausedDueToLostFocus: false
         }
     },
@@ -32,16 +32,20 @@ module.exports = React.createClass({
         var match = this.props.match;
         var players = match.matchConfig.players;
         var roundScore = scoreUtil.calculateRoundScore(this.props.gameState);
+        var leaveButton = this.props.onLeaveAction ? <button className="btn btn-secondary" onClick={this.props.onLeaveAction}>Leave game</button> : null;
 
         return (
             <div className="m-x-3">
                 <div className="flex flex-start">
                     <div className="m-b-2">
-                        <GameCanvas gameState={this.props.gameState} players={players} renderTime={this.state.renderTime}/>
+                        <GameCanvas gameState={this.props.gameState} players={players} renderTime={this.state.gameHandler.getRenderTime} overlay={this.props.overlay}/>
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
                         <Score match={match} startScore={this.state.startScore} roundScore={roundScore} />
                         <div className="m-t-2">
+                            <div>
+                                {leaveButton}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -49,34 +53,16 @@ module.exports = React.createClass({
         );
     },
     componentWillMount: function () {
-        var thisComponent = this;
         var gameHandler = RemoteGameHandler({
-            gameState: this.props.gameState,
-            onGameUpdated: function(renderTime) {
-                thisComponent.setState({renderTime});
-            }
+            gameState: this.props.gameState
         });
-        this.props.socket.on("game_update", gameHandler.updateGameState);
-        this.props.socket.on("game_over", this.onGameOver);
-        var onSteeringUpdate = steering => {
-            thisComponent.props.socket.emit("player_steering", {[this.props.playerData.playerId]: steering});
-        };
-        playerSteeringListener.addKeyListeners({ left: this.props.playerData.left, right: this.props.playerData.right, onSteeringUpdate });
+        playerSteeringListener.addKeyListeners({ left: this.props.playerData.left, right: this.props.playerData.right, onSteeringUpdate: this.props.onSteeringUpdate });
         this.setState({gameHandler});
     },
     componentDidMount: function() {
         this.state.gameHandler.start();
     },
     componentWillUnmount: function() {
-        this.props.socket.off("game_update", this.updateGameState);
-        this.props.socket.off("game_over", this.onGameOver);
         playerSteeringListener.removeKeyListeners();
-    },
-    onGameOver: function () {
-        this.state.gameHandler.stop();
-        this.props.match.addFinishedGameState(this.props.gameState);
-        if (this.props.onGameOverAction) {
-            this.props.onGameOverAction();
-        }
     }
 });

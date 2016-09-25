@@ -3,8 +3,8 @@ var React = require("react");
 var CoreGameFactory = require("core/src/game-factory.js");
 var clone = require("core/src/core/util/clone.js");
 
+var GameOverlay = require("../canvas/overlays/game-overlay.js");
 var GameCanvas = require("../canvas/game-canvas-component.js");
-var GamePreviewOverlay = require("../canvas/overlays/game-preview-overlay.js");
 var LocalGameHandler = require("../game/local-game/local-game-handler.js");
 var windowFocusHandler = require("../window-focus-handler.js");
 
@@ -15,15 +15,19 @@ module.exports = React.createClass({
         matchConfig: React.PropTypes.object.isRequired
     },
     getInitialState: function() {
+        var overlay = GameOverlay();
+        overlay.startPreviewBlink();
         return {
-            renderTime: 0
+            localGame: null,
+            overlay
         };
     },
     render: function () {
+        var localGame = this.state.localGame;
         var mapBorderWidth = 10;
         var scale = 520 / (this.props.matchConfig.map.width + mapBorderWidth * 2);
         return (
-            <GameCanvas gameState={this.localGame.gameState} players={this.props.matchConfig.players} renderTime={this.state.renderTime} mapBorderWidth={mapBorderWidth} scale={scale} overlay={GamePreviewOverlay}/>
+            <GameCanvas gameState={localGame.gameState} players={this.props.matchConfig.players} renderTime={() => localGame.gameState.gameTime} mapBorderWidth={mapBorderWidth} scale={scale} overlay={this.state.overlay.overlay}/>
         );
     },
     createGame: function(props) {
@@ -34,27 +38,21 @@ module.exports = React.createClass({
             map: props.matchConfig.map,
             players: botPlayers
         });
-        if (this.localGame) {
-            this.localGame.stop();
+        if (this.state.localGame) {
+            this.state.localGame.stop();
         }
         var thisComponent = this;
-        this.localGame = LocalGameHandler({
-            game: game,
+        var localGame = LocalGameHandler({
+            game,
             players: botPlayers,
-
-            onGameUpdated: function() {
-                thisComponent.setState({ renderTime: thisComponent.localGame.gameState.gameTime });
-            },
             onGameOver: function() {
-                if (thisComponent.localGame && !thisComponent.localGame.isActive()) {
-                    // Game ended. Start it again
-                    thisComponent.createGame(thisComponent.props);
-                }
+                thisComponent.createGame(thisComponent.props);
             }
         });
         if (props.matchConfig.players.length > 1) {
-            this.localGame.start();
+            localGame.start();
         }
+        this.setState({ localGame });
     },
     componentWillMount: function () {
         windowFocusHandler.on("focus", this.onWindowFocus);
@@ -67,18 +65,14 @@ module.exports = React.createClass({
         }
     },
     onWindowFocus: function () {
-        this.localGame.resume();
+        this.state.localGame.resume();
     },
     onWindowBlur: function () {
-        this.localGame.pause();
+        this.state.localGame.pause();
     },
     componentWillUnmount: function () {
         windowFocusHandler.off("focus", this.onWindowFocus);
         windowFocusHandler.off("blur", this.onWindowBlur);
-        if (this.localGame) {
-            var localGame = this.localGame;
-            this.localGame = null;
-            localGame.stop();
-        }
+        this.state.localGame.stop();
     }
 });
