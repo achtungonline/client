@@ -97,18 +97,20 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         context.restore();
     }
 
-    function drawTrajectory(worm, color) {
-        if(!worm.trajectory) {
+    function drawTrajectory(gameState, segment) {
+        var player = gameStateFunctions.getPlayer(gameState, segment.playerId);
+        if (!player.aiData || !player.aiData.trajectory) {
             return;
         }
+        var color = wormColors[players.find(p => p.id === segment.playerId).colorId];
         context.save();
+        context.beginPath();
+        context.translate(segment.endX, segment.endY);
+        context.rotate(segment.endDirection - Math.PI/2);
         context.strokeStyle = color;
         context.setLineDash([2,5]);
         context.lineWidth = 2;
-        context.beginPath();
-        context.translate(worm.centerX, worm.centerY);
-        context.rotate(worm.direction - Math.PI/2);
-        worm.trajectory.forEach(function (move) {
+        player.aiData.trajectory.forEach(function (move) {
             var turnRadius;
             if (move.turningVelocity !== 0) {
                 turnRadius = Math.abs(move.speed / move.turningVelocity);
@@ -130,6 +132,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
             }
         });
         context.stroke();
+
         context.restore();
     }
 
@@ -171,8 +174,8 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
 
                     if (segment.type === "still_arc") {
                         drawArrow(position.x, position.y, position.direction, size, playerColor);
-                    } else if(drawTrajectories && gameState.worms) {
-                        drawTrajectory(gameStateFunctions.getWorm(gameState, wormId), playerColor);
+                    } else if(drawTrajectories) {
+                        drawTrajectory(gameState, segment);
                     }
                     drawHead({
                         x: position.x,
