@@ -83,7 +83,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
 
         var arrowBaseEndpoint = 25;
         var arrowHeadEndpoint = 30;
-        var arrowHeadWidth = 3;
+        var arrowHeadWidth = 4;
 
         context.moveTo(0, 0);
         context.lineTo(0, arrowBaseEndpoint);
@@ -153,7 +153,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
             }
             if (segments.length > 0) {
                 var segment = segments[renderData.segmentIndex];
-                if (segment.startTime <= renderTime && segment.type !== "clear" && (wormId.indexOf("#") === -1 || segment.endTime > renderTime)) {
+                if (segment.startTime <= renderTime && segment.type !== "clear" && (wormId.indexOf("#") === -1 || segment.endTime >= renderTime)) {
                     var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
                     var size = segment.size;
                     var playerColor = wormColors[players.find(p => p.id === segment.playerId).colorId];
