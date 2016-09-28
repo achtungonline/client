@@ -1,6 +1,6 @@
 var React = require("react");
 
-var requestAnimationFrame = require("../game/request-frame.js");
+var requestFrame = require("../game/request-frame.js");
 
 var HEIGHT = 19;
 var BAR_RADIUS = 3;
@@ -79,7 +79,7 @@ module.exports = React.createClass({
         context.arc(X_MARGIN + (canvas.width - 2*X_MARGIN) * ballProgress, canvas.height / 2, BALL_RADIUS + (this.state.mouse.hover ? HOVER_ADDED_RADIUS : 0), 0, 2 * Math.PI);
         context.fill();
         context.stroke();
-        this._requestId = requestAnimationFrame(this.update);
+        this._requestId = requestFrame(this.update);
     },
     componentWillMount: function() {
         document.addEventListener("mousedown", this.onMouseDown);
@@ -96,7 +96,7 @@ module.exports = React.createClass({
         var canvas = this.refs.canvas;
         canvas.width  = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
-        this._requestId = requestAnimationFrame(this.update);
+        this._requestId = requestFrame(this.update);
     },
     getProgressFromEvent: function(event) {
         var offsetX = event.pageX - this.refs.canvas.getBoundingClientRect().left;

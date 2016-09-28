@@ -2,7 +2,7 @@ var React = require("react");
 
 var forEach = require("core/src/core/util/for-each.js");
 
-var requestAnimationFrame = require("../game/request-frame.js");
+var requestFrame = require("../game/request-frame.js");
 var MapRenderer = require("./renderers/map-renderer.js");
 var WormHeadRenderer = require("./renderers/worm-head-renderer.js");
 var PowerUpRenderer = require("./renderers/power-up-renderer.js");
@@ -107,7 +107,7 @@ module.exports = React.createClass({
         if (this.props.overlay) {
             this.state.renderData.overlay.render(renderTime);
         }
-        this.state.renderData.requestId = requestAnimationFrame(this.update);
+        this.state.renderData.requestId = requestFrame(this.update);
     },
     clearCanvas: function() {
         forEach(this.refs, function (canvas) {
