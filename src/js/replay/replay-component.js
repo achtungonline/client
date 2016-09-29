@@ -28,7 +28,6 @@ module.exports = React.createClass({
     render: function () {
         var match = this.props.match;
         var replayGame = this.state.replayGame;
-        var roundScore = scoreUtil.calculateRoundScore(replayGame.gameState);
 
         var pauseButton = replayGame.isReplayOver() ? null : <button className="btn btn-secondary" onClick={this.buttonTogglePause}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
         var endReplayButton = <button className="btn btn-primary" onClick={this.state.replayGame.stop}>End replay</button>;
@@ -40,7 +39,7 @@ module.exports = React.createClass({
                     <ProgressBar progress={replayGame.getReplayProgress} onTogglePause={this.progressBarTogglePause} onProgressChange={replayGame.setReplayProgress} />
                 </div>
                 <div className="m-l-2" style={{width: "290px"}}>
-                    <Score match={match} startScore={this.state.roundData.startScore} roundScore={roundScore} />
+                    <Score gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} startScore={this.state.roundData.startScore} maxScore={match.matchConfig.maxScore} />
                     <div className="m-t-2">
                         <div>
                             {pauseButton}

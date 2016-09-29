@@ -32,7 +32,6 @@ module.exports = React.createClass({
         var match = this.props.match;
         var game = this.state.localGame;
         var players = match.matchConfig.players;
-        var roundScore = scoreUtil.calculateRoundScore(game.gameState);
         var pauseButton = <button className="btn btn-primary" onClick={this.togglePause}>{game.isPaused() ? "Resume" : "Pause"}</button>;
         var endGameButton = <button className="btn btn-secondary" onClick={this.endGame}>End game</button>;
 
@@ -40,10 +39,10 @@ module.exports = React.createClass({
             <div className="m-x-3">
                 <div className="flex flex-start">
                     <div className="m-b-2">
-                        <GameCanvas gameState={game.gameState} players={players} renderTime={() => game.gameState.gameTime}/>
+                        <GameCanvas gameState={game.gameState} players={players} />
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
-                        <Score match={match} startScore={this.state.startScore} roundScore={roundScore} />
+                        <Score gameState={game.gameState} players={players} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore} />
                         <div className="m-t-2">
                             <div>
                                 {pauseButton}

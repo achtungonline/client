@@ -27,7 +27,7 @@ module.exports = React.createClass({
         var mapBorderWidth = 10;
         var scale = 520 / (this.props.matchConfig.map.width + mapBorderWidth * 2);
         return (
-            <GameCanvas gameState={localGame.gameState} players={this.props.matchConfig.players} renderTime={() => localGame.gameState.gameTime} mapBorderWidth={mapBorderWidth} scale={scale} overlay={this.state.overlay.overlay}/>
+            <GameCanvas gameState={localGame.gameState} players={this.props.matchConfig.players} mapBorderWidth={mapBorderWidth} scale={scale} overlay={this.state.overlay.overlay}/>
         );
     },
     createGame: function(props) {

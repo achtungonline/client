@@ -41,7 +41,7 @@ module.exports = React.createClass({
                         <GameCanvas gameState={this.props.gameState} players={players} renderTime={this.state.gameHandler.getRenderTime} overlay={this.props.overlay}/>
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
-                        <Score match={match} startScore={this.state.startScore} roundScore={roundScore} />
+                        <Score gameState={this.props.gameState} players={players} renderTime={this.state.gameHandler.getRenderTime} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore} />
                         <div className="m-t-2">
                             <div>
                                 {leaveButton}

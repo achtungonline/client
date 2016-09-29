@@ -23,10 +23,10 @@ module.exports = React.createClass({
             <div className="m-x-3">
                 <div className="flex flex-start">
                     <div className="m-b-2">
-                        <GameCanvas gameState={roundData.gameState} players={match.matchConfig.players} renderTime={roundData.gameState.gameTime} overlay={this.props.overlay}/>
+                        <GameCanvas gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}/>
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
-                        <Score match={match} startScore={roundData.startScore} roundScore={roundData.roundScore} />
+                        <Score gameState={roundData.gameState} players={match.matchConfig.players} startScore={roundData.startScore} maxScore={match.matchConfig.maxScore} />
                         <div className="m-t-2">
                             <div>
                                 {startNextGameButton}

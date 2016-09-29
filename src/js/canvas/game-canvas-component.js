@@ -12,7 +12,7 @@ module.exports = React.createClass({
     propTypes: {
         gameState: React.PropTypes.object.isRequired,
         players: React.PropTypes.array.isRequired,
-        renderTime: React.PropTypes.any.isRequired,
+        renderTime: React.PropTypes.any,
         scale: React.PropTypes.number,
         mapBorderWidth: React.PropTypes.number,
         overlay: React.PropTypes.func
@@ -100,6 +100,8 @@ module.exports = React.createClass({
         var renderTime = this.props.renderTime;
         if (typeof renderTime === "function") {
             renderTime = renderTime();
+        } else if (renderTime === undefined) {
+            renderTime = this.props.gameState.gameTime;
         }
         this.state.renderData.renderers.forEach(function (renderer) {
             renderer.render(renderTime);
