@@ -2,7 +2,7 @@ var keyCodeMapping = {
     8: "BACK",
     9: "TAB",
     12: "NUM5",
-    13: { 0: "ENTER", 3: "N-ENTER" },
+    13: "ENTER",
     16: "SHIFT", // { 1: "L-SHIFT", 2: "R-SHIFT" }, // Allowing both L- R-SHIFT introduced buggy behavior when pressed simultaneously
     17: { 1: "L-CTRL", 2: "R-CTRL" },
     18: { 1: "L-ALT", 2: "R-ALT" },
@@ -119,7 +119,18 @@ function parseEvent(keyEvent) {
     }
 }
 
+var CONTINUE_KEY = "SPACE";
+var ENTER_KEY = "ENTER";
+var REMOVE_KEY = "BACK";
+function isReservedKey(keyName) {
+    return keyName === ENTER_KEY || keyName === CONTINUE_KEY || keyName === REMOVE_KEY;
+}
+
 module.exports = {
+    isReservedKey,
     keyPairs,
-    parseEvent
+    parseEvent,
+    CONTINUE_KEY,
+    ENTER_KEY,
+    REMOVE_KEY
 };

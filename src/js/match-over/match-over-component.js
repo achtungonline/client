@@ -5,6 +5,7 @@ var wormColors = require("core/src/core/constants.js").wormColors;
 
 var GameCanvas = require("./../canvas/game-canvas-component.js");
 var ScoreGraph = require("./score-graph-component.js");
+import {parseEvent, CONTINUE_KEY, ENTER_KEY} from "../key-util.js";
 
 module.exports = React.createClass({
     displayName: "MatchOver",
@@ -99,5 +100,17 @@ module.exports = React.createClass({
                 </div>
             </div>
         );
+    },
+    componentDidMount: function() {
+        document.addEventListener("keyup", this.onKeyUp);
+    },
+    componentWillUnmount: function () {
+        document.removeEventListener("keyup", this.onKeyUp);
+    },
+    onKeyUp: function(event) {
+        var newKey = parseEvent(event);
+        if (newKey === CONTINUE_KEY || newKey === ENTER_KEY) {
+            this.props.onRestartAction();
+        }
     }
 });

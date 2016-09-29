@@ -1,6 +1,6 @@
 var React = require("react");
 
-var parseEvent = require("../key-util.js").parseEvent;
+import {isReservedKey, parseEvent} from "../key-util.js";
 
 module.exports = React.createClass({
     propTypes: {
@@ -14,7 +14,7 @@ module.exports = React.createClass({
     },
     componentDidMount: function () {
         document.addEventListener("mousedown", this.onMouseDown);
-        document.addEventListener("keydown", this.onKeyDown);
+        document.addEventListener("keyup", this.onKeyUp);
     },
     render: function () {
         var className = "col-keybinding";
@@ -30,13 +30,13 @@ module.exports = React.createClass({
     },
     componentWillUnmount: function () {
         document.removeEventListener("mousedown", this.onMouseDown);
-        document.removeEventListener("keydown", this.onKeyDown);
+        document.removeEventListener("keyup", this.onKeyUp);
     },
-    onKeyDown: function(event) {
+    onKeyUp: function(event) {
         if (this.state.selected) {
             event.preventDefault();
             var newKey = parseEvent(event);
-            if (newKey) {
+            if (newKey && !isReservedKey(newKey)) {
                 this.setState({ selected: false });
                 this.props.onKeyPicked(newKey);
             }

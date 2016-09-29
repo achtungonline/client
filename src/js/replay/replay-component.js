@@ -1,13 +1,14 @@
 var React = require("react");
 
+var scoreUtil = require("core/src/core/score/score-util.js");
+var clone = require("core/src/core/util/clone.js");
+
 var ProgressBar = require("./progress-bar-component.js");
 var ReplayGameHandler = require("./replay-game-handler.js");
 var Score = require("../game/score-component.js");
 var GameCanvas = require("./../canvas/game-canvas-component.js");
 var windowFocusHandler = require("../window-focus-handler.js");
-
-var scoreUtil = require("core/src/core/score/score-util.js");
-var clone = require("core/src/core/util/clone.js");
+import {parseEvent, CONTINUE_KEY} from "../key-util.js";
 
 module.exports = React.createClass({
     displayName: "Replay",
@@ -57,10 +58,20 @@ module.exports = React.createClass({
         windowFocusHandler.on("focus", this.onWindowFocus);
         windowFocusHandler.on("blur", this.onWindowBlur);
     },
+    componentDidMount: function() {
+        document.addEventListener("keyup", this.onKeyUp);
+    },
     componentWillUnmount: function () {
         this.state.replayGame.stop();
+        document.removeEventListener("keyup", this.onKeyUp);
         windowFocusHandler.off("focus", this.onWindowFocus);
         windowFocusHandler.off("blur", this.onWindowBlur);
+    },
+    onKeyUp: function(event) {
+        var newKey = parseEvent(event);
+        if (newKey === CONTINUE_KEY) {
+            this.buttonTogglePause();
+        }
     },
     startReplay: function () {
         var thisComponent = this;

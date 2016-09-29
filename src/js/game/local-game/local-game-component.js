@@ -10,6 +10,7 @@ var windowFocusHandler = require("../../window-focus-handler.js");
 var LocalGameHandler = require("./local-game-handler.js");
 var GameCanvas = require("../../canvas/game-canvas-component.js");
 var Score = require("../score-component.js");
+import {parseEvent, CONTINUE_KEY} from "../../key-util.js";
 
 module.exports = React.createClass({
     displayName: "Local Game",
@@ -70,10 +71,20 @@ module.exports = React.createClass({
         windowFocusHandler.on("focus", this.onWindowFocus);
         windowFocusHandler.on("blur", this.onWindowBlur);
     },
+    componentDidMount: function() {
+        document.addEventListener("keyup", this.onKeyUp);
+    },
     componentWillUnmount: function () {
         playerSteeringListener.removeKeyListeners();
+        document.removeEventListener("keyup", this.onKeyUp);
         windowFocusHandler.off("focus", this.onWindowFocus);
         windowFocusHandler.off("blur", this.onWindowBlur);
+    },
+    onKeyUp: function(event) {
+        var newKey = parseEvent(event);
+        if (newKey === CONTINUE_KEY) {
+            this.togglePause();
+        }
     },
     togglePause: function () {
         if (this.state.localGame.isPaused()) {

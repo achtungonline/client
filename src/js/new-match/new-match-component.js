@@ -4,7 +4,7 @@ var gameStateFunctions = require("core/src/core/game-state-functions.js");
 var idGenerator = require("core/src/core/util/id-generator.js").indexCounterId(0);
 var wormColorIds = require("core/src/core/constants.js").wormColorIds;
 
-var availableKeyBindings = require("../key-util.js").keyPairs;
+import {keyPairs, parseEvent, CONTINUE_KEY, ENTER_KEY, REMOVE_KEY} from "../key-util.js";
 
 var ColorPicker = require("./color-picker-component.js");
 var KeyPicker = require("./key-picker-component.js");
@@ -32,7 +32,7 @@ function getRandomUnusedName(players) {
 }
 
 function getUnusedKeyBindings(players) {
-    return availableKeyBindings.filter(b => players.every(p => p.left !== b.left && p.right !== b.left && p.left !== b.right && p.right !== b.right));
+    return keyPairs.filter(b => players.every(p => p.left !== b.left && p.right !== b.left && p.left !== b.right && p.right !== b.right));
 }
 
 function createMap(mapString) {
@@ -66,16 +66,16 @@ module.exports = React.createClass({
                     type: "human",
                     colorId: wormColorIds[0],
                     name: firstName,
-                    left: availableKeyBindings[0].left,
-                    right: availableKeyBindings[0].right,
+                    left: keyPairs[0].left,
+                    right: keyPairs[0].right,
                     id: idGenerator()
                 },
                 {
                     type: "bot",
                     colorId: wormColorIds[1],
                     name: secondName,
-                    left: availableKeyBindings[1].left,
-                    right: availableKeyBindings[1].right,
+                    left: keyPairs[1].left,
+                    right: keyPairs[1].right,
                     id: idGenerator()
                 }
             ],
@@ -137,7 +137,7 @@ module.exports = React.createClass({
                         <tr>
                             <td colSpan="5">
                             {addPlayerButton}
-                                <button className="btn btn-primary" onClick={this.startMatch.bind(this, matchConfig)}>Start</button>
+                                <button className="btn btn-primary" onClick={this.startMatch}>Start</button>
                             </td>
                         </tr>
                         </tfoot>
@@ -167,7 +167,28 @@ module.exports = React.createClass({
             </div>
         );
     },
-    startMatch: function(matchConfig) {
+    componentDidMount: function() {
+        document.addEventListener("keydown", this.onKeyDown);
+    },
+    componentWillUnmount: function () {
+        document.removeEventListener("keydown", this.onKeyDown);
+    },
+    onKeyDown: function(event) {
+        var newKey = parseEvent(event);
+        if (newKey === CONTINUE_KEY && this.state.players.length < wormColorIds.length) {
+            this.addPlayer();
+        } else if (newKey === REMOVE_KEY && this.state.players.length > 2) {
+            this.onRemoveClick(this.state.players[this.state.players.length - 1].id);
+        } else if (newKey === ENTER_KEY) {
+            this.startMatch();
+        }
+    },
+    startMatch: function() {
+        var matchConfig = {
+            players: this.state.players,
+            map: createMap(this.state.mapString),
+            maxScore: this.state.maxScore
+        };
         this.props.onStartMatchAction(matchConfig);
     },
     onBotChange: function (playerId, event) {
@@ -214,7 +235,9 @@ module.exports = React.createClass({
         });
     },
     onRemoveClick: function (playerId, event) {
-        event.preventDefault();
+        if (event) {
+            event.preventDefault();
+        }
         var players = this.state.players.filter(function (player) {
             return player.id !== playerId;
         });

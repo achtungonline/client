@@ -66,7 +66,7 @@ var Component = React.createClass({
                            onChange={this.onNameChange}
                            onKeyUp={event => {
                                var keyName = KeyUtil.parseEvent(event);
-                               if (keyName === "ENTER" || keyName === "N-ENTER") {
+                               if (keyName === "ENTER") {
                                    this.enter();
                                }
                            }}

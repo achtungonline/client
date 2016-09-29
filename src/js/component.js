@@ -9,6 +9,7 @@ var MatchOverComponent = require("./match-over/match-over-component.js");
 var Header = require("./header/header-component.js");
 var ReplayComponent = require("./replay/replay-component.js");
 var GameOverComponent = require("./game-over/game-over-component.js");
+import {parseEvent, isReservedKey} from "./key-util";
 
 module.exports = React.createClass({
     displayName: "TopComponent",
@@ -79,8 +80,18 @@ module.exports = React.createClass({
     componentWillMount: function () {
         windowFocusHandler.startListening();
     },
+    componentDidMount: function() {
+        document.addEventListener("keydown", this.onKeyDown);
+    },
     componentWillUnmount: function () {
         windowFocusHandler.stopListening();
+        document.removeEventListener("keydown", this.onKeyDown);
+    },
+    onKeyDown: function(event) {
+        var keyName = parseEvent(event);
+        if (isReservedKey(keyName)) {
+            event.preventDefault();
+        }
     },
     newMatch: function () {
         this.changeView("new-match");

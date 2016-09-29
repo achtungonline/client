@@ -2,6 +2,7 @@ var React = require("react");
 
 var GameCanvas = require("../canvas/game-canvas-component.js");
 var Score = require("../game/score-component.js");
+import {parseEvent, CONTINUE_KEY, ENTER_KEY} from "../key-util.js";
 
 module.exports = React.createClass({
     displayName: "Match",
@@ -42,5 +43,21 @@ module.exports = React.createClass({
                 </div>
             </div>
         );
+    },
+    componentDidMount: function() {
+        document.addEventListener("keyup", this.onKeyUp);
+    },
+    componentWillUnmount: function () {
+        document.removeEventListener("keyup", this.onKeyUp);
+    },
+    onKeyUp: function(event) {
+        var newKey = parseEvent(event);
+        if (newKey === CONTINUE_KEY || newKey === ENTER_KEY) {
+            if (this.props.onStartNextGameAction && !this.props.match.isMatchOver()) {
+                this.props.onStartNextGameAction();
+            } else if (this.props.onMatchOverAction && this.props.match.isMatchOver()) {
+                this.props.onMatchOverAction();
+            }
+        }
     }
 });
