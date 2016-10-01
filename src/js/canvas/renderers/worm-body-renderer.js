@@ -39,14 +39,18 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
         }
 
         var renderStartTime = wormSegment.startTime;
-        if (renderTime === undefined || renderTime > wormSegment.endTime) {
-            renderTime = wormSegment.endTime;
-        }
 
         // If we have a clear in the segment. then the render time must become the minimum clear time or the renderTime
         if(wormSegment.metaData.find(md => md.type === "clear")) {
             var clearTimesLowerThanRenderTime = wormSegment.metaData.filter(md => md.type === "clear").map(md => md.time).filter(t => t <= renderTime);
             renderStartTime = Math.max(...clearTimesLowerThanRenderTime.concat(renderStartTime));
+        }
+        if(renderStartTime > wormSegment.endTime) {
+            return;
+        }
+
+        if (renderTime > wormSegment.endTime) {
+            renderTime = wormSegment.endTime;
         }
 
         var startPercentage = (renderStartTime - wormSegment.startTime) / wormSegment.duration;
@@ -123,6 +127,7 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
                 // Render completed segments to the main canvas
                 while (renderData.mainSegmentIndex < segments.length - 1 && segments[renderData.mainSegmentIndex].endTime <= renderTime) {
                     renderWormSegment({
+                        renderTime,
                         wormId,
                         wormSegmentId: renderData.mainSegmentIndex,
                         context: mainContext
