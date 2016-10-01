@@ -21,6 +21,10 @@ var playerTypeSvg = {
 
 var SCORE_INCREASE = 5;
 
+function getNextPlayerId() {
+    return "player_" + idGenerator();
+}
+
 function getUnusedNames(players) {
     var usedNames = players.map(p => p.name);
     return availableNames.filter(n => usedNames.indexOf(n) === -1);
@@ -68,7 +72,7 @@ module.exports = React.createClass({
                     name: firstName,
                     left: keyPairs[0].left,
                     right: keyPairs[0].right,
-                    id: idGenerator()
+                    id: getNextPlayerId()
                 },
                 {
                     type: "bot",
@@ -76,7 +80,7 @@ module.exports = React.createClass({
                     name: secondName,
                     left: keyPairs[1].left,
                     right: keyPairs[1].right,
-                    id: idGenerator()
+                    id: getNextPlayerId()
                 }
             ],
             maxScore: this.props.startMatchConfig ? this.props.startMatchConfig.maxScore : 5,
@@ -124,7 +128,6 @@ module.exports = React.createClass({
         }, this);
 
         var maxPlayersReached = this.state.players.length >= wormColorIds.length;
-        var addPlayerButton = maxPlayersReached ? null : <button className="btn btn-secondary btn-add-player" onClick={this.addPlayer}>Add player</button>;
 
         return (
             <div className="flex flex-space-between new-match">
@@ -136,7 +139,7 @@ module.exports = React.createClass({
                         <tfoot>
                         <tr>
                             <td colSpan="5">
-                            {addPlayerButton}
+                            {maxPlayersReached ? null : <button className="btn btn-secondary btn-add-player" onClick={this.addPlayer}>Add player</button>}
                                 <button className="btn btn-primary" onClick={this.startMatch}>Start</button>
                             </td>
                         </tr>
@@ -271,7 +274,7 @@ module.exports = React.createClass({
                     name: name,
                     left: keyBinding.left,
                     right: keyBinding.right,
-                    id: idGenerator()
+                    id: getNextPlayerId()
                 }]),
                 maxScore: prevState.maxScoreManuallyChanged ? prevState.maxScore : prevState.maxScore + SCORE_INCREASE
             };

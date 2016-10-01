@@ -5,7 +5,8 @@
     },
     "ecmaFeatures": {
         "jsx": true,
-        "arrowFunctions": true
+        "arrowFunctions": true,
+        "modules": true
     },
     "rules": {
         "curly": 2,

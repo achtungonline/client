@@ -8,12 +8,12 @@ var GameComponent = require("./game/local-game/local-game-component.js");
 var MatchOverComponent = require("./match-over/match-over-component.js");
 var Header = require("./header/header-component.js");
 var ReplayComponent = require("./replay/replay-component.js");
-var GameOverComponent = require("./game-over/game-over-component.js");
+import GameOverComponent  from "./game-over/game-over-component.js";
 import {parseEvent, isReservedKey} from "./key-util";
 
 module.exports = React.createClass({
     displayName: "TopComponent",
-    getDefaultProps: function() {
+    getDefaultProps: function () {
         return {
             initialView: "new-match"
         };
@@ -74,20 +74,20 @@ module.exports = React.createClass({
             </div>
         );
     },
-    changeView: function(view) {
-        this.setState({ previousView: this.state.currentView, currentView: view })
+    changeView: function (view) {
+        this.setState({previousView: this.state.currentView, currentView: view})
     },
     componentWillMount: function () {
         windowFocusHandler.startListening();
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         document.addEventListener("keydown", this.onKeyDown);
     },
     componentWillUnmount: function () {
         windowFocusHandler.stopListening();
         document.removeEventListener("keydown", this.onKeyDown);
     },
-    onKeyDown: function(event) {
+    onKeyDown: function (event) {
         var keyName = parseEvent(event);
         if (isReservedKey(keyName)) {
             event.preventDefault();
@@ -97,14 +97,15 @@ module.exports = React.createClass({
         this.changeView("new-match");
     },
     startMatch: function (matchConfig) {
-        var match = Match({ matchConfig });
-        this.setState({ match: match });
+        var match = Match({matchConfig});
+
+        this.setState({match: match});
         this.startNextGame();
     },
-    startNextGame: function() {
+    startNextGame: function () {
         this.changeView("game");
     },
-    gameOver: function() {
+    gameOver: function () {
         this.changeView("game-over");
     },
     endMatch: function () {
@@ -112,7 +113,7 @@ module.exports = React.createClass({
     },
     replayRound: function (roundId) {
         this.changeView("replay-round");
-        this.setState({ replayRoundId: roundId });
+        this.setState({replayRoundId: roundId});
     },
     replayLastRound: function () {
         this.replayRound(this.state.match.matchState.roundsData.length - 1);
