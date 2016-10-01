@@ -34,13 +34,19 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
 
     function renderWormSegment({ renderTime, wormId, wormSegmentId, context }) {
         var wormSegment = gameState.wormPathSegments[wormId][wormSegmentId];
-        if (wormSegment.jump || wormSegment.type === "still_arc" || wormSegment.type === "clear") {
+        if (wormSegment.jump || wormSegment.type === "still_arc") {
             return;
         }
 
         var renderStartTime = wormSegment.startTime;
         if (renderTime === undefined || renderTime > wormSegment.endTime) {
             renderTime = wormSegment.endTime;
+        }
+
+        // If we have a clear in the segment. then the render time must become the minimum clear time or the renderTime
+        if(wormSegment.metaData.find(md => md.type === "clear")) {
+            var clearTimesLowerThanRenderTime = wormSegment.metaData.filter(md => md.type === "clear").map(md => md.time).filter(t => t <= renderTime);
+            renderStartTime = Math.max(...clearTimesLowerThanRenderTime.concat(renderStartTime));
         }
 
         var startPercentage = (renderStartTime - wormSegment.startTime) / wormSegment.duration;
@@ -89,18 +95,18 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
         var performClear = false;
         forEach(gameState.wormPathSegments, function (segments, wormId) {
             var renderData = getWormRenderData(wormId);
-            for (var i = renderData.mainSegmentIndex; i < segments.length && segments[i].endTime <= renderTime; i++) {
-                if (segments[i].type === "clear") {
-                    renderData.mainSegmentIndex = i + 1;
+            for (var i = renderData.mainSegmentIndex; i < segments.length && segments[i].startTime <= renderTime; i++) {
+                if (segments[i].metaData.find((md) => md.type === "clear" && md.time < renderTime)) {
+                    renderData.mainSegmentIndex = i;
                     performClear = true;
                 }
             }
         });
         if (performClear) {
-            // Move segmentIndex for each worm to be just after the last clear
+            // Move segmentIndex for each worm to be the same index as the latest clear
             forEach(gameState.wormPathSegments, function (segments, wormId) {
                 var renderData = getWormRenderData(wormId);
-                while (renderData.mainSegmentIndex > 0 && segments[renderData.mainSegmentIndex - 1].type !== "clear") {
+                while (renderData.mainSegmentIndex > 0 && !segments[renderData.mainSegmentIndex].metaData.find((md) => md.type === "clear")) {
                     renderData.mainSegmentIndex--;
                 }
             });

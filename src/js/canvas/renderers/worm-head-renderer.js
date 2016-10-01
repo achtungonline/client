@@ -146,6 +146,8 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         }
         updateEffectData(renderTime);
 
+
+
         forEach(gameState.wormPathSegments, function (segments, wormId) {
             var renderData = getWormRenderData(wormId);
             while (renderData.segmentIndex < segments.length - 1 && segments[renderData.segmentIndex + 1].startTime < renderTime) {
@@ -153,7 +155,9 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
             }
             if (segments.length > 0) {
                 var segment = segments[renderData.segmentIndex];
-                if (segment.startTime <= renderTime && segment.type !== "clear" && (wormId.indexOf("#") === -1 || segment.endTime >= renderTime)) {
+                if (segment.startTime <= renderTime &&
+                    !segment.metaData.find((md) => md.type === "clear" && md.time > segment.endTime) &&
+                    (wormId.indexOf("#") === -1 || segment.endTime >= renderTime)) {
                     var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
                     var size = segment.size;
                     var playerColor = wormColors[players.find(p => p.id === segment.playerId).colorId];
