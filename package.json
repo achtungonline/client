@@ -28,7 +28,7 @@
     "watch": "parallelshell 'npm run watch:js' 'npm run watch:css' 'npm run watch:test'",
     "test": "npm run test:core && npm run lint",
     "test:core": "jasmine-node node_modules/core/src",
-    "lint": "nodemon -q -w src --ext '.js' --exec 'eslint src'",
+    "lint": "eslint src",
     "clean": "shx rm -rf public/js && shx rm -rf public/css",
     "prebuild": "npm run clean && shx mkdir -p public/js && shx mkdir -p public/css",
     "build": "npm run build:css && npm run build:js && uglifyjs public/js/index.js -o public/js/index.js",
@@ -36,7 +36,7 @@
     "build:css": "node-sass src/css/main.scss public/css/index.css && shx cp node_modules/normalize.css/normalize.css public/css",
     "watch:js": "npm run build:js && watchify src/js/index.js -o public/js/index.js -d",
     "watch:css": "nodemon -q -w src/css/ --ext '.scss' --exec 'npm run build:css'",
-    "watch:test": "nodemon -q -w src --ext '.js' --exec 'npm run test'",
+    "watch:test": "nodemon -q -w node_modules/core -w src --ext '.js' --exec 'npm run test'",
     "server-test": "watchify src/js/server-test.js -o public/js/server-test.js -d",
     "multi": "watchify src/js/multi.js -o public/js/multi.js -d"
   },
