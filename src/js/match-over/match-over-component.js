@@ -58,9 +58,7 @@ module.exports = React.createClass({
 
         var roundElements = this.props.match.matchState.roundsData.map(function (roundData, index) {
             var width = 208;
-            var mapBorderWidth = 10;
             var gameState = roundData.gameState;
-            var scale = width / (gameState.map.width + mapBorderWidth * 2);
             var winningPlayerId = scoreUtil.createSortedList(roundData.roundScore)[0].id;
             var winningPlayer = thisComponent.props.match.matchConfig.players.find(function(p) {
                 return p.id === winningPlayerId;
@@ -69,9 +67,9 @@ module.exports = React.createClass({
             return (
                 <div key={index} className="m-x-2 m-b-3 round-replay" style={{width: width}}>
                     <div style={{textAlign: "center"}}><span style={{color: wormColors[winningPlayer.colorId]}}>{winningPlayer.name}</span></div>
-                    <div onClick={thisComponent.props.onRoundClick.bind(null, index)}>
+                    <div className="game-area-small" onClick={thisComponent.props.onRoundClick.bind(null, index)}>
                         <div className="round-watch-replay">Watch replay</div>
-                        <GameCanvas gameState={gameState} players={thisComponent.props.match.matchConfig.players} mapBorderWidth={mapBorderWidth} scale={scale} />
+                        <GameCanvas gameState={gameState} players={thisComponent.props.match.matchConfig.players} />
                     </div>
                 </div>
             );
@@ -79,7 +77,7 @@ module.exports = React.createClass({
 
         return (
             <div className="m-x-2">
-                <div className="flex flex-no-wrap">
+                <div className="flex flex-no-wrap flex-center">
                     <div className="m-b-3 m-r-3 flex flex-column flex-space-between" style={{width: "455px"}}>
                         <table className="table table-score">
                             <tbody>
@@ -95,7 +93,7 @@ module.exports = React.createClass({
                         <ScoreGraph match={this.props.match} />
                     </div>
                 </div>
-                <div className="flex">
+                <div className="flex flex-center round-replay-elements">
                     {roundElements}
                 </div>
             </div>

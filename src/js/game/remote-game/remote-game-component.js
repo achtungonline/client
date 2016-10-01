@@ -31,13 +31,12 @@ module.exports = React.createClass({
     render: function () {
         var match = this.props.match;
         var players = match.matchConfig.players;
-        var roundScore = scoreUtil.calculateRoundScore(this.props.gameState);
         var leaveButton = this.props.onLeaveAction ? <button className="btn btn-secondary" onClick={this.props.onLeaveAction}>Leave game</button> : null;
 
         return (
             <div className="m-x-3">
-                <div className="flex flex-start">
-                    <div className="m-b-2">
+                <div className="flex flex-center">
+                    <div className="m-b-2 game-area-big">
                         <GameCanvas gameState={this.props.gameState} players={players} renderTime={this.state.gameHandler.getRenderTime} overlay={this.props.overlay}/>
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>

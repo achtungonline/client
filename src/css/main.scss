@@ -19,7 +19,6 @@ body {
 }
 
 .page-center {
-  max-width: 1160px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -105,6 +104,25 @@ body {
   cursor: pointer;
   overflow: hidden;
   outline: none;
+}
+
+/**
+ * Game area sizes
+ */
+
+.game-area-big {
+  width: 700px;
+  height: 700px;
+}
+
+.game-area-medium {
+  width: 400px;
+  height: 400px;
+}
+
+.game-area-small {
+  width: 200px;
+  height: 200px;
 }
 
 /**
@@ -222,19 +240,19 @@ body {
   padding: 0 20px;
 }
 
-//#game-container {
-//  float: left;
-//}
-//
 .canvas-container {
   position: relative;
   display: inline-block;
+  width: 100%;
+  height: 100%;
 }
 
 .canvas-container canvas {
   position: absolute;
   left: 0;
   top: 0;
+  width: 100%;
+  height: 100%;
 }
 
 //.right-column {
@@ -287,6 +305,7 @@ body {
 .heading {
   h1 {
     margin-bottom: 0;
+    text-align: center;
   }
   margin-left: 20px;
   margin-right: 20px;
@@ -338,6 +357,14 @@ body {
   align-self: flex-end;
 }
 
+.flex-grow-1 {
+  flex-grow: 1;
+}
+
+.flex-grow-2 {
+  flex-grow: 2;
+}
+
 .hidden {
   display: none;
 }
@@ -360,6 +387,11 @@ body {
   display: none;
   align-items: center;
   justify-content: center;
+}
+
+.round-replay-elements {
+  max-width: 1000px;
+  margin: auto;
 }
 
 .round-replay {

@@ -1,10 +1,14 @@
+var ScaledCanvasContext = require("../scaled-canvas-context.js");
+
 var MAP_BACKGROUND_COLOR = "#faf7ed";
 var MAP_BORDER_COLOR = "black";
 
-module.exports = function MapRenderer({ gameState, canvas, borderWidth }) {
+module.exports = function MapRenderer({ gameState, canvas, borderCanvas, scale=1 }) {
 
-    borderWidth = borderWidth || 0;
     var context = canvas.getContext("2d");
+    var scaledContext = ScaledCanvasContext(context, scale);
+    var borderContext = borderCanvas.getContext("2d");
+    var scaledBorderContext = ScaledCanvasContext(borderContext, scale);
     var rendered = false;
 
     var render = function (renderTime) {
@@ -12,28 +16,36 @@ module.exports = function MapRenderer({ gameState, canvas, borderWidth }) {
             return;
         }
 
+        var borderWidth = gameState.map.borderWidth;
         var shape = gameState.map.shape;
         if (shape.type === "rectangle") {
             if (borderWidth > 0) {
-                context.fillStyle = MAP_BORDER_COLOR;
-                context.beginPath();
-                context.rect(shape.x, shape.y, shape.width + borderWidth*2, shape.height + borderWidth*2);
-                context.fill();
+                borderContext.fillStyle = MAP_BORDER_COLOR;
+                borderContext.beginPath();
+                scaledBorderContext.rect(shape.x - borderWidth, shape.y - borderWidth, shape.width + 2*borderWidth, shape.height + 2*borderWidth);
+                borderContext.fill();
+                scaledBorderContext.clearRect(shape.x, shape.y, shape.width, shape.height);
             }
             context.fillStyle = MAP_BACKGROUND_COLOR;
             context.beginPath();
-            context.rect(shape.x + borderWidth, shape.y + borderWidth, shape.width, shape.height);
+            scaledContext.rect(shape.x, shape.y, shape.width, shape.height);
             context.fill();
         } else if (shape.type === "circle") {
             if (borderWidth > 0) {
-                context.fillStyle = MAP_BORDER_COLOR;
-                context.beginPath();
-                context.arc(shape.centerX + borderWidth, shape.centerY + borderWidth, shape.radius + borderWidth, 0, 2 * Math.PI);
-                context.fill();
+                borderContext.fillStyle = MAP_BORDER_COLOR;
+                borderContext.beginPath();
+                scaledBorderContext.arc(shape.centerX, shape.centerY, shape.radius + borderWidth, 0, 2 * Math.PI);
+                borderContext.fill();
+
+                borderContext.globalCompositeOperation = "destination-out";
+                borderContext.beginPath();
+                scaledBorderContext.arc(shape.centerX, shape.centerY, shape.radius, 0, 2 * Math.PI);
+                borderContext.fill();
+                borderContext.globalCompositeOperation = "source-over";
             }
             context.fillStyle = MAP_BACKGROUND_COLOR;
             context.beginPath();
-            context.arc(shape.centerX + borderWidth, shape.centerY + borderWidth, shape.radius, 0, 2 * Math.PI);
+            scaledContext.arc(shape.centerX, shape.centerY, shape.radius, 0, 2 * Math.PI);
             context.fill();
         } else {
             throw Error("Unknown shape: " + shape.type);

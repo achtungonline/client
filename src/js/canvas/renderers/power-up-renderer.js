@@ -1,5 +1,7 @@
 var forEach = require("core/src/core/util/for-each.js");
 
+var ScaledCanvasContext = require("../scaled-canvas-context.js");
+
 var POWERUP_SPAWN_DURATION = 0.3;
 var POWERUP_DESPAWN_DURATION = 0.1;
 var POWERUP_COLORS = {
@@ -26,9 +28,10 @@ var POWERUP_IMAGE_URLS = {
 };
 
 
-module.exports = function PowerUpRenderer({ gameState, canvas }) {
+module.exports = function PowerUpRenderer({ gameState, canvas, scale=1 }) {
 
     var context = canvas.getContext("2d");
+    var scaledContext = ScaledCanvasContext(context, scale);
 
     var prevRenderTime = 0;
     var powerUpEventIndex = 0;
@@ -85,20 +88,20 @@ module.exports = function PowerUpRenderer({ gameState, canvas }) {
             var powerUpImageUrl = POWERUP_IMAGE_URLS[renderData.name];
             context.fillStyle = renderData.color;
             context.beginPath();
-            context.arc(renderData.centerX, renderData.centerY, radius, 0, 2 * Math.PI);
+            scaledContext.arc(renderData.centerX, renderData.centerY, radius, 0, 2 * Math.PI);
             context.fill();
             if (powerUpImageUrl) {
                 context.beginPath();
                 var imageElement = document.createElement("img");
                 imageElement.src = powerUpImageUrl;
-                context.drawImage(imageElement, renderData.centerX - radius, renderData.centerY - radius, radius * 2, radius * 2);
+                scaledContext.drawImage(imageElement, renderData.centerX - radius, renderData.centerY - radius, radius * 2, radius * 2);
             } else {
                 // We have no image yet, use default behaviour
-                context.font = "14px Arial";
+                context.font = scale*14 + "px Arial";
                 context.textAlign = "center";
                 context.textBaseline = "middle";
                 context.fillStyle = "white";
-                context.fillText(text, renderData.centerX, renderData.centerY);
+                scaledContext.fillText(text, renderData.centerX, renderData.centerY);
             }
         });
     }

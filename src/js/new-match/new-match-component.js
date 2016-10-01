@@ -45,11 +45,11 @@ function createMap(mapString) {
     var mapWidth = Number(mapData[1]);
     var mapHeight = Number(mapData[2]);
     if (mapType === "Square") {
-        return gameStateFunctions.createMapSquare(mapString, mapWidth);
+        return gameStateFunctions.createMapSquare({ name: mapString, size: mapWidth });
     } else if (mapType === "Rectangle") {
-        return gameStateFunctions.createMapRectangle(mapString, mapWidth, mapHeight);
+        return gameStateFunctions.createMapRectangle({ name: mapString, width: mapWidth, height: mapHeight });
     } else if (mapType === "Circle") {
-        return gameStateFunctions.createMapCircle(mapString, mapWidth/2);
+        return gameStateFunctions.createMapCircle({ name: mapString, radius: mapWidth/2 });
     } else {
         throw new Error("Invalid map string: " + mapString);
     }
@@ -130,8 +130,8 @@ module.exports = React.createClass({
         var maxPlayersReached = this.state.players.length >= wormColorIds.length;
 
         return (
-            <div className="flex flex-space-between new-match">
-                <div style={{width: 543}}>
+            <div className="flex flex-center new-match">
+                <div>
                     <table className="table table-player" cellSpacing="0" cellPadding="0">
                         <tbody>
                         {rows}
@@ -152,10 +152,8 @@ module.exports = React.createClass({
                             <select value={this.state.mapString} onChange={this.onMapChange}>
                                 <option value="Square 500">Small Square</option>
                                 <option value="Circle 500">Small Circle</option>
-                                <option value="Rectangle 500 250">Small Rectangle</option>
                                 <option value="Square 800">Large Square</option>
                                 <option value="Circle 800">Large Circle</option>
-                                <option value="Rectangle 800 300">Large Rectangle</option>
                             </select>
                         </div>
                         <div className="flex max-score">
@@ -163,7 +161,7 @@ module.exports = React.createClass({
                             <input style={{marginTop: "auto"}} className="input" type="number" value={this.state.maxScore} onChange={this.onMaxScoreChange}/>
                         </div>
                     </div>
-                    <div>
+                    <div className="game-area-medium">
                         <GamePreview matchConfig={matchConfig} />
                     </div>
                 </div>

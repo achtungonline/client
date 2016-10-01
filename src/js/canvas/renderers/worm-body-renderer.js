@@ -1,13 +1,16 @@
-var gameStateFunctions = require("core/src/core/game-state-functions.js");
 var forEach = require("core/src/core/util/for-each.js");
 var wormColors = require("core/src/core/constants.js").wormColors;
 
+var ScaledCanvasContext = require("../scaled-canvas-context.js");
+
 var CLEAR_FADE_DURATION = 0.2;
 
-module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mainCanvas, secondaryCanvas }) {
+module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mainCanvas, secondaryCanvas, scale=1 }) {
     var fadeContext = fadeCanvas.getContext("2d");
     var mainContext = mainCanvas.getContext("2d");
+    var scaledMainContext = ScaledCanvasContext(mainContext, scale);
     var secondaryContext = secondaryCanvas.getContext("2d");
+    var scaledSecondaryContext = ScaledCanvasContext(secondaryContext, scale);
     var temporaryCanvas = document.createElement("canvas");
     temporaryCanvas.width = fadeCanvas.width;
     temporaryCanvas.height = fadeCanvas.height;
@@ -32,7 +35,7 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
         });
     }
 
-    function renderWormSegment({ renderTime, wormId, wormSegmentId, context }) {
+    function renderWormSegment({ renderTime, wormId, wormSegmentId, context, scaledContext }) {
         var wormSegment = gameState.wormPathSegments[wormId][wormSegmentId];
         if (wormSegment.jump || wormSegment.type === "still_arc") {
             return;
@@ -56,7 +59,7 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
         var startPercentage = (renderStartTime - wormSegment.startTime) / wormSegment.duration;
         var endPercentage = (renderTime - wormSegment.startTime) / wormSegment.duration;
 
-        context.lineWidth = wormSegment.size*2;
+        context.lineWidth = scale*wormSegment.size*2;
         context.lineCap = "round";
         context.strokeStyle = wormColors[players.find(p => p.id === wormSegment.playerId).colorId];
         // Draw path
@@ -66,14 +69,14 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
             var startY = wormSegment.startY + startPercentage*(wormSegment.endY - wormSegment.startY);
             var endX = wormSegment.startX + endPercentage*(wormSegment.endX - wormSegment.startX);
             var endY = wormSegment.startY + endPercentage*(wormSegment.endY - wormSegment.startY);
-            context.moveTo(startX, startY);
-            context.lineTo(endX, endY);
+            scaledContext.moveTo(startX, startY);
+            scaledContext.lineTo(endX, endY);
         } else {
             // Arc
             if (wormSegment.speed > 0) {
                 var startAngle = wormSegment.arcStartAngle + startPercentage*wormSegment.arcAngleDiff;
                 var endAngle = wormSegment.arcStartAngle + endPercentage*wormSegment.arcAngleDiff;
-                context.arc(wormSegment.arcCenterX, wormSegment.arcCenterY, wormSegment.arcRadius, startAngle, endAngle, wormSegment.arcAngleDiff < 0);
+                scaledContext.arc(wormSegment.arcCenterX, wormSegment.arcCenterY, wormSegment.arcRadius, startAngle, endAngle, wormSegment.arcAngleDiff < 0);
             }
         }
         context.stroke();
@@ -130,7 +133,8 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
                         renderTime,
                         wormId,
                         wormSegmentId: renderData.mainSegmentIndex,
-                        context: mainContext
+                        context: mainContext,
+                        scaledContext: scaledMainContext
                     });
                     renderData.mainSegmentIndex++;
                 }
@@ -140,7 +144,8 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
                         renderTime,
                         wormId,
                         wormSegmentId: renderData.mainSegmentIndex,
-                        context: secondaryContext
+                        context: secondaryContext,
+                        scaledContext: scaledSecondaryContext
                     });
                 }
             }

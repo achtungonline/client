@@ -38,8 +38,8 @@ module.exports = React.createClass({
 
         return (
             <div className="m-x-3">
-                <div className="flex flex-start">
-                    <div className="m-b-2">
+                <div className="flex flex-center">
+                    <div className="m-b-2 game-area-big">
                         <GameCanvas gameState={game.gameState} players={players} />
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>

@@ -8,7 +8,7 @@ var ReplayGameHandler = require("../replay/replay-game-handler.js");
 var ANIMATION_DURATION = 0.5;
 var WIDTH = 600;
 var HEIGHT = 400;
-var MARGIN_X = 0.5;
+var MARGIN_X = 1.5;
 var MARGIN_Y = 0.5;
 var BORDER_WIDTH = 4;
 var LINE_WIDTH = 1.5;
@@ -23,16 +23,16 @@ module.exports = React.createClass({
         };
     },
     render: function() {
+        var map = this.state.replayGame.gameState.map;
         return (
-            <GameCanvas gameState={this.state.replayGame.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.replayGame.getReplayTime} mapBorderWidth={BORDER_WIDTH} />
+            <div style={{ width: map.width, height: map.height }}>
+                <GameCanvas gameState={this.state.replayGame.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.replayGame.getReplayTime} />
+            </div>
         );
     },
     componentWillMount: function() {
         var roundsData = this.props.match.matchState.roundsData;
         var maxScore = Math.max(1, 1.15*scoreUtil.getHighestScore(this.props.match.getCurrentScore()));
-        var dx = WIDTH / roundsData.length;
-        var dy = HEIGHT / maxScore;
-        var dt = ANIMATION_DURATION / roundsData.length;
 
         var gameState = {
             wormPathSegments: {},
@@ -41,8 +41,16 @@ module.exports = React.createClass({
             powerUpEvents: [],
             effectEvents: [],
             gameTime: ANIMATION_DURATION,
-            map: gameStateFunctions.createMapRectangle("ScoreGraph", WIDTH + 2*MARGIN_X, HEIGHT + 2*MARGIN_Y)
+            map: gameStateFunctions.createMapRectangle({
+                name: "ScoreGraph",
+                width: WIDTH,
+                height: HEIGHT,
+                borderWidth: BORDER_WIDTH
+            })
         };
+        var dx = gameState.map.width / roundsData.length;
+        var dy = gameState.map.height / maxScore;
+        var dt = ANIMATION_DURATION / roundsData.length;
 
         for (var i = 0; i < roundsData.length; i++) {
             var roundData = roundsData[i];
@@ -58,10 +66,10 @@ module.exports = React.createClass({
                     startTime: dt*i,
                     duration: dt,
                     endTime: dt*(i+1),
-                    startX: MARGIN_X + dx*i,
-                    endX: MARGIN_X + dx*(i+1),
-                    startY: HEIGHT - MARGIN_Y - roundData.startScore[player.id] * dy,
-                    endY: HEIGHT - MARGIN_Y - (roundData.startScore[player.id] + roundData.roundScore[player.id]) * dy
+                    startX: Math.max(BORDER_WIDTH + MARGIN_X, dx*i),
+                    endX: Math.min(gameState.map.width - BORDER_WIDTH - MARGIN_X, + dx*(i+1)),
+                    startY: gameState.map.height - BORDER_WIDTH - MARGIN_Y - roundData.startScore[player.id] * dy,
+                    endY: gameState.map.height - BORDER_WIDTH - MARGIN_Y - (roundData.startScore[player.id] + roundData.roundScore[player.id]) * dy
                 });
             });
         }
