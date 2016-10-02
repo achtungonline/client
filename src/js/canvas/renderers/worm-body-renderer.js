@@ -43,15 +43,6 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
 
         var renderStartTime = wormSegment.startTime;
 
-        // If we have a clear in the segment. then the render time must become the minimum clear time or the renderTime
-        if(wormSegment.metaData.find(md => md.type === "clear")) {
-            var clearTimesLowerThanRenderTime = wormSegment.metaData.filter(md => md.type === "clear").map(md => md.time).filter(t => t <= renderTime);
-            renderStartTime = Math.max(...clearTimesLowerThanRenderTime.concat(renderStartTime));
-        }
-        if(renderStartTime > wormSegment.endTime) {
-            return;
-        }
-
         if (renderTime > wormSegment.endTime) {
             renderTime = wormSegment.endTime;
         }
@@ -103,8 +94,8 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
         forEach(gameState.wormPathSegments, function (segments, wormId) {
             var renderData = getWormRenderData(wormId);
             for (var i = renderData.mainSegmentIndex; i < segments.length && segments[i].startTime <= renderTime; i++) {
-                if (segments[i].metaData.find((md) => md.type === "clear" && md.time < renderTime)) {
-                    renderData.mainSegmentIndex = i;
+                if (segments[i].metaData.find((md) => md.type === "clear")) {
+                    renderData.mainSegmentIndex = i + 1;
                     performClear = true;
                 }
             }
@@ -116,6 +107,7 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
                 while (renderData.mainSegmentIndex > 0 && !segments[renderData.mainSegmentIndex].metaData.find((md) => md.type === "clear")) {
                     renderData.mainSegmentIndex--;
                 }
+                renderData.mainSegmentIndex++;
             });
             // Perform the clear
             temporaryContext.drawImage(mainCanvas, 0, 0);

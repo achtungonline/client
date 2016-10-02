@@ -158,7 +158,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
             if (segments.length > 0) {
                 var segment = segments[renderData.segmentIndex];
                 if (segment.startTime <= renderTime &&
-                    !segment.metaData.find((md) => md.type === "clear" && md.time > segment.endTime) &&
+                    !segment.metaData.find((md) => md.type === "clear") &&
                     (wormId.indexOf("#") === -1 || segment.endTime >= renderTime)) {
                     var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
                     var size = segment.size;
