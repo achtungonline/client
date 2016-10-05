@@ -32,7 +32,7 @@ module.exports = React.createClass({
     },
     render: function () {
         return (
-            <canvas ref="canvas" style={{width: "100%", height: HEIGHT, cursor: "pointer"}}/>
+            <canvas ref="canvas" style={{height: HEIGHT, cursor: "pointer"}}/>
         );
     },
     update: function() {

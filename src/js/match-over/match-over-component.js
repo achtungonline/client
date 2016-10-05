@@ -67,9 +67,9 @@ module.exports = React.createClass({
             return (
                 <div key={index} className="m-x-2 m-b-3 round-replay" style={{width: width}}>
                     <div style={{textAlign: "center"}}><span style={{color: wormColors[winningPlayer.colorId]}}>{winningPlayer.name}</span></div>
-                    <div className="game-area-small" onClick={thisComponent.props.onRoundClick.bind(null, index)}>
+                    <div onClick={thisComponent.props.onRoundClick.bind(null, index)}>
                         <div className="round-watch-replay">Watch replay</div>
-                        <GameCanvas gameState={gameState} players={thisComponent.props.match.matchConfig.players} />
+                        <GameCanvas size="small" gameState={gameState} players={thisComponent.props.match.matchConfig.players}/>
                     </div>
                 </div>
             );

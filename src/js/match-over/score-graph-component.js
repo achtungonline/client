@@ -25,9 +25,7 @@ module.exports = React.createClass({
     render: function() {
         var map = this.state.replayGame.gameState.map;
         return (
-            <div style={{ width: map.width, height: map.height }}>
-                <GameCanvas gameState={this.state.replayGame.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.replayGame.getReplayTime} />
-            </div>
+            <GameCanvas gameState={this.state.replayGame.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.replayGame.getReplayTime} />
         );
     },
     componentWillMount: function() {
@@ -63,6 +61,7 @@ module.exports = React.createClass({
                     playerId: player.id,
                     size: LINE_WIDTH,
                     jump: false,
+                    metaData: [],
                     startTime: dt*i,
                     duration: dt,
                     endTime: dt*(i+1),

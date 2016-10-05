@@ -12,6 +12,7 @@ module.exports = React.createClass({
     propTypes: {
         gameState: React.PropTypes.object.isRequired,
         players: React.PropTypes.array.isRequired,
+        size: React.PropTypes.string,
         renderTime: React.PropTypes.any,
         overlay: React.PropTypes.func
     },
@@ -25,8 +26,22 @@ module.exports = React.createClass({
         };
     },
     render: function() {
+        var className = "canvas-container", style;
+        if (this.props.size) {
+            if (this.props.size === "small") {
+                className += " game-area-small";
+            } else if (this.props.size === "medium") {
+                className += " game-area-medium";
+            } else if (this.props.size === "large") {
+                className += " game-area-large";
+            } else {
+                className += " " + this.props.size;
+            }
+        } else {
+            style = {width: this.props.gameState.map.width, height: this.props.gameState.map.height};
+        }
         return (
-            <div className="canvas-container">
+            <div className={className} style={style}>
                 <canvas ref="mapCanvas"/>
                 <canvas ref="powerUpCanvas"/>
                 <canvas ref="wormBodyCanvas1"/>

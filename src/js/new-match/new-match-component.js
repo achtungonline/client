@@ -161,9 +161,7 @@ module.exports = React.createClass({
                             <input style={{marginTop: "auto"}} className="input" type="number" value={this.state.maxScore} onChange={this.onMaxScoreChange}/>
                         </div>
                     </div>
-                    <div className="game-area-medium">
-                        <GamePreview matchConfig={matchConfig} />
-                    </div>
+                    <GamePreview matchConfig={matchConfig} />
                 </div>
             </div>
         );

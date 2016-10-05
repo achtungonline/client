@@ -35,8 +35,8 @@ module.exports = React.createClass({
 
         return (
             <div className="flex flex-center">
-                <div className="m-b-2 game-area-big">
-                    <GameCanvas gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} overlay={this.props.overlay}/>
+                <div className="m-b-2 replay-container">
+                    <GameCanvas size="large" gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} overlay={this.props.overlay}/>
                     <ProgressBar progress={replayGame.getReplayProgress} onTogglePause={this.progressBarTogglePause} onProgressChange={replayGame.setReplayProgress} />
                 </div>
                 <div className="m-l-2" style={{width: "290px"}}>
