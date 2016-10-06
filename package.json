@@ -25,8 +25,8 @@
   },
   "homepage": "https://github.com/achtungonline/client",
   "scripts": {
-    "watch": "parallelshell 'npm run watch:js' 'npm run watch:css' 'npm run watch:test-core'",
-    "test": "npm run test:core && npm run lint",
+    "watch": "./npm-scripts/bin/cmd.js 'watch'",
+    "test": "./npm-scripts/bin/cmd.js 'test'",
     "test-core": "node node_modules/core/scripts/cmd.js test node_modules/core/",
     "lint": "eslint src",
     "clean": "shx rm -rf public/js && shx rm -rf public/css",
@@ -52,15 +52,17 @@
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
+    "connect": "^3.5.0",
+    "jasmine-core": "^2.5.2",
+    "jasmine-node": "^1.14.5",
     "node-sass": "^3.4.2",
     "nodemon": "^1.9.1",
     "parallelshell": "^2.0.0",
+    "serve-static": "^1.11.1",
     "shx": "^0.1.4",
     "uglify-js": "^2.6.2",
     "uglifycss": "0.0.21",
-    "watchify": "^3.7.0",
-    "jasmine-core": "^2.5.2",
-    "jasmine-node": "^1.14.5"
+    "watchify": "^3.7.0"
   },
   "babel": {
     "presets": [
