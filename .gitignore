@@ -1,6 +1,5 @@
 # Generated files
-public/js
-public/css
+public/build/
 build/
 
 # Logs

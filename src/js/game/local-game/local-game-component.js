@@ -16,6 +16,7 @@ module.exports = React.createClass({
     displayName: "Local Game",
     propType: {
         match: React.PropTypes.object.isRequired,
+        overlay: React.PropTypes.object,
         onGameOverAction: React.PropTypes.func
     },
     getInitialState: function () {
@@ -35,12 +36,13 @@ module.exports = React.createClass({
         var players = match.matchConfig.players;
         var pauseButton = <button className="btn btn-primary" onClick={this.togglePause}>{game.isPaused() ? "Resume" : "Pause"}</button>;
         var endGameButton = <button className="btn btn-secondary" onClick={this.endGame}>End game</button>;
+        this.props.overlay.setPaused(game.isPaused());
 
         return (
             <div className="m-x-3">
                 <div className="flex flex-center">
                     <div className="m-b-2">
-                        <GameCanvas size="large" gameState={game.gameState} players={players} />
+                        <GameCanvas size="large" gameState={game.gameState} players={players} overlay={this.props.overlay} />
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
                         <Score gameState={game.gameState} players={players} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore} />

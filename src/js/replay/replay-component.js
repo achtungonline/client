@@ -15,7 +15,7 @@ module.exports = React.createClass({
     propTypes: {
         match: React.PropTypes.object.isRequired,
         roundId: React.PropTypes.number.isRequired,
-        overlay: React.PropTypes.func,
+        overlay: React.PropTypes.object,
         onReplayOver: React.PropTypes.func.isRequired
     },
     getInitialState: function () {
@@ -30,6 +30,7 @@ module.exports = React.createClass({
         var match = this.props.match;
         var replayGame = this.state.replayGame;
 
+        this.props.overlay.setPaused(replayGame.isPaused());
         var pauseButton = replayGame.isReplayOver() ? null : <button className="btn btn-secondary" onClick={this.buttonTogglePause}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
         var endReplayButton = <button className="btn btn-primary" onClick={this.state.replayGame.stop}>End replay</button>;
 
@@ -104,6 +105,7 @@ module.exports = React.createClass({
             } else {
                 this.state.replayGame.pause();
             }
+            this.forceUpdate();
         }
     },
     onWindowFocus: function () {

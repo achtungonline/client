@@ -14,7 +14,7 @@ module.exports = React.createClass({
         players: React.PropTypes.array.isRequired,
         size: React.PropTypes.string,
         renderTime: React.PropTypes.any,
-        overlay: React.PropTypes.func
+        overlay: React.PropTypes.object
     },
     getInitialState: function() {
         return {
@@ -90,10 +90,11 @@ module.exports = React.createClass({
             drawTrajectories: false
         }));
         if (this.props.overlay) {
-            this.state.renderData.overlay = this.props.overlay({
+            this.state.renderData.overlay = this.props.overlay.createRenderer({
                 gameState: this.props.gameState,
                 players: this.props.players,
-                canvas: this.refs.overlayCanvas
+                canvas: this.refs.overlayCanvas,
+                scale
             });
         }
     },

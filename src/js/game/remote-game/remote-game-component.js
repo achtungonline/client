@@ -13,7 +13,7 @@ module.exports = React.createClass({
         match: React.PropTypes.object.isRequired,
         playerData: React.PropTypes.object.isRequired,
         gameState: React.PropTypes.object.isRequired,
-        overlay: React.PropTypes.func,
+        overlay: React.PropTypes.object,
         onSteeringUpdate: React.PropTypes.func.isRequired,
         onLeaveAction: React.PropTypes.func
     },

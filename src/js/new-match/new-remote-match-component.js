@@ -52,8 +52,8 @@ module.exports = React.createClass({
         var leaveButton = this.props.onLeaveAction ? <button className="btn btn-secondary" onClick={this.props.onLeaveAction}>Leave</button> : null;
 
         return (
-            <div className="flex flex-space-between new-match">
-                <div style={{width: 543}}>
+            <div className="flex flex-center new-match">
+                <div>
                     <table className="table table-player" cellSpacing="0" cellPadding="0">
                         <tbody>
                         {rows}

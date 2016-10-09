@@ -1,12 +1,16 @@
+var ScaledCanvasContext = require("../scaled-canvas-context.js");
+
 var PREVIEW_BLINK_DURATION = 2000;
 var PREVIEW_FADE_LOW_POINT = 0.2;
+var GREY_FILTER = "rgba(72, 72, 72, 0.21)";
 
 module.exports = function GameOverlay() {
 
     var overlayState = {
         rendered: false,
         previewBlinkStartTime: undefined,
-        gameCountdownEndTime: undefined
+        gameCountdownEndTime: undefined,
+        paused: false
     };
 
     function startPreviewBlink() {
@@ -25,18 +29,27 @@ module.exports = function GameOverlay() {
         overlayState.gameCountdownEndTime = undefined;
     }
 
+    function setPaused(paused) {
+        overlayState.paused = paused;
+    }
+
     function reset() {
         endPreviewBlink();
         endGameCountdown();
     }
 
-    function overlay({ canvas, gameState }) {
+    function createRenderer({ canvas, gameState, scale=1 }) {
         var context = canvas.getContext("2d");
+        var scaledContext = ScaledCanvasContext(context, scale);
 
         var render = function () {
             if (overlayState.rendered) {
                 context.clearRect(0, 0, canvas.width, canvas.height);
                 overlayState.rendered = false;
+            }
+            if (overlayState.paused) {
+                greyFilter();
+                overlayState.rendered = true;
             }
             if (overlayState.previewBlinkStartTime !== undefined) {
                 previewBlink();
@@ -47,6 +60,18 @@ module.exports = function GameOverlay() {
                 overlayState.rendered = true;
             }
         };
+
+        function greyFilter() {
+            context.fillStyle = GREY_FILTER;
+            var shape = gameState.map.shape;
+            if (shape.type === "rectangle") {
+                scaledContext.fillRect(shape.x, shape.y, shape.width, shape.height);
+            } else if (shape.type === "circle") {
+                context.beginPath();
+                scaledContext.arc(shape.centerX, shape.centerY, shape.radius, 0, 2 * Math.PI);
+                context.fill();
+            }
+        }
 
         function gameCountdown() {
             context.save();
@@ -87,8 +112,9 @@ module.exports = function GameOverlay() {
     return {
         endGameCountdown,
         endPreviewBlink,
-        overlay,
+        createRenderer,
         reset,
+        setPaused,
         startGameCountdown,
         startPreviewBlink
     }

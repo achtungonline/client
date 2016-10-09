@@ -95,7 +95,7 @@ var Component = React.createClass({
                     match={this.state.match}
                     playerData={this.state.playerData}
                     gameState={this.state.gameState}
-                    overlay={this.state.overlay.overlay}
+                    overlay={this.state.overlay}
                     onSteeringUpdate={steering => this.props.socket.emit("player_steering", steering)}
                     onLeaveAction={this.leave}
                 />;
@@ -105,7 +105,7 @@ var Component = React.createClass({
                     <ReplayComponent
                         match={this.state.match}
                         roundId={this.state.replayRoundId}
-                        overlay={this.state.overlay.overlay}
+                        overlay={this.state.overlay}
                         onReplayOver={() => {
                             if (this.state.currentView === "replay-round") {
                                 this.changeView(this.state.previousView);
@@ -116,7 +116,7 @@ var Component = React.createClass({
         } else if (this.state.currentView === "game-over") {
             page = <GameOverComponent
                 match={this.state.match}
-                overlay={this.state.overlay.overlay}
+                overlay={this.state.overlay}
                 onReplayAction={this.replayLastRound}
                 onMatchOverAction={this.leave}
             />;

@@ -8,7 +8,7 @@ module.exports = React.createClass({
     displayName: "Match",
     propType: {
         match: React.PropTypes.object.isRequired,
-        overlay: React.PropTypes.func,
+        overlay: React.PropTypes.object,
         onStartNextGameAction: React.PropTypes.func,
         onReplayAction: React.PropTypes.func,
         onMatchOverAction: React.PropTypes.func

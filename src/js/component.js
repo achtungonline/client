@@ -8,6 +8,7 @@ var GameComponent = require("./game/local-game/local-game-component.js");
 var MatchOverComponent = require("./match-over/match-over-component.js");
 var Header = require("./header/header-component.js");
 var ReplayComponent = require("./replay/replay-component.js");
+var GameOverlay = require("./canvas/overlays/game-overlay.js");
 import GameOverComponent  from "./game-over/game-over-component.js";
 import {parseEvent, isReservedKey} from "./key-util";
 
@@ -22,6 +23,7 @@ module.exports = React.createClass({
         return {
             previousView: this.props.initialView,
             currentView: this.props.initialView,
+            overlay: GameOverlay(),
             match: null,
             replayRoundId: undefined
         };
@@ -38,6 +40,7 @@ module.exports = React.createClass({
             page =
                 <GameComponent
                     match={this.state.match}
+                    overlay={this.state.overlay}
                     onGameOverAction={this.gameOver}
                 />;
         } else if (this.state.currentView === "replay-round") {
@@ -46,12 +49,14 @@ module.exports = React.createClass({
                     <ReplayComponent
                         match={this.state.match}
                         roundId={this.state.replayRoundId}
+                        overlay={this.state.overlay}
                         onReplayOver={this.changeView.bind(this, this.state.previousView)}
                     />
                 </div>;
         } else if (this.state.currentView === "game-over") {
             page = <GameOverComponent
                 match={this.state.match}
+                overlay={this.state.overlay}
                 onStartNextGameAction={this.startNextGame}
                 onReplayAction={this.replayLastRound}
                 onMatchOverAction={this.endMatch}
