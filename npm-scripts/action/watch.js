@@ -45,7 +45,7 @@ module.exports = function build() {
     const server = connect();
     server.use(serveStatic('./'));
     server.listen(port);
-    console.log('Listening on http://localhost:' + port + '/');
+    console.log('Listening on http://localhost:' + port + '/public/test.html');
     console.log('');
 
     builder.watchModuleCode()
