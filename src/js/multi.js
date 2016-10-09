@@ -3,7 +3,7 @@ var React = require("react");
 
 var Match = require("core/src/core/match.js");
 var forEach = require("core/src/core/util/for-each.js");
-var gameStateFunctions = require("core/src/core/game-state-functions.js");
+var gsf = require("core/src/core/game-state-functions.js");
 var compression = require("core/src/core/util/compression.js");
 
 var KeyUtil = require("./key-util.js");
@@ -21,10 +21,10 @@ var io = require("socket.io-client");
 
 function setupSocket() {
     var socket = io("http://localhost:3000");
-    socket.on("connect", function() {
+    socket.on("connect", function () {
         console.log("Connected to server");
     });
-    socket.on("disconnect", function() {
+    socket.on("disconnect", function () {
         console.log("Disconnected from server");
     });
     return socket;
@@ -36,7 +36,7 @@ var Component = React.createClass({
         socket: React.PropTypes.object.isRequired,
         initialView: React.PropTypes.string
     },
-    getDefaultProps: function() {
+    getDefaultProps: function () {
         return {
             initialView: "start"
         };
@@ -127,7 +127,7 @@ var Component = React.createClass({
                 onRoundClick={this.replayRound}
                 onExitAction={this.leave}
             />;
-        }  else {
+        } else {
             throw new Error("Unknown currentView: " + this.state.currentView);
         }
 
@@ -138,8 +138,8 @@ var Component = React.createClass({
             </div>
         );
     },
-    changeView: function(view) {
-        this.setState({ previousView: this.state.currentView, currentView: view })
+    changeView: function (view) {
+        this.setState({previousView: this.state.currentView, currentView: view})
     },
     componentWillMount: function () {
         windowFocusHandler.startListening();
@@ -163,7 +163,7 @@ var Component = React.createClass({
         this.props.socket.off("lobby_update", this.receiveMatchConfig);
         windowFocusHandler.stopListening();
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.refs.name_input.focus();
     },
     newMatch: function ({ playerId, matchConfig }) {
@@ -171,59 +171,73 @@ var Component = React.createClass({
         this.setState({matchConfig});
         this.changeView("new-match");
     },
-    receiveMatchConfig: function(matchConfig) {
+    receiveMatchConfig: function (matchConfig) {
         this.setState({matchConfig});
     },
     ready: function () {
         this.props.socket.emit("ready");
     },
-    matchStart: function() {
-        var match = Match({ matchConfig: this.state.matchConfig });
-        this.setState({ match });
+    matchStart: function () {
+        var match = Match({matchConfig: this.state.matchConfig});
+        this.setState({match});
     },
-    matchOver: function() {
+    matchOver: function () {
         this.changeView("match-over");
     },
-    gameCountdown: function(countdown) {
+    gameCountdown: function (countdown) {
         this.state.overlay.startGameCountdown(countdown);
     },
-    gameStart: function(gameState) {
+    gameStart: function (gameState) {
         this.state.overlay.endGameCountdown();
         this.setState({gameState});
         this.changeView("game");
     },
-    gameUpdate: function(data) {
+    gameUpdate: function (data) {
         var thisComponent = this;
-        forEach(data.wormPathSegments, function(segments, id) {
+        forEach(data.wormPathSegments, function (segments, id) {
             segments.forEach(function (segment) {
-                gameStateFunctions.addWormPathSegment(thisComponent.state.gameState, id, compression.decompressWormSegment(segment));
+                var decompressedSegment = compression.decompressWormSegment(segment);
+                if (decompressedSegment.index !== undefined) {
+                    // This segment has been added to the gameState already. Probably sent from server to client
+                    segments[decompressedSegment.index] = segment;
+                }
+                gsf.addWormPathSegment(thisComponent.state.gameState, id, decompressedSegment);
+                var latestWormPathSegment = gsf.getLatestWormPathSegment(thisComponent.state.gameState, id);
+                // Make sure we put an index on the added segment
+                latestWormPathSegment.index = segments.length;
             })
         });
-        data.gameEvents.forEach(event => {this.state.gameState.gameEvents.push(event)});
-        data.powerUpEvents.forEach(event => {this.state.gameState.powerUpEvents.push(event)});
-        data.effectEvents.forEach(event => {this.state.gameState.effectEvents.push(event)});
+        data.gameEvents.forEach(event => {
+            this.state.gameState.gameEvents.push(event)
+        });
+        data.powerUpEvents.forEach(event => {
+            this.state.gameState.powerUpEvents.push(event)
+        });
+        data.effectEvents.forEach(event => {
+            this.state.gameState.effectEvents.push(event)
+        });
         this.state.gameState.gameTime = data.gameTime;
     },
-    gameOver: function() {
+    gameOver: function () {
         this.state.match.addFinishedGameState(this.state.gameState);
         this.changeView("game-over");
     },
     replayRound: function (roundId) {
         this.changeView("replay-round");
-        this.setState({ replayRoundId: roundId });
+        this.setState({replayRoundId: roundId});
     },
     replayLastRound: function () {
         this.replayRound(this.state.match.matchState.roundsData.length - 1);
     },
-    onNameChange: function(event) {
+    onNameChange: function (event) {
         this.state.playerData.name = event.target.value;
         this.forceUpdate();
     },
-    enter: function() {
-        this.props.socket.emit("enter", { name: this.state.playerData.name });
+    enter: function () {
+        this.props.socket.emit("enter", {name: this.state.playerData.name});
         this.changeView("waiting");
     },
-    leave: function() {
+    leave: function () {
         this.props.socket.emit("leave");
         this.changeView("start");
     }
