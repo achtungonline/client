@@ -8,7 +8,7 @@ const testerMaker = require('core/npm-scripts//util/test-runner');
 const Promise = require('promise');
 
 module.exports = function build() {
-    var builder = builderMaker({testFiles: ['node_modules/core/src/**/*spec.js', 'src/**/*spec.js']});
+    var builder = builderMaker({sourceFiles: ['./src/js/index.js'], testFiles: ['node_modules/core/src/**/*spec.js', 'src/**/*spec.js']});
     var tester = testerMaker();
     var linter = linterMaker();
 
@@ -22,7 +22,7 @@ module.exports = function build() {
 
     function lint() {
         return new Promise((resolve) => {
-            linter.lint(['*.js', 'src/**/*.js', 'node_modules/core/src/**/*.js']).then(resolve, (err) => {
+            linter.lint(['*.js', 'src/**/*.js', 'node_modules/core/src/**/*.js', 'node_modules/core/npm-scripts/**/*.js']).then(resolve, (err) => {
                 console.log('lint reject');
                 handleError(err);
                 resolve();
@@ -50,7 +50,7 @@ module.exports = function build() {
 
     builder.watchModuleCode()
         .on('initialBuild', (stream) => {
-            fileWriter.streamToFileTimed('public/js/index.js', stream).then(() => {
+            fileWriter.streamToFileTimed('public/build/js/index.js', stream).then(() => {
                 builder.watchTestCode()
                     .on('initialBuild', (stream) => promiseUtils.runSerially([
                         () => fileWriter.streamToFileTimed('build/tests.js', stream),
@@ -64,5 +64,19 @@ module.exports = function build() {
                     ]).catch(handleError));
             }, handleError);
         })
-        .on('updateBuild', (stream) => fileWriter.streamToFile('public/js/index.js', stream).catch(handleError));
+        .on('updateBuild', (stream) => {
+            fileWriter.streamToFileTimed('public/build/js/index.js', stream).then(() => {
+                builder.watchTestCode()
+                    .on('initialBuild', (stream) => promiseUtils.runSerially([
+                        () => fileWriter.streamToFileTimed('build/tests.js', stream),
+                        test,
+                        lint
+                    ]).catch(handleError))
+                    .on('updateBuild', (stream) => promiseUtils.runSerially([
+                        () => fileWriter.streamToFile('build/tests.js', stream),
+                        test,
+                        lint
+                    ]).catch(handleError));
+            }, handleError);
+        });
 };
