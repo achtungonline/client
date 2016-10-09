@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/achtungonline/client",
   "scripts": {
-    "watch": "./npm-scripts/bin/cmd.js 'watch'",
+    "watch": "parallelshell './npm-scripts/bin/cmd.js watch' 'npm run watch:css'",
     "test": "./npm-scripts/bin/cmd.js 'test'",
     "test-core": "node node_modules/core/scripts/cmd.js test node_modules/core/",
     "lint": "eslint src",
