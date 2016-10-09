@@ -1,11 +1,35 @@
 {
+    "plugins": ["react"],
     "env": {
-        "browser": true,
+        "es6": true,
+        "browser": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
     },
     "ecmaFeatures": {
         "jsx": true,
         "arrowFunctions": true,
-        "modules": true
+        "blockBindings": true,
+        "classes": true,
+        "defaultParams": true,
+        "destructuring": true,
+        "forOf": true,
+        "generators": false,
+        "modules": true,
+        "objectLiteralComputedProperties": true,
+        "objectLiteralDuplicateProperties": false,
+        "objectLiteralShorthandMethods": true,
+        "objectLiteralShorthandProperties": true,
+        "restParams": true,
+        "spread": true,
+        "superInFunctions": true,
+        "templateStrings": true
+
     },
     "rules": {
         "curly": 2,
@@ -18,24 +42,5 @@
         "wrap-iife": 2,
         "indent": [2, 4],
         "no-trailing-spaces": 2
-    },
-    "globals": {
-        "define": true,
-        "require": true,
-        "module": true,
-        "requirejs": true,
-        "it": true,
-        "expect": true,
-        "describe": true,
-        "spyOn": true,
-        "afterEach": true,
-        "test": true,
-        "ok": true,
-        "console": true,
-        "runs": true,
-        "waitsFor": true,
-        "beforeEach": true,
-        "xit": true,
-        "xdescribe": true
     }
 }
