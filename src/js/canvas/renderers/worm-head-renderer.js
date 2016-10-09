@@ -18,18 +18,20 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
     var prevRenderTime = 0;
     var effectEventIndex = 0;
 
-    function getWormRenderData(wormId) {
+    function getSegmentRenderData(wormId) {
         if (wormRenderData[wormId] === undefined) {
             wormRenderData[wormId] = {
-                segmentIndex: 0
+                segmentIndex: 0,
+                latestClearSegmentIndex: 0
             };
         }
         return wormRenderData[wormId];
     }
 
     function clearRenderData() {
-        forEach(wormRenderData, function(renderData) {
+        forEach(wormRenderData, function (renderData) {
             renderData.segmentIndex = 0;
+            renderData.latestClearSegmentIndex = 0;
         });
         effectEventIndex = 0;
         activeEffects = [];
@@ -52,7 +54,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
 
     function drawHead({ x, y, direction, size, headColor, headShape, blinking}) {
         context.save();
-        if(blinking) {
+        if (blinking) {
             var BLINK_DURATION = 1;
             var FADE_LOW_POINT = 0;
             var timeDiff = (Date.now() / 1000 - blinkingStartTime) % BLINK_DURATION;
@@ -79,7 +81,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         context.save();
         context.fillStyle = color;
         context.strokeStyle = color;
-        context.lineWidth = scale*4;
+        context.lineWidth = scale * 4;
         context.beginPath();
         scaledContext.translate(x, y);
         context.rotate(direction - Math.PI / 2);
@@ -109,10 +111,10 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         context.save();
         context.beginPath();
         scaledContext.translate(segment.endX, segment.endY);
-        context.rotate(segment.endDirection - Math.PI/2);
+        context.rotate(segment.endDirection - Math.PI / 2);
         context.strokeStyle = color;
-        context.setLineDash([scale*2,scale*5]);
-        context.lineWidth = scale*2;
+        context.setLineDash([scale * 2, scale * 5]);
+        context.lineWidth = scale * 2;
         player.aiData.trajectory.forEach(function (move) {
             var turnRadius;
             if (move.turningVelocity !== 0) {
@@ -123,11 +125,11 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
             var angleTurned = move.turningVelocity * move.duration;
             if (move.turningVelocity < 0) {
                 scaledContext.arc(turnRadius, 0, turnRadius, Math.PI, Math.PI + angleTurned, true);
-                scaledContext.translate(-turnRadius*(Math.cos(angleTurned) -  1), -turnRadius*Math.sin(angleTurned));
+                scaledContext.translate(-turnRadius * (Math.cos(angleTurned) - 1), -turnRadius * Math.sin(angleTurned));
                 context.rotate(angleTurned);
             } else if (move.turningVelocity > 0) {
                 scaledContext.arc(-turnRadius, 0, turnRadius, 0, angleTurned);
-                scaledContext.translate(turnRadius*(Math.cos(angleTurned) - 1), turnRadius*Math.sin(angleTurned));
+                scaledContext.translate(turnRadius * (Math.cos(angleTurned) - 1), turnRadius * Math.sin(angleTurned));
                 context.rotate(angleTurned);
             } else {
                 scaledContext.lineTo(0, distanceTravelled);
@@ -149,51 +151,58 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
         updateEffectData(renderTime);
 
 
+        forEach(gameState.wormPathSegments, function (segments, segmentId) {
+            var renderData = getSegmentRenderData(segmentId);
+            var wormHeadSegments = segments.filter(function (segment, index) {
+                // Segments where a worm seemed to have died
+                return segment.type === 'worm_died' && segment.startTime < renderTime && index > renderData.latestClearSegmentIndex;
+            });
 
-        forEach(gameState.wormPathSegments, function (segments, wormId) {
-            var renderData = getWormRenderData(wormId);
             while (renderData.segmentIndex < segments.length - 1 && segments[renderData.segmentIndex + 1].startTime < renderTime) {
+                if (segments[renderData.segmentIndex + 1].type === "clear") {
+                    renderData.latestClearSegmentIndex = [renderData.segmentIndex + 1];
+                }
                 renderData.segmentIndex++;
             }
-            if (segments.length > 0) {
-                var segment = segments[renderData.segmentIndex];
-                if (segment.startTime <= renderTime &&
-                    !segment.metaData.find((md) => md.type === "clear") &&
-                    (wormId.indexOf("#") === -1 || segment.endTime >= renderTime)) {
-                    var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
-                    var size = segment.size;
-                    var playerColor = wormColors[players.find(p => p.id === segment.playerId).colorId];
-                    var headColor = HEAD_COLOR;
-                    var headShape = "circle";
-                    var blinking = false;
-                    activeEffects.forEach(function (effect) {
-                        if (effect.wormId === wormId) {
-                            if (effect.name === "key_switch") {
-                                headColor = KEY_SWITCH_HEAD_COLOR;
-                            } else if (effect.name === "tron_turn") {
-                                headShape = "square";
-                            } else if (effect.name === "wall_hack") {
-                                blinking = true;
-                            }
-                        }
-                    });
-
-                    if (segment.type === "still_arc") {
-                        drawArrow(position.x, position.y, position.direction, size, playerColor);
-                    } else if(drawTrajectories) {
-                        drawTrajectory(gameState, segment);
-                    }
-                    drawHead({
-                        x: position.x,
-                        y: position.y,
-                        direction: position.direction,
-                        size,
-                        headColor,
-                        headShape,
-                        blinking
-                    });
-                }
+            if (segments[renderData.segmentIndex].startTime <= renderTime && segments[renderData.segmentIndex].endTime >= renderTime) {
+                wormHeadSegments.push(segments[renderData.segmentIndex]);
             }
+
+            wormHeadSegments.forEach(function (segment) {
+                var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
+                var size = segment.size;
+                var playerColor = wormColors[players.find(p => p.id === segment.playerId).colorId];
+                var headColor = HEAD_COLOR;
+                var headShape = "circle";
+                var blinking = false;
+                activeEffects.forEach(function (effect) {
+                    if (effect.wormId === segmentId) {
+                        if (effect.name === "key_switch") {
+                            headColor = KEY_SWITCH_HEAD_COLOR;
+                        } else if (effect.name === "tron_turn") {
+                            headShape = "square";
+                        } else if (effect.name === "wall_hack") {
+                            blinking = true;
+                        }
+                    }
+                });
+
+                if (segment.type === "still_arc") {
+                    drawArrow(position.x, position.y, position.direction, size, playerColor);
+                } else if (drawTrajectories) {
+                    drawTrajectory(gameState, segment);
+                }
+                drawHead({
+                    x: position.x,
+                    y: position.y,
+                    direction: position.direction,
+                    size,
+                    headColor,
+                    headShape,
+                    blinking
+                });
+            });
+
         });
 
         prevRenderTime = renderTime;

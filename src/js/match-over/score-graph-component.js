@@ -61,7 +61,6 @@ module.exports = React.createClass({
                     playerId: player.id,
                     size: LINE_WIDTH,
                     jump: false,
-                    metaData: [],
                     startTime: dt*i,
                     duration: dt,
                     endTime: dt*(i+1),

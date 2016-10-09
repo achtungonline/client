@@ -93,7 +93,7 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
         var performClear = false;
         forEach(gameState.wormPathSegments, function (segments, wormId) {
             var renderData = getWormRenderData(wormId);
-            for (var i = renderData.mainSegmentIndex; i < segments.length && segments[i].startTime <= renderTime; i++) {
+            for (var i = renderData.mainSegmentIndex + 1; i < segments.length && segments[i].startTime <= renderTime; i++) {
                 if (segments[i].type === "clear") {
                     renderData.mainSegmentIndex = i;
                     performClear = true;
@@ -107,7 +107,6 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
                 while (renderData.mainSegmentIndex > 0 && !(segments[renderData.mainSegmentIndex].type === "clear")) {
                     renderData.mainSegmentIndex--;
                 }
-                renderData.mainSegmentIndex++;
             });
             // Perform the clear
             temporaryContext.drawImage(mainCanvas, 0, 0);
