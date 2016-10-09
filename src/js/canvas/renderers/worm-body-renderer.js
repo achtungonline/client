@@ -30,7 +30,7 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
     }
 
     function clearRenderData() {
-        forEach(wormRenderData, function(renderData) {
+        forEach(wormRenderData, function (renderData) {
             renderData.mainSegmentIndex = 0;
         });
     }
@@ -50,23 +50,23 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
         var startPercentage = (renderStartTime - wormSegment.startTime) / wormSegment.duration;
         var endPercentage = (renderTime - wormSegment.startTime) / wormSegment.duration;
 
-        context.lineWidth = scale*wormSegment.size*2;
+        context.lineWidth = scale * wormSegment.size * 2;
         context.lineCap = "round";
         context.strokeStyle = wormColors[players.find(p => p.id === wormSegment.playerId).colorId];
         // Draw path
         context.beginPath();
         if (wormSegment.type === "straight") {
-            var startX = wormSegment.startX + startPercentage*(wormSegment.endX - wormSegment.startX);
-            var startY = wormSegment.startY + startPercentage*(wormSegment.endY - wormSegment.startY);
-            var endX = wormSegment.startX + endPercentage*(wormSegment.endX - wormSegment.startX);
-            var endY = wormSegment.startY + endPercentage*(wormSegment.endY - wormSegment.startY);
+            var startX = wormSegment.startX + startPercentage * (wormSegment.endX - wormSegment.startX);
+            var startY = wormSegment.startY + startPercentage * (wormSegment.endY - wormSegment.startY);
+            var endX = wormSegment.startX + endPercentage * (wormSegment.endX - wormSegment.startX);
+            var endY = wormSegment.startY + endPercentage * (wormSegment.endY - wormSegment.startY);
             scaledContext.moveTo(startX, startY);
             scaledContext.lineTo(endX, endY);
         } else {
             // Arc
             if (wormSegment.speed > 0) {
-                var startAngle = wormSegment.arcStartAngle + startPercentage*wormSegment.arcAngleDiff;
-                var endAngle = wormSegment.arcStartAngle + endPercentage*wormSegment.arcAngleDiff;
+                var startAngle = wormSegment.arcStartAngle + startPercentage * wormSegment.arcAngleDiff;
+                var endAngle = wormSegment.arcStartAngle + endPercentage * wormSegment.arcAngleDiff;
                 scaledContext.arc(wormSegment.arcCenterX, wormSegment.arcCenterY, wormSegment.arcRadius, startAngle, endAngle, wormSegment.arcAngleDiff < 0);
             }
         }
@@ -94,8 +94,8 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
         forEach(gameState.wormPathSegments, function (segments, wormId) {
             var renderData = getWormRenderData(wormId);
             for (var i = renderData.mainSegmentIndex; i < segments.length && segments[i].startTime <= renderTime; i++) {
-                if (segments[i].metaData.find((md) => md.type === "clear")) {
-                    renderData.mainSegmentIndex = i + 1;
+                if (segments[i].type === "clear") {
+                    renderData.mainSegmentIndex = i;
                     performClear = true;
                 }
             }
@@ -104,7 +104,7 @@ module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mai
             // Move segmentIndex for each worm to be the same index as the latest clear
             forEach(gameState.wormPathSegments, function (segments, wormId) {
                 var renderData = getWormRenderData(wormId);
-                while (renderData.mainSegmentIndex > 0 && !segments[renderData.mainSegmentIndex].metaData.find((md) => md.type === "clear")) {
+                while (renderData.mainSegmentIndex > 0 && !(segments[renderData.mainSegmentIndex].type === "clear")) {
                     renderData.mainSegmentIndex--;
                 }
                 renderData.mainSegmentIndex++;
