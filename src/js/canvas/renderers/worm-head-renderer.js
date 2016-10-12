@@ -153,6 +153,8 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
 
         forEach(gameState.wormPathSegments, function (segments, segmentId) {
             var renderData = getSegmentRenderData(segmentId);
+            //TODO, the list will always maxiumum contain 1 element, so this code is stupid
+
             var wormHeadSegments = segments.filter(function (segment, index) {
                 // Segments where a worm seemed to have died
                 return segment.type === 'worm_died' && segment.startTime < renderTime && index > renderData.latestClearSegmentIndex;

@@ -200,11 +200,12 @@ var Component = React.createClass({
                 if (decompressedSegment.index !== undefined) {
                     // This segment has been added to the gameState already. Probably sent from server to client
                     segments[decompressedSegment.index] = segment;
+                }  else {
+                    gsf.addWormPathSegment(thisComponent.state.gameState, id, decompressedSegment);
+                    var latestWormPathSegment = gsf.getLatestWormPathSegment(thisComponent.state.gameState, id);
+                    // Make sure we put an index on the added segment
+                    latestWormPathSegment.index = segments.length;
                 }
-                gsf.addWormPathSegment(thisComponent.state.gameState, id, decompressedSegment);
-                var latestWormPathSegment = gsf.getLatestWormPathSegment(thisComponent.state.gameState, id);
-                // Make sure we put an index on the added segment
-                latestWormPathSegment.index = segments.length;
             })
         });
         data.gameEvents.forEach(event => {
