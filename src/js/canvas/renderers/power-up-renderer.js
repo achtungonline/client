@@ -1,6 +1,7 @@
 var forEach = require("core/src/core/util/for-each.js");
 
 var ScaledCanvasContext = require("../scaled-canvas-context.js");
+var PowerUpImageLoader = require("../powerup-image-loader.js");
 
 var POWERUP_SPAWN_DURATION = 0.3;
 var POWERUP_DESPAWN_DURATION = 0.1;
@@ -8,23 +9,6 @@ var POWERUP_COLORS = {
     "self": "#008000",
     "others": "#FF0B0B",
     "all": "#3453BC"
-};
-
-var POWERUP_IMAGE_URLS = {
-    "clear": "svg/powerup/clear.svg",
-    "drunk": "svg/powerup/drunk.svg",
-    "fat": "svg/powerup/fat.svg",
-    "slim": "svg/powerup/slim.svg",
-    "slow": "svg/powerup/slow.svg",
-    "slow_turn": "svg/powerup/slowturn.svg",
-    "speed": "svg/powerup/speed.svg",
-    "super_jump": "svg/powerup/superjump.svg",
-    "switcharoonie": "svg/powerup/switcharoonie.svg",
-    "key_switch": "svg/powerup/switchkeys.svg",
-    "tron_turn": "svg/powerup/tronturn.svg",
-    "quick_turn": "svg/powerup/quickturn.svg",
-    "twin": "svg/powerup/twin.svg",
-    "wall_hack": "svg/powerup/wallhack.svg"
 };
 
 
@@ -85,16 +69,14 @@ module.exports = function PowerUpRenderer({ gameState, canvas, scale=1 }) {
                 text = renderData.name;
             }
 
-            var powerUpImageUrl = POWERUP_IMAGE_URLS[renderData.name];
+            var powerUpImage = PowerUpImageLoader.getPowerUpImage(renderData.name);
             context.fillStyle = renderData.color;
             context.beginPath();
             scaledContext.arc(renderData.centerX, renderData.centerY, radius, 0, 2 * Math.PI);
             context.fill();
-            if (powerUpImageUrl) {
+            if (powerUpImage) {
                 context.beginPath();
-                var imageElement = document.createElement("img");
-                imageElement.src = powerUpImageUrl;
-                scaledContext.drawImage(imageElement, renderData.centerX - radius, renderData.centerY - radius, radius * 2, radius * 2);
+                scaledContext.drawImage(powerUpImage, renderData.centerX - radius, renderData.centerY - radius, radius * 2, radius * 2);
             } else {
                 // We have no image yet, use default behaviour
                 context.font = scale*14 + "px Arial";
