@@ -194,17 +194,16 @@ var Component = React.createClass({
     },
     gameUpdate: function (data) {
         var thisComponent = this;
-        forEach(data.wormPathSegments, function (segments, id) {
-            segments.forEach(function (segment) {
-                var decompressedSegment = compression.decompressWormSegment(segment);
-                if (decompressedSegment.index !== undefined) {
-                    // This segment has been added to the gameState already. Probably sent from server to client
-                    segments[decompressedSegment.index] = segment;
+        forEach(data.wormPathSegments, function (serverSegments, id) {
+            var gameStateSegments = thisComponent.state.gameState.wormPathSegments[id];
+            if (!gameStateSegments) {
+                gameStateSegments = thisComponent.state.gameState.wormPathSegments[id] = [];
+            }
+            serverSegments.map(compression.decompressWormSegment).forEach(function (segment) {
+                if (segment.index !== undefined) {
+                    gameStateSegments[segment.index] = segment;
                 }  else {
-                    gsf.addWormPathSegment(thisComponent.state.gameState, id, decompressedSegment);
-                    var latestWormPathSegment = gsf.getLatestWormPathSegment(thisComponent.state.gameState, id);
-                    // Make sure we put an index on the added segment
-                    latestWormPathSegment.index = segments.length;
+                    throw Error("No index on wormPathSegment from server");
                 }
             })
         });
