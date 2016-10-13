@@ -25,9 +25,9 @@
   },
   "homepage": "https://github.com/achtungonline/client",
   "scripts": {
-    "watch": "parallelshell './npm-scripts/bin/cmd.js watch' 'npm run watch:css'",
-    "test": "./npm-scripts/bin/cmd.js 'test'",
-    "test-core": "node node_modules/core/scripts/cmd.js test node_modules/core/",
+    "watch": "parallelshell \"node npm-scripts/bin/cmd.js watch\" \"npm run watch:css\"",
+    "test": "node npm-scripts/bin/cmd.js test",
+    "test-core": "node node_modules/core/npm-scripts/bin/cmd.js test node_modules/core/",
     "lint": "eslint src",
     "clean": "shx rm -rf public/build",
     "prebuild": "npm run clean && shx mkdir -p public/build/js && shx mkdir -p public/build/css",
@@ -37,8 +37,8 @@
     "build:css": "node-sass src/css/main.scss public/build/css/index.css",
     "watch:js": "npm run build:js && watchify src/js/index.js -o public/build/js/index.js -d",
     "watch:multi": "watchify src/js/multi.js -o public/build/js/multi.js -d",
-    "watch:css": "nodemon -q -w src/css/ --ext '.scss' --exec 'npm run build:css'",
-    "watch:test-core": "node node_modules/core/scripts/cmd.js watch node_modules/core/",
+    "watch:css": "nodemon -q -w src/css/ --ext \".scss\" --exec \"npm run build:css\"",
+    "watch:test-core": "node node_modules/core/npm-scripts/bin/cmd.js watch node_modules/core/",
     "server-test": "watchify src/js/server-test.js -o public/build/js/server-test.js -d"
   },
   "dependencies": {
@@ -61,6 +61,7 @@
     "node-sass": "^3.4.2",
     "nodemon": "^1.9.1",
     "parallelshell": "^2.0.0",
+    "promise": "^7.1.1",
     "serve-static": "^1.11.1",
     "shx": "^0.1.4",
     "uglify-js": "^2.6.2",
