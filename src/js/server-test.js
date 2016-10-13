@@ -1,7 +1,7 @@
 var ReactDOM = require("react-dom");
 var React = require("react");
 
-var Match = require("core/src/core/match.js");
+import Match from "core/src/core/match";
 
 var windowFocusHandler = require("./window-focus-handler.js");
 var NewMatchComponent = require("./new-match/new-match-component.js");

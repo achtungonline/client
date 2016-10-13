@@ -1,9 +1,9 @@
 var React = require("react");
 
-var clone = require("core/src/core/util/clone.js");
-var random = require("core/src/core/util/random.js");
-var scoreUtil = require("core/src/core/score/score-util.js");
-var gameStateFunctions = require("core/src/core/game-state-functions.js");
+import clone from "core/src/core/util/clone.js";
+import * as random from "core/src/core/util/random.js";
+import * as scoreUtil from "core/src/core/score/score-util.js";
+import * as gsf from "core/src/core/game-state-functions.js";
 
 var playerSteeringListener = require("../player-steering-listener.js")();
 var windowFocusHandler = require("../../window-focus-handler.js");
@@ -65,7 +65,7 @@ module.exports = React.createClass({
         this.props.match.matchConfig.players.forEach(function (player) {
             if (player.type === "human") {
                 var onSteeringUpdate = steering => {
-                    gameStateFunctions.setPlayerSteering(thisComponent.state.localGame.gameState, player.id, steering);
+                    gsf.setPlayerSteering(thisComponent.state.localGame.gameState, player.id, steering);
                 };
                 playerSteeringListener.addKeyListeners({ left: player.left, right: player.right, onSteeringUpdate });
             }

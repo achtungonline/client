@@ -1,6 +1,6 @@
-var forEach = require("core/src/core/util/for-each.js");
-var gameStateFunctions = require("core/src/core/game-state-functions.js");
-var trajectoryUtil = require("core/src/core/geometry/trajectory/trajectory-util.js");
+import forEach from "core/src/core/util/for-each.js";
+import * as gsf from "core/src/core/game-state-functions.js";
+import * as trajectoryUtil from "core/src/core/geometry/trajectory/trajectory-util.js";
 var wormColors = require("core/src/core/constants.js").wormColors;
 
 var ScaledCanvasContext = require("../scaled-canvas-context.js");
@@ -103,7 +103,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
     }
 
     function drawTrajectory(gameState, segment) {
-        var player = gameStateFunctions.getPlayer(gameState, segment.playerId);
+        var player = gsf.getPlayer(gameState, segment.playerId);
         if (!player.aiData || !player.aiData.trajectory) {
             return;
         }

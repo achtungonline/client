@@ -1,10 +1,10 @@
 var ReactDOM = require("react-dom");
 var React = require("react");
 
-var Match = require("core/src/core/match.js");
-var forEach = require("core/src/core/util/for-each.js");
-var gsf = require("core/src/core/game-state-functions.js");
-var compression = require("core/src/core/util/compression.js");
+import Match from "core/src/core/match.js";
+import forEach from "core/src/core/util/for-each.js";
+import * as gsf from "core/src/core/game-state-functions.js";
+import compression from "core/src/core/util/compression.js";
 
 var KeyUtil = require("./key-util.js");
 var availableKeyBindings = require("./key-util.js").keyPairs;

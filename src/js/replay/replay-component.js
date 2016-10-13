@@ -1,7 +1,7 @@
 var React = require("react");
 
-var scoreUtil = require("core/src/core/score/score-util.js");
-var clone = require("core/src/core/util/clone.js");
+import * as scoreUtil from "core/src/core/score/score-util.js";
+import clone from "core/src/core/util/clone.js";
 
 var ProgressBar = require("./progress-bar-component.js");
 var ReplayGameHandler = require("./replay-game-handler.js");

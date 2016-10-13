@@ -1,7 +1,7 @@
 var React = require("react");
 
-var CoreGameFactory = require("core/src/game-factory.js");
-var clone = require("core/src/core/util/clone.js");
+import CoreGameFactory from "core/src/game-factory.js";
+import clone from "core/src/core/util/clone.js";
 
 var GameOverlay = require("../canvas/overlays/game-overlay.js");
 var GameCanvas = require("../canvas/game-canvas-component.js");

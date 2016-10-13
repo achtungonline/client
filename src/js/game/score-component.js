@@ -2,7 +2,7 @@ var React = require("react");
 
 var requestFrame = require("./request-frame.js");
 
-var scoreUtil = require("core/src/core/score/score-util.js");
+import * as scoreUtil from "core/src/core/score/score-util.js";
 var wormColors = require("core/src/core/constants.js").wormColors;
 
 module.exports = React.createClass({

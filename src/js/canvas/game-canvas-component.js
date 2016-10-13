@@ -1,6 +1,6 @@
 var React = require("react");
 
-var forEach = require("core/src/core/util/for-each.js");
+import forEach from "core/src/core/util/for-each.js";
 
 var requestFrame = require("../game/request-frame.js");
 var MapRenderer = require("./renderers/map-renderer.js");

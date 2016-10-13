@@ -1,7 +1,7 @@
 var React = require("react");
 
-var gameStateFunctions = require("core/src/core/game-state-functions.js");
-var scoreUtil = require("core/src/core/score/score-util.js");
+import * as gsf from "core/src/core/game-state-functions.js";
+import * as scoreUtil from "core/src/core/score/score-util.js";
 var GameCanvas = require("../canvas/game-canvas-component.js");
 var ReplayGameHandler = require("../replay/replay-game-handler.js");
 
@@ -39,7 +39,7 @@ module.exports = React.createClass({
             powerUpEvents: [],
             effectEvents: [],
             gameTime: ANIMATION_DURATION,
-            map: gameStateFunctions.createMapRectangle({
+            map: gsf.createMapRectangle({
                 name: "ScoreGraph",
                 width: WIDTH,
                 height: HEIGHT,

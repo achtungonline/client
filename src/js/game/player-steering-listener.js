@@ -1,4 +1,4 @@
-var constants = require("core/src/core/constants.js");
+import * as constants from "core/src/core/constants.js";
 
 var parseEvent = require("../key-util.js").parseEvent;
 

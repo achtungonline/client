@@ -1,6 +1,6 @@
 var React = require("react");
 
-var scoreUtil = require("core/src/core/score/score-util.js");
+import * as scoreUtil from "core/src/core/score/score-util.js";
 var wormColors = require("core/src/core/constants.js").wormColors;
 
 var GameCanvas = require("./../canvas/game-canvas-component.js");

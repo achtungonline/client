@@ -1,7 +1,8 @@
 var React = require("react");
 
-var gameStateFunctions = require("core/src/core/game-state-functions.js");
-var idGenerator = require("core/src/core/util/id-generator.js").indexCounterId(0);
+import * as gsf from "core/src/core/game-state-functions.js";
+import * as idGeneratorMaker from "core/src/core/util/id-generator.js";
+var idGenerator = idGeneratorMaker.indexCounterId(0);
 var wormColorIds = require("core/src/core/constants.js").wormColorIds;
 
 import {keyPairs, parseEvent, CONTINUE_KEY, ENTER_KEY, REMOVE_KEY} from "../key-util.js";
@@ -45,11 +46,11 @@ function createMap(mapString) {
     var mapWidth = Number(mapData[1]);
     var mapHeight = Number(mapData[2]);
     if (mapType === "Square") {
-        return gameStateFunctions.createMapSquare({ name: mapString, size: mapWidth });
+        return gsf.createMapSquare({ name: mapString, size: mapWidth });
     } else if (mapType === "Rectangle") {
-        return gameStateFunctions.createMapRectangle({ name: mapString, width: mapWidth, height: mapHeight });
+        return gsf.createMapRectangle({ name: mapString, width: mapWidth, height: mapHeight });
     } else if (mapType === "Circle") {
-        return gameStateFunctions.createMapCircle({ name: mapString, radius: mapWidth/2 });
+        return gsf.createMapCircle({ name: mapString, radius: mapWidth/2 });
     } else {
         throw new Error("Invalid map string: " + mapString);
     }

@@ -1,4 +1,4 @@
-var forEach = require("core/src/core/util/for-each.js");
+import forEach from "core/src/core/util/for-each.js";
 var wormColors = require("core/src/core/constants.js").wormColors;
 
 var ScaledCanvasContext = require("../scaled-canvas-context.js");

@@ -1,4 +1,4 @@
-var forEach = require("core/src/core/util/for-each.js");
+import forEach from "core/src/core/util/for-each.js";
 
 var ScaledCanvasContext = require("../scaled-canvas-context.js");
 var PowerUpImageLoader = require("../powerup-image-loader.js");

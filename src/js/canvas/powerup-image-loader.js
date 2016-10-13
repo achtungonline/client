@@ -1,4 +1,4 @@
-var forEach = require("core/src/core/util/for-each.js");
+import forEach from "core/src/core/util/for-each.js";
 
 var POWERUP_IMAGE_URLS = {
     "clear": "svg/powerup/clear.svg",
