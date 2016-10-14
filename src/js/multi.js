@@ -16,7 +16,7 @@ import GameOverComponent from "./game-over/game-over-component.js";
 import MatchOverComponent from "./match-over/match-over-component.js";
 import GameOverlay from "./canvas/overlays/game-overlay.js";
 
-import * as io from "socket.io-client";
+import io from "socket.io-client";
 
 function setupSocket() {
     var socket = io("http://localhost:3000");
