@@ -1,11 +1,11 @@
 import forEach from "core/src/core/util/for-each.js";
-var wormColors = require("core/src/core/constants.js").wormColors;
+import {wormColors} from "core/src/core/constants.js";
 
-var ScaledCanvasContext = require("../scaled-canvas-context.js");
+import ScaledCanvasContext from "../scaled-canvas-context.js";
 
 var CLEAR_FADE_DURATION = 0.2;
 
-module.exports = function WormBodyRenderer({ gameState, players, fadeCanvas, mainCanvas, secondaryCanvas, scale=1 }) {
+export default function WormBodyRenderer({ gameState, players, fadeCanvas, mainCanvas, secondaryCanvas, scale=1 }) {
     var fadeContext = fadeCanvas.getContext("2d");
     var mainContext = mainCanvas.getContext("2d");
     var scaledMainContext = ScaledCanvasContext(mainContext, scale);

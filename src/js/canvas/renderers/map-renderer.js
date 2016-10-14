@@ -1,9 +1,9 @@
-var ScaledCanvasContext = require("../scaled-canvas-context.js");
+import ScaledCanvasContext from "../scaled-canvas-context.js";
 
 var MAP_BACKGROUND_COLOR = "#faf7ed";
 var MAP_BORDER_COLOR = "black";
 
-module.exports = function MapRenderer({ gameState, canvas, borderCanvas, scale=1 }) {
+export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1 }) {
 
     var context = canvas.getContext("2d");
     var scaledContext = ScaledCanvasContext(context, scale);

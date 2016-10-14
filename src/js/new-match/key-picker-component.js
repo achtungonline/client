@@ -1,8 +1,8 @@
-var React = require("react");
+import React from "react";
 
 import {isReservedKey, parseEvent} from "../key-util.js";
 
-module.exports = React.createClass({
+export default React.createClass({
     propTypes: {
         currentKey: React.PropTypes.string,
         onKeyPicked: React.PropTypes.func

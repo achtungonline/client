@@ -1,17 +1,17 @@
-var ReactDOM = require("react-dom");
-var React = require("react");
+import ReactDOM from "react-dom";
+import React from "react";
 
 import Match from "core/src/core/match";
 
-var windowFocusHandler = require("./window-focus-handler.js");
-var NewMatchComponent = require("./new-match/new-match-component.js");
-var RemoteGameComponent = require("./game/remote-game/remote-game-component.js");
-var MatchOverComponent = require("./match-over/match-over-component.js");
-var Header = require("./header/header-component.js");
-var ReplayComponent = require("./replay/replay-component.js");
-var GameOverComponent = require("./game-over/game-over-component.js");
+import * as windowFocusHandler from "./window-focus-handler.js";
+import NewMatchComponent from "./new-match/new-match-component.js";
+import RemoteGameComponent from "./game/remote-game/remote-game-component.js";
+import MatchOverComponent from "./match-over/match-over-component.js";
+import Header from "./header/header-component.js";
+import ReplayComponent from "./replay/replay-component.js";
+import GameOverComponent from "./game-over/game-over-component.js";
 
-var io = require("socket.io-client");
+import * as io from "socket.io-client";
 
 function setupSocket() {
     var socket = io("http://localhost:3000");

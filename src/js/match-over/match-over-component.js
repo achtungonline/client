@@ -1,13 +1,13 @@
-var React = require("react");
+import React from "react";
 
 import * as scoreUtil from "core/src/core/score/score-util.js";
-var wormColors = require("core/src/core/constants.js").wormColors;
+import {wormColors} from "core/src/core/constants.js";
 
-var GameCanvas = require("./../canvas/game-canvas-component.js");
-var ScoreGraph = require("./score-graph-component.js");
+import GameCanvas from "./../canvas/game-canvas-component.js";
+import ScoreGraph from "./score-graph-component.js";
 import {parseEvent, CONTINUE_KEY, ENTER_KEY} from "../key-util.js";
 
-module.exports = React.createClass({
+export default React.createClass({
     displayName: "MatchOver",
     propTypes: {
         match: React.PropTypes.object.isRequired,

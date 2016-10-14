@@ -126,7 +126,7 @@ function isReservedKey(keyName) {
     return keyName === ENTER_KEY || keyName === CONTINUE_KEY || keyName === REMOVE_KEY;
 }
 
-module.exports = {
+export {
     isReservedKey,
     keyPairs,
     parseEvent,

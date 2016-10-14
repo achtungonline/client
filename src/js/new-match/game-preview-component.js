@@ -1,16 +1,16 @@
-var React = require("react");
+import React from "react";
 
 import CoreGameFactory from "core/src/game-factory.js";
 import clone from "core/src/core/util/clone.js";
 
-var GameOverlay = require("../canvas/overlays/game-overlay.js");
-var GameCanvas = require("../canvas/game-canvas-component.js");
-var LocalGameHandler = require("../game/local-game/local-game-handler.js");
-var windowFocusHandler = require("../window-focus-handler.js");
+import GameOverlay from "../canvas/overlays/game-overlay.js";
+import GameCanvas from "../canvas/game-canvas-component.js";
+import LocalGameHandler from "../game/local-game/local-game-handler.js";
+import * as windowFocusHandler from "../window-focus-handler.js";
 
 var coreGameFactory = CoreGameFactory();
 
-module.exports = React.createClass({
+export default React.createClass({
     propTypes: {
         matchConfig: React.PropTypes.object.isRequired
     },

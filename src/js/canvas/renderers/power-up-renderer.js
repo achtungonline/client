@@ -1,7 +1,7 @@
 import forEach from "core/src/core/util/for-each.js";
 
-var ScaledCanvasContext = require("../scaled-canvas-context.js");
-var PowerUpImageLoader = require("../powerup-image-loader.js");
+import ScaledCanvasContext from "../scaled-canvas-context.js";
+import * as PowerUpImageLoader from "../powerup-image-loader.js";
 
 var POWERUP_SPAWN_DURATION = 0.3;
 var POWERUP_DESPAWN_DURATION = 0.1;
@@ -12,7 +12,7 @@ var POWERUP_COLORS = {
 };
 
 
-module.exports = function PowerUpRenderer({ gameState, canvas, scale=1 }) {
+export default function PowerUpRenderer({ gameState, canvas, scale=1 }) {
 
     var context = canvas.getContext("2d");
     var scaledContext = ScaledCanvasContext(context, scale);

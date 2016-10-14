@@ -1,15 +1,15 @@
-var React = require("react");
+import React from "react";
 
 import * as gsf from "core/src/core/game-state-functions.js";
 import * as idGeneratorMaker from "core/src/core/util/id-generator.js";
 var idGenerator = idGeneratorMaker.indexCounterId(0);
-var wormColorIds = require("core/src/core/constants.js").wormColorIds;
+import {wormColorIds} from "core/src/core/constants.js";
 
 import {keyPairs, parseEvent, CONTINUE_KEY, ENTER_KEY, REMOVE_KEY} from "../key-util.js";
 
-var ColorPicker = require("./color-picker-component.js");
-var KeyPicker = require("./key-picker-component.js");
-var GamePreview = require("./game-preview-component.js");
+import ColorPicker from "./color-picker-component.js";
+import KeyPicker from "./key-picker-component.js";
+import GamePreview from "./game-preview-component.js";
 
 var availableNames = [
     "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
@@ -56,7 +56,7 @@ function createMap(mapString) {
     }
 }
 
-module.exports = React.createClass({
+export default React.createClass({
     displayName: "NewMatch",
     propType: {
         startMatchConfig: React.PropTypes.object,

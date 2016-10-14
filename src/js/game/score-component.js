@@ -1,11 +1,11 @@
-var React = require("react");
+import React from "react";
 
-var requestFrame = require("./request-frame.js");
+import requestFrame from "./request-frame.js";
 
 import * as scoreUtil from "core/src/core/score/score-util.js";
-var wormColors = require("core/src/core/constants.js").wormColors;
+import {wormColors} from "core/src/core/constants.js";
 
-module.exports = React.createClass({
+export default React.createClass({
     propTypes: {
         gameState: React.PropTypes.object.isRequired,
         players: React.PropTypes.array.isRequired,

@@ -1,6 +1,6 @@
-var requestFrame = require("../request-frame.js");
+import requestFrame from "../request-frame.js";
 
-module.exports = function LocalGameHandler({ game, onGameOver }) {
+export default function LocalGameHandler({ game, onGameOver }) {
 
     var localGameState = {
         paused: false,

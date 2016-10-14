@@ -1,10 +1,10 @@
-var React = require("react");
+import React from "react";
 
-var GameCanvas = require("../canvas/game-canvas-component.js");
-var Score = require("../game/score-component.js");
+import GameCanvas from "../canvas/game-canvas-component.js";
+import Score from "../game/score-component.js";
 import {parseEvent, CONTINUE_KEY, ENTER_KEY} from "../key-util.js";
 
-module.exports = React.createClass({
+export default React.createClass({
     displayName: "Match",
     propType: {
         match: React.PropTypes.object.isRequired,

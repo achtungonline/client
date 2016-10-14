@@ -1,6 +1,6 @@
-var React = require("react");
+import React from "react";
 
-var requestFrame = require("../game/request-frame.js");
+import requestFrame from "../game/request-frame.js";
 
 var HEIGHT = 19;
 var BAR_RADIUS = 3;
@@ -15,7 +15,7 @@ var BAR_EMPTY_COLOR = "#dddddd";
 var BALL_COLOR = "green";
 var BALL_BORDER_COLOR = "black";
 
-module.exports = React.createClass({
+export default React.createClass({
     propTypes: {
         progress: React.PropTypes.any.isRequired,
         onTogglePause: React.PropTypes.func,

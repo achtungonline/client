@@ -1,4 +1,4 @@
-module.exports = function ScaledCanvasContext(context, scale) {
+export default function ScaledCanvasContext(context, scale) {
     return {
         rect: (x,y,w,h) => context.rect(scale*x, scale*y, scale*w, scale*h),
         clearRect: (x,y,w,h) => context.clearRect(scale*x, scale*y, scale*w, scale*h),

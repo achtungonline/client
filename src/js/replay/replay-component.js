@@ -1,16 +1,16 @@
-var React = require("react");
+import React from "react";
 
 import * as scoreUtil from "core/src/core/score/score-util.js";
 import clone from "core/src/core/util/clone.js";
 
-var ProgressBar = require("./progress-bar-component.js");
-var ReplayGameHandler = require("./replay-game-handler.js");
-var Score = require("../game/score-component.js");
-var GameCanvas = require("./../canvas/game-canvas-component.js");
-var windowFocusHandler = require("../window-focus-handler.js");
+import ProgressBar from "./progress-bar-component.js";
+import ReplayGameHandler from "./replay-game-handler.js";
+import Score from "../game/score-component.js";
+import GameCanvas from "./../canvas/game-canvas-component.js";
+import * as windowFocusHandler from "../window-focus-handler.js";
 import {parseEvent, CONTINUE_KEY} from "../key-util.js";
 
-module.exports = React.createClass({
+export default React.createClass({
     displayName: "Replay",
     propTypes: {
         match: React.PropTypes.object.isRequired,

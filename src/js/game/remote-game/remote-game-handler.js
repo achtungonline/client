@@ -1,6 +1,6 @@
 var RENDER_DELAY = 0.1;
 
-module.exports = function RemoteGameHandler({ gameState }) {
+export default function RemoteGameHandler({ gameState }) {
 
     var localGameState = {
         startTime: undefined

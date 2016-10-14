@@ -1,13 +1,15 @@
-var React = require("react");
+import React from "react";
 
 import * as scoreUtil from "core/src/core/score/score-util.js";
 
-var GameCanvas = require("../../canvas/game-canvas-component.js");
-var Score = require("../score-component.js");
-var playerSteeringListener = require("../player-steering-listener.js")();
-var RemoteGameHandler = require("./remote-game-handler.js");
+import GameCanvas from "../../canvas/game-canvas-component.js";
+import Score from "../score-component.js";
+import PlayerSteeringListener from "../player-steering-listener.js";
+import RemoteGameHandler from "./remote-game-handler.js";
 
-module.exports = React.createClass({
+var playerSteeringListener = PlayerSteeringListener();
+
+export default React.createClass({
     displayName: "Remote Game",
     propType: {
         match: React.PropTypes.object.isRequired,

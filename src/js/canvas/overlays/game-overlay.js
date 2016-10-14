@@ -1,10 +1,10 @@
-var ScaledCanvasContext = require("../scaled-canvas-context.js");
+import ScaledCanvasContext from "../scaled-canvas-context.js";
 
 var PREVIEW_BLINK_DURATION = 2000;
 var PREVIEW_FADE_LOW_POINT = 0.2;
 var GREY_FILTER = "rgba(72, 72, 72, 0.21)";
 
-module.exports = function GameOverlay() {
+export default function GameOverlay() {
 
     var overlayState = {
         rendered: false,

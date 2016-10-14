@@ -1,14 +1,14 @@
-var React = require("react");
+import React from "react";
 
 import forEach from "core/src/core/util/for-each.js";
 
-var requestFrame = require("../game/request-frame.js");
-var MapRenderer = require("./renderers/map-renderer.js");
-var WormHeadRenderer = require("./renderers/worm-head-renderer.js");
-var PowerUpRenderer = require("./renderers/power-up-renderer.js");
-var WormBodyRenderer = require("./renderers/worm-body-renderer.js");
+import requestFrame from "../game/request-frame.js";
+import MapRenderer from "./renderers/map-renderer.js";
+import WormHeadRenderer from "./renderers/worm-head-renderer.js";
+import PowerUpRenderer from "./renderers/power-up-renderer.js";
+import WormBodyRenderer from "./renderers/worm-body-renderer.js";
 
-module.exports = React.createClass({
+export default React.createClass({
     propTypes: {
         gameState: React.PropTypes.object.isRequired,
         players: React.PropTypes.array.isRequired,

@@ -1,8 +1,8 @@
-var React = require("react");
+import React from "react";
 
-var wormColors = require("core/src/core/constants.js").wormColors;
+import {wormColors} from "core/src/core/constants.js";
 
-module.exports = React.createClass({
+export default React.createClass({
     propTypes: {
         colorId: React.PropTypes.string.isRequired,
         availableWormColorIds: React.PropTypes.array.isRequired,

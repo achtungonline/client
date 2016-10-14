@@ -1,16 +1,16 @@
 import forEach from "core/src/core/util/for-each.js";
 import * as gsf from "core/src/core/game-state-functions.js";
 import * as trajectoryUtil from "core/src/core/geometry/trajectory/trajectory-util.js";
-var wormColors = require("core/src/core/constants.js").wormColors;
+import {wormColors} from "core/src/core/constants.js";
 
-var ScaledCanvasContext = require("../scaled-canvas-context.js");
+import ScaledCanvasContext from "../scaled-canvas-context.js";
 
 var HEAD_COLOR = "#FFB74D"; // 300 orange
 var KEY_SWITCH_HEAD_COLOR = "#3388BB";
 
 var blinkingStartTime = Date.now() / 1000;
 
-module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTrajectories, scale=1 }) {
+export default function WormHeadRenderer({ gameState, players, canvas, drawTrajectories, scale=1 }) {
     var context = canvas.getContext("2d");
     var scaledContext = ScaledCanvasContext(context, scale);
     var wormRenderData = {};
@@ -157,7 +157,7 @@ module.exports = function WormHeadRenderer({ gameState, players, canvas, drawTra
 
             var wormHeadSegments = segments.filter(function (segment, index) {
                 // Segments where a worm seemed to have died
-                return segment.type === 'worm_died' && segment.startTime < renderTime && index > renderData.latestClearSegmentIndex;
+                return segment.type === "worm_died" && segment.startTime < renderTime && index > renderData.latestClearSegmentIndex;
             });
 
             while (renderData.segmentIndex < segments.length - 1 && segments[renderData.segmentIndex + 1].startTime < renderTime) {

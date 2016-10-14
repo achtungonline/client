@@ -1,11 +1,11 @@
-import * as constants from "core/src/core/constants.js";
+import {STEERING_LEFT, STEERING_RIGHT} from "core/src/core/constants.js";
 
-var parseEvent = require("../key-util.js").parseEvent;
+import {parseEvent} from "../key-util.js";
 
 /**
  * Note that this listener setups listening on document so we NEED to remove the listeners once we are done listening
  */
-module.exports = function PlayerSteeringListener() {
+export default function PlayerSteeringListener() {
 
     var listeners = [];
 
@@ -44,7 +44,7 @@ module.exports = function PlayerSteeringListener() {
         });
 
         function updatePlayerSteering() {
-            var newSteering = leftKeyPressed * constants.STEERING_LEFT + rightKeyPressed * constants.STEERING_RIGHT;
+            var newSteering = leftKeyPressed * STEERING_LEFT + rightKeyPressed * STEERING_RIGHT;
             onSteeringUpdate(newSteering);
         }
     }

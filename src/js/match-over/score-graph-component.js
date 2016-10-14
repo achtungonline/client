@@ -1,9 +1,10 @@
-var React = require("react");
+import React from "react";
 
 import * as gsf from "core/src/core/game-state-functions.js";
 import * as scoreUtil from "core/src/core/score/score-util.js";
-var GameCanvas = require("../canvas/game-canvas-component.js");
-var ReplayGameHandler = require("../replay/replay-game-handler.js");
+
+import GameCanvas from "../canvas/game-canvas-component.js";
+import ReplayGameHandler from "../replay/replay-game-handler.js";
 
 var ANIMATION_DURATION = 0.5;
 var WIDTH = 600;
@@ -13,7 +14,7 @@ var MARGIN_Y = 0.5;
 var BORDER_WIDTH = 4;
 var LINE_WIDTH = 1.5;
 
-module.exports = React.createClass({
+export default React.createClass({
     propTypes: {
         match: React.PropTypes.object.isRequired
     },

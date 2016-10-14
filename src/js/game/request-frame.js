@@ -6,4 +6,4 @@ if (!requestFrame) {
     };
 }
 
-module.exports = requestFrame;
+export default requestFrame;

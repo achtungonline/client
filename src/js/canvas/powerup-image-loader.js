@@ -28,6 +28,6 @@ function getPowerUpImage(name) {
     return imageElements[name];
 }
 
-module.exports = {
+export {
     getPowerUpImage
 };

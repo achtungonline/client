@@ -1,6 +1,6 @@
-var requestFrame = require("../game/request-frame.js");
+import requestFrame from "../game/request-frame.js";
 
-module.exports = function ReplayGameHandler({ onReplayOver, gameState }) {
+export default function ReplayGameHandler({ onReplayOver, gameState }) {
 
     var localGameState = {
         paused: false,

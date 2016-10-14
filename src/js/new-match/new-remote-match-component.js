@@ -1,12 +1,12 @@
-var React = require("react");
+import React from "react";
 
-var wormColorIds = require("core/src/core/constants.js").wormColorIds;
+import {wormColorIds} from "core/src/core/constants.js";
 
-var ColorPicker = require("./color-picker-component.js");
-var KeyPicker = require("./key-picker-component.js");
-var GamePreview = require("./game-preview-component.js");
+import ColorPicker from "./color-picker-component.js";
+import KeyPicker from "./key-picker-component.js";
+import GamePreview from "./game-preview-component.js";
 
-module.exports = React.createClass({
+export default React.createClass({
     displayName: "NewMatch",
     propType: {
         matchConfig: React.PropTypes.object.isRequired,

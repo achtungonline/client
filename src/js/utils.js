@@ -1,6 +1,4 @@
-var utils = {};
-
-utils.hexToRgb = function (hexString) {
+function hexToRgb(hexString) {
     // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
     var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
     hexString = hexString.replace(shorthandRegex, function (m, r, g, b) {
@@ -13,13 +11,13 @@ utils.hexToRgb = function (hexString) {
         parseInt(result[2], 16),
         parseInt(result[3], 16)
     ] : null;
-};
+}
 
-utils.rgbToHex = function (rgbArray) {
+function rgbToHex(rgbArray) {
     return "#" + ((1 << 24) + (rgbArray[0] << 16) + (rgbArray[1] << 8) + rgbArray[2]).toString(16).slice(1);
-};
+}
 
-utils.keyCodeToString = function (keyCode) {
+function keyCodeToString(keyCode) {
     var keyCodeMap = {};
     keyCodeMap[37] = "LEFT";
     keyCodeMap[39] = "RIGHT";
@@ -27,7 +25,11 @@ utils.keyCodeToString = function (keyCode) {
     keyCodeMap[40] = "DOWN";
 
     return keyCodeMap[keyCode] || String.fromCharCode(keyCode);
-};
+}
 
-module.exports = utils;
+export {
+    hexToRgb,
+    rgbToHex,
+    keyCodeToString
+}
 

@@ -1,18 +1,20 @@
-var React = require("react");
+import React from "react";
 
 import clone from "core/src/core/util/clone.js";
 import * as random from "core/src/core/util/random.js";
 import * as scoreUtil from "core/src/core/score/score-util.js";
 import * as gsf from "core/src/core/game-state-functions.js";
 
-var playerSteeringListener = require("../player-steering-listener.js")();
-var windowFocusHandler = require("../../window-focus-handler.js");
-var LocalGameHandler = require("./local-game-handler.js");
-var GameCanvas = require("../../canvas/game-canvas-component.js");
-var Score = require("../score-component.js");
+import PlayerSteeringListener from "../player-steering-listener.js";
+import * as windowFocusHandler from "../../window-focus-handler.js";
+import LocalGameHandler from "./local-game-handler.js";
+import GameCanvas from "../../canvas/game-canvas-component.js";
+import Score from "../score-component.js";
 import {parseEvent, CONTINUE_KEY} from "../../key-util.js";
 
-module.exports = React.createClass({
+var playerSteeringListener = PlayerSteeringListener();
+
+export default React.createClass({
     displayName: "Local Game",
     propType: {
         match: React.PropTypes.object.isRequired,

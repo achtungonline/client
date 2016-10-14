@@ -1,23 +1,22 @@
-var ReactDOM = require("react-dom");
-var React = require("react");
+import ReactDOM from "react-dom";
+import React from "react";
 
 import Match from "core/src/core/match.js";
 import forEach from "core/src/core/util/for-each.js";
 import * as gsf from "core/src/core/game-state-functions.js";
-import compression from "core/src/core/util/compression.js";
+import * as compression from "core/src/core/util/compression.js";
 
-var KeyUtil = require("./key-util.js");
-var availableKeyBindings = require("./key-util.js").keyPairs;
-var windowFocusHandler = require("./window-focus-handler.js");
-var NewMatchComponent = require("./new-match/new-remote-match-component.js");
-var RemoteGameComponent = require("./game/remote-game/remote-game-component.js");
-var Header = require("./header/header-component.js");
-var ReplayComponent = require("./replay/replay-component.js");
-var GameOverComponent = require("./game-over/game-over-component.js");
-var MatchOverComponent = require("./match-over/match-over-component.js");
-var GameOverlay = require("./canvas/overlays/game-overlay.js");
+import {parseEvent, keyPairs} from "./key-util.js";
+import * as windowFocusHandler from "./window-focus-handler.js";
+import NewMatchComponent from "./new-match/new-remote-match-component.js";
+import RemoteGameComponent from "./game/remote-game/remote-game-component.js";
+import Header from "./header/header-component.js";
+import ReplayComponent from "./replay/replay-component.js";
+import GameOverComponent from "./game-over/game-over-component.js";
+import MatchOverComponent from "./match-over/match-over-component.js";
+import GameOverlay from "./canvas/overlays/game-overlay.js";
 
-var io = require("socket.io-client");
+import * as io from "socket.io-client";
 
 function setupSocket() {
     var socket = io("http://localhost:3000");
@@ -48,8 +47,8 @@ var Component = React.createClass({
             overlay: GameOverlay(),
             playerData: {
                 name: "",
-                left: availableKeyBindings[0].left,
-                right: availableKeyBindings[0].right
+                left: keyPairs[0].left,
+                right: keyPairs[0].right
             },
             matchConfig: null,
             match: null,
@@ -65,7 +64,7 @@ var Component = React.createClass({
                     <input ref="name_input" className="input" type="text"
                            onChange={this.onNameChange}
                            onKeyUp={event => {
-                               var keyName = KeyUtil.parseEvent(event);
+                               var keyName = parseEvent(event);
                                if (keyName === "ENTER") {
                                    this.enter();
                                }

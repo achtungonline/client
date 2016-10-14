@@ -1,18 +1,18 @@
-var React = require("react");
+import React from "react";
 
 import Match from "core/src/core/match.js";
 
-var windowFocusHandler = require("./window-focus-handler.js");
-var NewMatchComponent = require("./new-match/new-match-component.js");
-var GameComponent = require("./game/local-game/local-game-component.js");
-var MatchOverComponent = require("./match-over/match-over-component.js");
-var Header = require("./header/header-component.js");
-var ReplayComponent = require("./replay/replay-component.js");
-var GameOverlay = require("./canvas/overlays/game-overlay.js");
+import * as windowFocusHandler from "./window-focus-handler.js";
+import NewMatchComponent from "./new-match/new-match-component.js";
+import GameComponent from "./game/local-game/local-game-component.js";
+import MatchOverComponent from "./match-over/match-over-component.js";
+import Header from "./header/header-component.js";
+import ReplayComponent from "./replay/replay-component.js";
+import GameOverlay from "./canvas/overlays/game-overlay.js";
 import GameOverComponent  from "./game-over/game-over-component.js";
 import {parseEvent, isReservedKey} from "./key-util";
 
-module.exports = React.createClass({
+export default React.createClass({
     displayName: "TopComponent",
     getDefaultProps: function () {
         return {
