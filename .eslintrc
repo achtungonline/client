@@ -1,8 +1,9 @@
 {
-    "plugins": ["react"],
+    "plugins": ["react", "jasmine"],
     "env": {
         "es6": true,
-        "browser": true
+        "browser": true,
+        "jasmine": true
     },
     "parserOptions": {
         "ecmaVersion": 6,
