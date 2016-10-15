@@ -25,7 +25,7 @@ export default React.createClass({
     render: function () {
         var localGame = this.state.localGame;
         return (
-            <GameCanvas size="medium" gameState={localGame.gameState} players={this.props.matchConfig.players} overlay={this.state.overlay.overlay}/>
+            <GameCanvas size="medium" gameState={localGame.gameState} players={this.props.matchConfig.players} overlay={this.state.overlay}/>
         );
     },
     createGame: function(props) {
