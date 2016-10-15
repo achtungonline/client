@@ -64,19 +64,5 @@ module.exports = function build() {
                     ]).catch(handleError));
             }, handleError);
         })
-        .on('updateBuild', (stream) => {
-            fileWriter.streamToFileTimed('public/build/js/index.js', stream).then(() => {
-                builder.watchTestCode()
-                    .on('initialBuild', (stream) => promiseUtils.runSerially([
-                        () => fileWriter.streamToFileTimed('build/tests.js', stream),
-                        test,
-                        lint
-                    ]).catch(handleError))
-                    .on('updateBuild', (stream) => promiseUtils.runSerially([
-                        () => fileWriter.streamToFile('build/tests.js', stream),
-                        test,
-                        lint
-                    ]).catch(handleError));
-            }, handleError);
-        });
+        .on('updateBuild', (stream) => fileWriter.streamToFileTimed('public/build/js/index.js', stream).catch(handleError));
 };
