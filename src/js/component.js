@@ -11,6 +11,7 @@ import ReplayComponent from "./replay/replay-component.js";
 import GameOverlay from "./canvas/overlays/game-overlay.js";
 import GameOverComponent  from "./game-over/game-over-component.js";
 import {parseEvent, isReservedKey} from "./key-util";
+import * as clientStateFunctions from "./client-state-functions.js";
 
 export default React.createClass({
     displayName: "TopComponent",
@@ -85,21 +86,24 @@ export default React.createClass({
     componentWillMount: function () {
         windowFocusHandler.startListening();
     },
-    componentDidMount: function () {
+    newMatch: function () {
+        this.changeView("new-match");
+    },
+    componentDidMount: function() {
         document.addEventListener("keydown", this.onKeyDown);
     },
     componentWillUnmount: function () {
-        windowFocusHandler.stopListening();
         document.removeEventListener("keydown", this.onKeyDown);
     },
-    onKeyDown: function (event) {
-        var keyName = parseEvent(event);
-        if (isReservedKey(keyName)) {
+    onKeyDown: function(event) {
+        // We let inputs behave as they should
+        if(clientStateFunctions.isInputElementActive()) {
+            return;
+        }
+        var newKey = parseEvent(event);
+        if (isReservedKey(newKey)) {
             event.preventDefault();
         }
-    },
-    newMatch: function () {
-        this.changeView("new-match");
     },
     startMatch: function (matchConfig) {
         var match = Match({matchConfig});

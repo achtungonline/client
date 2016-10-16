@@ -10,6 +10,8 @@ import {keyPairs, parseEvent, CONTINUE_KEY, ENTER_KEY, REMOVE_KEY} from "../key-
 import ColorPicker from "./color-picker-component.js";
 import KeyPicker from "./key-picker-component.js";
 import GamePreview from "./game-preview-component.js";
+import * as clientStateFunctions from "../client-state-functions.js";
+
 
 var availableNames = [
     "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
@@ -174,6 +176,10 @@ export default React.createClass({
         document.removeEventListener("keydown", this.onKeyDown);
     },
     onKeyDown: function(event) {
+        if(clientStateFunctions.isInputElementActive()) {
+            return;
+        }
+
         var newKey = parseEvent(event);
         if (newKey === CONTINUE_KEY && this.state.players.length < wormColorIds.length) {
             this.startMatch();

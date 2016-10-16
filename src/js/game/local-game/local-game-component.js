@@ -76,15 +76,15 @@ export default React.createClass({
         windowFocusHandler.on("blur", this.onWindowBlur);
     },
     componentDidMount: function() {
-        document.addEventListener("keyup", this.onKeyUp);
+        document.addEventListener("keydown", this.onKeyDown);
     },
     componentWillUnmount: function () {
         playerSteeringListener.removeKeyListeners();
-        document.removeEventListener("keyup", this.onKeyUp);
+        document.removeEventListener("keydown", this.onKeyDown);
         windowFocusHandler.off("focus", this.onWindowFocus);
         windowFocusHandler.off("blur", this.onWindowBlur);
     },
-    onKeyUp: function(event) {
+    onKeyDown: function(event) {
         var newKey = parseEvent(event);
         if (newKey === CONTINUE_KEY) {
             this.togglePause();
