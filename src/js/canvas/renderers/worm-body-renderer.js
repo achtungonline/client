@@ -101,12 +101,13 @@ export default function WormBodyRenderer({ gameState, players, fadeCanvas, mainC
             }
         });
         if (performClear) {
-            // Move segmentIndex for each worm to be the same index as the latest clear
+            // Move segmentIndex for each worm to be the index after the latest clear
             forEach(gameState.wormPathSegments, function (segments, wormId) {
                 var renderData = getWormRenderData(wormId);
-                while (renderData.mainSegmentIndex > 0 && !(segments[renderData.mainSegmentIndex].type === "clear")) {
+                while (renderData.mainSegmentIndex > 0 && (renderData.mainSegmentIndex >= segments.length || !(segments[renderData.mainSegmentIndex].type === "clear"))) {
                     renderData.mainSegmentIndex--;
                 }
+                renderData.mainSegmentIndex++;
             });
             // Perform the clear
             temporaryContext.drawImage(mainCanvas, 0, 0);
