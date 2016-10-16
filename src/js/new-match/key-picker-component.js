@@ -15,6 +15,7 @@ export default React.createClass({
     componentDidMount: function () {
         document.addEventListener("mousedown", this.onMouseDown);
         document.addEventListener("keyup", this.onKeyUp);
+        document.addEventListener("keydown", this.onKeyDown);
     },
     render: function () {
         var className = "col-keybinding";
@@ -32,12 +33,17 @@ export default React.createClass({
         document.removeEventListener("mousedown", this.onMouseDown);
         document.removeEventListener("keyup", this.onKeyUp);
     },
-    onKeyUp: function(event) {
+    onKeyDown: function (event) {
+        if (this.state.selected) {
+            event.preventDefault();
+        }
+    },
+    onKeyUp: function (event) {
         if (this.state.selected) {
             event.preventDefault();
             var newKey = parseEvent(event);
             if (newKey && !isReservedKey(newKey)) {
-                this.setState({ selected: false });
+                this.setState({selected: false});
                 this.props.onKeyPicked(newKey);
             }
         }
@@ -47,12 +53,12 @@ export default React.createClass({
             if (this.props.onKeyPicked) {
                 event.preventDefault();
                 if (!this.state.selected) {
-                    this.setState({ selected: true });
+                    this.setState({selected: true});
                 }
             }
         } else {
             if (this.state.selected) {
-                this.setState({ selected: false });
+                this.setState({selected: false});
             }
         }
     }

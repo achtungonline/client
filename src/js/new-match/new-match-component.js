@@ -176,11 +176,11 @@ export default React.createClass({
     onKeyDown: function(event) {
         var newKey = parseEvent(event);
         if (newKey === CONTINUE_KEY && this.state.players.length < wormColorIds.length) {
-            this.addPlayer();
+            this.startMatch();
         } else if (newKey === REMOVE_KEY && this.state.players.length > 2) {
             this.onRemoveClick(this.state.players[this.state.players.length - 1].id);
         } else if (newKey === ENTER_KEY) {
-            this.startMatch();
+            this.addPlayer();
         }
     },
     startMatch: function() {
