@@ -13,24 +13,25 @@ export default React.createClass({
         };
     },
     componentDidMount: function () {
-        document.addEventListener("mousedown", this.onMouseDown);
+        document.addEventListener("mouseup", this.onMouseUp);
         document.addEventListener("keyup", this.onKeyUp);
         document.addEventListener("keydown", this.onKeyDown);
     },
     render: function () {
-        var className = "col-keybinding";
+        var className = "col-keybinding animation-size-expand-hover";
         if (this.state.selected) {
             className += " col-selected";
         }
 
         return (
-            <td ref="keyPicker" className={className} style={this.props.onKeyPicked ? {cursor: "pointer"} : {}}>
-                {this.props.currentKey}
+            <td ref="keyPicker" className={className} onClick={this.onClick} style={this.props.onKeyPicked ? {cursor: "pointer"} : {}}>
+
+                <div className="animation-size-expand">{this.props.currentKey}</div>
             </td>
         )
     },
     componentWillUnmount: function () {
-        document.removeEventListener("mousedown", this.onMouseDown);
+        document.removeEventListener("mouseup", this.onMouseUp);
         document.removeEventListener("keyup", this.onKeyUp);
     },
     onKeyDown: function (event) {
@@ -48,18 +49,12 @@ export default React.createClass({
             }
         }
     },
-    onMouseDown: function (event) {
-        if (event.target === this.refs.keyPicker) {
-            if (this.props.onKeyPicked) {
-                event.preventDefault();
-                if (!this.state.selected) {
-                    this.setState({selected: true});
-                }
-            }
-        } else {
-            if (this.state.selected) {
-                this.setState({selected: false});
-            }
+    onClick: function (event) {
+        this.setState({selected: !this.state.selected});
+    },
+    onMouseUp: function (event) {
+        if (this.state.selected) {
+            this.setState({selected: false});
         }
     }
 });

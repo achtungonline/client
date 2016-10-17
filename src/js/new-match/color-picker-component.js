@@ -19,7 +19,7 @@ export default React.createClass({
 
         function getColorElements(colorIds) {
             return colorIds.map(colorId =>
-                <div key={colorId} className="color-picker" style={{backgroundColor: wormColors[colorId]}} onMouseDown={thisComponent.onAvailableColorClick.bind(thisComponent, colorId)}></div>
+                <div key={colorId} className="animation-size-expand animation-size-expand-hover color-picker" style={{backgroundColor: wormColors[colorId]}} onMouseDown={thisComponent.onAvailableColorClick.bind(thisComponent, colorId)}></div>
             );
         }
 
@@ -34,7 +34,7 @@ export default React.createClass({
 
         return (
             <div ref="colorPicker" className="color-picker">
-                <div className="color-picker-selected" onMouseDown={this.props.onColorSelected ? this.onSelectedColorClick : undefined} style={{backgroundColor: wormColors[this.props.colorId]}}></div>
+                <div className="color-picker-selected animation-size-expand animation-size-expand-hover" onMouseDown={this.props.onColorSelected ? this.onSelectedColorClick : undefined} style={{backgroundColor: wormColors[this.props.colorId]}}></div>
                 {selectionList}
             </div>
         )

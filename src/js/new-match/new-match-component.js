@@ -48,11 +48,11 @@ function createMap(mapString) {
     var mapWidth = Number(mapData[1]);
     var mapHeight = Number(mapData[2]);
     if (mapType === "Square") {
-        return gsf.createMapSquare({ name: mapString, size: mapWidth });
+        return gsf.createMapSquare({name: mapString, size: mapWidth});
     } else if (mapType === "Rectangle") {
-        return gsf.createMapRectangle({ name: mapString, width: mapWidth, height: mapHeight });
+        return gsf.createMapRectangle({name: mapString, width: mapWidth, height: mapHeight});
     } else if (mapType === "Circle") {
-        return gsf.createMapCircle({ name: mapString, radius: mapWidth/2 });
+        return gsf.createMapCircle({name: mapString, radius: mapWidth / 2});
     } else {
         throw new Error("Invalid map string: " + mapString);
     }
@@ -64,7 +64,7 @@ export default React.createClass({
         startMatchConfig: React.PropTypes.object,
         onStartMatchAction: React.PropTypes.func.isRequired
     },
-    getInitialState: function() {
+    getInitialState: function () {
         var firstName = getRandomUnusedName([]);
         var secondName = getRandomUnusedName([{name: firstName}]);
         return {
@@ -111,18 +111,18 @@ export default React.createClass({
             return (
                 <tr key={player.id}>
                     <td className="col-bot">
-                        <button className="btn-clean" onMouseDown={this.onBotChange.bind(this, player.id)}>
-                            <img src={playerTypeSvg[player.type]} alt="X"/>
+                        <button className="btn-clean animation-size-expand-hover animation-size-expand " onMouseDown={this.onBotChange.bind(this, player.id)}>
+                            <img className="" src={playerTypeSvg[player.type]} alt="X"/>
                         </button>
                     </td>
                     <td className="col-color">
                         <ColorPicker colorId={player.colorId} availableWormColorIds={wormColorIds} onColorSelected={this.onPlayerColorChange.bind(this, player.id)}/>
                     </td>
                     <td className="col-name">
-                        <input className="input" type="text" onChange={this.onNameChange.bind(this, player.id)} value={player.name}/>
+                        <input className="input animation-size-expand" type="text" onChange={this.onNameChange.bind(this, player.id)} value={player.name}/>
                     </td>
-                    <KeyPicker currentKey={leftKey} onKeyPicked={onLeftKeyPicked} />
-                    <KeyPicker currentKey={rightKey}  onKeyPicked={onRightKeyPicked} />
+                    <KeyPicker currentKey={leftKey} onKeyPicked={onLeftKeyPicked}/>
+                    <KeyPicker currentKey={rightKey} onKeyPicked={onRightKeyPicked}/>
                     <td className="col-remove">
                         {removeButton}
                     </td>
@@ -142,7 +142,7 @@ export default React.createClass({
                         <tfoot>
                         <tr>
                             <td colSpan="5">
-                            {maxPlayersReached ? null : <button className="btn btn-secondary btn-add-player" onClick={this.addPlayer}>Add player</button>}
+                                {maxPlayersReached ? null : <button className="btn btn-secondary btn-add-player" onClick={this.addPlayer}>Add player</button>}
                                 <button className="btn btn-primary" onClick={this.startMatch}>Start</button>
                             </td>
                         </tr>
@@ -164,19 +164,19 @@ export default React.createClass({
                             <input style={{marginTop: "auto"}} className="input" type="number" value={this.state.maxScore} onChange={this.onMaxScoreChange}/>
                         </div>
                     </div>
-                    <GamePreview matchConfig={matchConfig} />
+                    <GamePreview matchConfig={matchConfig}/>
                 </div>
             </div>
         );
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         document.addEventListener("keydown", this.onKeyDown);
     },
     componentWillUnmount: function () {
         document.removeEventListener("keydown", this.onKeyDown);
     },
-    onKeyDown: function(event) {
-        if(clientStateFunctions.isInputElementActive()) {
+    onKeyDown: function (event) {
+        if (clientStateFunctions.isInputElementActive()) {
             return;
         }
 
@@ -189,7 +189,7 @@ export default React.createClass({
             this.addPlayer();
         }
     },
-    startMatch: function() {
+    startMatch: function () {
         var matchConfig = {
             players: this.state.players,
             map: createMap(this.state.mapString),
@@ -227,17 +227,17 @@ export default React.createClass({
         var parsedMaxScore = event.target.value.replace(/[^0-9]/g, "");
         var newMaxScore = parsedMaxScore === "" ? 0 : parseInt(parsedMaxScore);
         newMaxScore = Math.min(newMaxScore, 1000);
-        this.setState({ maxScore: newMaxScore, maxScoreManuallyChanged: true })
+        this.setState({maxScore: newMaxScore, maxScoreManuallyChanged: true})
     },
     onMapChange: function (event) {
-        this.setState({ mapString: event.target.value });
+        this.setState({mapString: event.target.value});
     },
     onNameChange: function (playerId, event) {
         var name = event.target.value;
         this.setState(function (oldState) {
             var player = oldState.players.find(p => p.id === playerId);
             player.name = name.substring(0, 16);
-            return { players: oldState.players };
+            return {players: oldState.players};
         });
     },
     onRemoveClick: function (playerId, event) {
