@@ -34,7 +34,7 @@ export default React.createClass({
                 <tr key={player.id} style={{opacity: opacity}}>
                     <td style={{color: wormColors[player.colorId]}}>{player.name}</td>
                     <td>{playerScore.score}</td>
-                    <td style={{minWidth: "34px"}}>{roundScore[playerScore.id] ? " +" + roundScore[playerScore.id] : ""}</td>
+                    <td className="round-score">{roundScore[playerScore.id] ? " +" + roundScore[playerScore.id] : ""}</td>
                 </tr>
             )
         });
