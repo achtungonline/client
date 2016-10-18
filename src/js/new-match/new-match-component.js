@@ -106,12 +106,12 @@ export default React.createClass({
                 rightKey = player.right;
                 onRightKeyPicked = this.onKeyChange.bind(this, player.id, "right");
             }
-            var removeButton = this.state.players.length > 2 ? <button className="btn-clean btn-remove-player" onMouseDown={this.onRemoveClick.bind(this, player.id)}><img src="svg/cross.svg" alt="X"/></button> : null;
+            var removeButton = this.state.players.length > 2 ? <button className="btn-clean btn-remove-player animation-size-expand-hover animation-size-expand" onMouseDown={this.onRemoveClick.bind(this, player.id)}><img src="svg/cross.svg" alt="X"/></button> : null;
 
             return (
                 <tr key={player.id}>
                     <td className="col-bot">
-                        <button className="btn-clean animation-size-expand-hover animation-size-expand " onMouseDown={this.onBotChange.bind(this, player.id)}>
+                        <button className="btn-clean animation-size-expand-hover animation-size-expand" onMouseDown={this.onBotChange.bind(this, player.id)}>
                             <img className="" src={playerTypeSvg[player.type]} alt="X"/>
                         </button>
                     </td>
