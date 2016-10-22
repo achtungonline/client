@@ -7,6 +7,7 @@ import MapRenderer from "./renderers/map-renderer.js";
 import WormHeadRenderer from "./renderers/worm-head-renderer.js";
 import PowerUpRenderer from "./renderers/power-up-renderer.js";
 import WormBodyRenderer from "./renderers/worm-body-renderer.js";
+import * as csf from "./canvas-state-functions.js";
 
 export default React.createClass({
     propTypes: {
@@ -17,13 +18,7 @@ export default React.createClass({
         overlay: React.PropTypes.object
     },
     getInitialState: function() {
-        return {
-            renderData: {
-                renderers: [],
-                overlay: undefined,
-                requestId: undefined
-            }
-        };
+        return csf.createState();
     },
     render: function() {
         var className = "canvas-container", style;
@@ -61,7 +56,7 @@ export default React.createClass({
     },
     setupRenderers: function() {
         var scale = this.refs.mapCanvas.width / this.props.gameState.map.width;
-        var renderers = this.state.renderData.renderers;
+        var renderers = this.state.renderers;
         renderers.length = 0;
         renderers.push(MapRenderer({
             gameState: this.props.gameState,
@@ -90,7 +85,7 @@ export default React.createClass({
             drawTrajectories: false
         }));
         if (this.props.overlay) {
-            this.state.renderData.overlay = this.props.overlay.createRenderer({
+            this.state.overlay = this.props.overlay.createRenderer({
                 gameState: this.props.gameState,
                 players: this.props.players,
                 canvas: this.refs.overlayCanvas,
@@ -105,13 +100,13 @@ export default React.createClass({
         } else if (renderTime === undefined) {
             renderTime = this.props.gameState.gameTime;
         }
-        this.state.renderData.renderers.forEach(function (renderer) {
+        this.state.renderers.forEach(function (renderer) {
             renderer.render(renderTime);
         });
         if (this.props.overlay) {
-            this.state.renderData.overlay.render(renderTime);
+            this.state.overlay.render(renderTime);
         }
-        this.state.renderData.requestId = requestFrame(this.update);
+        this.state.requestId = requestFrame(this.update);
     },
     clearCanvas: function() {
         forEach(this.refs, function (canvas) {
@@ -128,6 +123,6 @@ export default React.createClass({
         this.setupRenderers();
     },
     componentWillUnmount: function() {
-        window.cancelAnimationFrame(this.state.renderData.requestId);
+        window.cancelAnimationFrame(this.state.requestId);
     }
 });
