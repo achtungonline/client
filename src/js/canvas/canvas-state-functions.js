@@ -20,7 +20,7 @@ function getActiveEffects(gameState, renderTime, {wormId, effectName} = {}) {
         activeEffects = activeEffects.filter(effect => effect.wormId === wormId);
     }
 
-    if (effectEvent !== undefined) {
+    if (effectName !== undefined) {
         activeEffects = activeEffects.filter(effect => effect.name === effectName);
     }
     return activeEffects

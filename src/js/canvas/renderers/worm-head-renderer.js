@@ -164,13 +164,11 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
                 var size = wormHeadSegment.size;
                 var headColor = HEAD_COLOR;
                 var headShape = "circle";
-                csf.getActiveEffects(gameState, renderTime).forEach(function (effect) {
-                    if (effect.wormId === wormHeadSegment.wormId) {
-                        if (effect.name === "key_switch") {
-                            headColor = KEY_SWITCH_HEAD_COLOR;
-                        } else if (effect.name === "tron_turn") {
-                            headShape = "square";
-                        }
+                csf.getActiveEffects(gameState, renderTime, {wormId: wormHeadSegment.wormId}).forEach(function (effect) {
+                    if (effect.name === "key_switch") {
+                        headColor = KEY_SWITCH_HEAD_COLOR;
+                    } else if (effect.name === "tron_turn") {
+                        headShape = "square";
                     }
                 });
 
