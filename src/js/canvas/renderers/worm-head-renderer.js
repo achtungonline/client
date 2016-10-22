@@ -9,6 +9,9 @@ import ScaledCanvasContext from "../scaled-canvas-context.js";
 var HEAD_COLOR = "#FFB74D"; // 300 orange
 var KEY_SWITCH_HEAD_COLOR = "#3388BB";
 
+var bubbleImageElement = document.createElement("img");
+bubbleImageElement.src = "svg/bubble.svg";
+
 export default function WormHeadRenderer({ gameState, canvasState, players, canvas, drawTrajectories, scale=1 }) {
     var context = canvas.getContext("2d");
     var scaledContext = ScaledCanvasContext(context, scale);
@@ -36,6 +39,25 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
         } else {
             throw Error("Unknown head shape: " + headShape);
         }
+        context.restore();
+    }
+
+    function drawDrunkBubbles({color, renderTime, segmentId, wormId}) {
+        context.save();
+        context.fillStyle = color;
+        context.globalAlpha = 0.3;
+
+        csf.getDrunkBubbles(gameState, renderTime, segmentId, wormId).forEach(function(bubble) {
+            var x = bubble.x;
+            var y = bubble.y;
+            var radius = bubble.radius;
+            context.beginPath();
+            scaledContext.arc(x, y, radius, 0, 2 * Math.PI);
+            context.fill();
+            context.beginPath();
+            scaledContext.drawImage(bubbleImageElement, x - radius, x - radius, radius * 2, radius * 2);
+        });
+
         context.restore();
     }
 
@@ -110,12 +132,6 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
 
         forEach(gameState.wormPathSegments, function (segments, segmentId) {
             var renderData = csf.getPathSegmentRenderData(canvasState, segmentId);
-            //TODO, the list will always maxiumum contain 1 element, so this code is stupid
-
-            var wormHeadSegments = segments.filter(function (segment, index) {
-                // Segments where a worm seemed to have died
-                return segment.type === "worm_died" && segment.startTime < renderTime && index > renderData.latestClearSegmentIndex;
-            });
 
             while (renderData.segmentIndex < segments.length - 1 && segments[renderData.segmentIndex + 1].startTime < renderTime) {
                 if (segments[renderData.segmentIndex + 1].type === "clear") {
@@ -123,18 +139,33 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
                 }
                 renderData.segmentIndex++;
             }
+
+            var wormHeadSegment;
             if (segments[renderData.segmentIndex].startTime <= renderTime && segments[renderData.segmentIndex].endTime >= renderTime) {
-                wormHeadSegments.push(segments[renderData.segmentIndex]);
+                wormHeadSegment = segments[renderData.segmentIndex];
+            } else {
+                wormHeadSegment = segments.find(function (segment, index) {
+                    // Segments where a worm seemed to have died
+                    return segment.type === "worm_died" && segment.startTime < renderTime && index > renderData.latestClearSegmentIndex;
+                });
             }
 
-            wormHeadSegments.forEach(function (segment) {
-                var position = trajectoryUtil.followTrajectory(segment, renderTime - segment.startTime);
-                var size = segment.size;
-                var playerColor = wormColors[players.find(p => p.id === segment.playerId).colorId];
+            var playerColor = wormColors[players.find(p => p.id === segments[0].playerId).colorId];
+
+            drawDrunkBubbles({
+                color: playerColor,
+                renderTime,
+                segmentId,
+                wormId: segments[0].wormId
+            });
+
+            if(wormHeadSegment) {
+                var position = trajectoryUtil.followTrajectory(wormHeadSegment, renderTime - wormHeadSegment.startTime);
+                var size = wormHeadSegment.size;
                 var headColor = HEAD_COLOR;
                 var headShape = "circle";
                 csf.getActiveEffects(gameState, renderTime).forEach(function (effect) {
-                    if (effect.wormId === segment.wormId) {
+                    if (effect.wormId === wormHeadSegment.wormId) {
                         if (effect.name === "key_switch") {
                             headColor = KEY_SWITCH_HEAD_COLOR;
                         } else if (effect.name === "tron_turn") {
@@ -143,10 +174,10 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
                     }
                 });
 
-                if (segment.type === "still_arc") {
+                if (wormHeadSegment.type === "still_arc") {
                     drawArrow(position.x, position.y, position.direction, size, playerColor);
                 } else if (drawTrajectories) {
-                    drawTrajectory(gameState, segment);
+                    drawTrajectory(gameState, wormHeadSegment);
                 }
                 drawHead({
                     x: position.x,
@@ -155,10 +186,13 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
                     size,
                     headColor,
                     headShape,
-                    blinkingStartTime: csf.getWormBlinkingStartTime(gameState, segment.wormId, renderTime),
+                    blinkingStartTime: csf.getWormBlinkingStartTime(gameState, wormHeadSegment.wormId, renderTime),
                     renderTime
                 });
-            });
+
+
+            }
+
 
         });
     }

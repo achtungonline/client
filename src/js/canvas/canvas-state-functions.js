@@ -1,9 +1,11 @@
 import forEach from "core/src/core/util/for-each.js";
+import * as gsf from "core/src/core/game-state-functions.js";
+
 
 function getActiveEffects(gameState, renderTime, {wormId, effectName} = {}) {
     var activeEffects = [];
     var effectEvents = gameState.effectEvents;
-    for (var i = 0; i <effectEvents.length && effectEvents[i].time <= renderTime; i++) {
+    for (var i = 0; i < effectEvents.length && effectEvents[i].time <= renderTime; i++) {
         var effectEvent = effectEvents[i];
         if (effectEvent.type === "spawn") {
             activeEffects.push(effectEvent.effect);
@@ -14,41 +16,25 @@ function getActiveEffects(gameState, renderTime, {wormId, effectName} = {}) {
         }
     }
 
-    if(wormId !== undefined) {
-        activeEffects =  activeEffects.filter(effect => effect.wormId === wormId);
+    if (wormId !== undefined) {
+        activeEffects = activeEffects.filter(effect => effect.wormId === wormId);
     }
 
-    if(effectEvent !== undefined) {
+    if (effectEvent !== undefined) {
         activeEffects = activeEffects.filter(effect => effect.name === effectName);
     }
     return activeEffects
 }
 
-function getActiveSpawnEffectEvents(gameState, renderTime, {wormId, effectName} = {}) {
-    var activeEffectEvents = [];
-    var effectEvents = gameState.effectEvents;
-    for (var i = 0; i <effectEvents.length && effectEvents[i].time <= renderTime; i++) {
-        var effectEvent = effectEvents[i];
-        if (effectEvent.type === "spawn") {
-            activeEffectEvents.push(effectEvent);
-        } else if (effectEvent.type === "despawn") {
-            activeEffectEvents = activeEffectEvents.filter(activeEffectEvent => (activeEffectEvent.effect.id !== effectEvent.effectId));
-        } else {
-            throw Error("Unknown effect event type: " + effectEvent.type);
-        }
-    }
-
-    if(wormId !== undefined) {
-        activeEffectEvents = activeEffectEvents.filter(effectEvent => effectEvent.effect.wormId === wormId);
-    }
-
-    if(effectEvent !== undefined) {
-        activeEffectEvents = activeEffectEvents.filter(effectEvent => effectEvent.effect.name === effectName);
-    }
-
-    return activeEffectEvents
+function getEffects(gameState, {wormId, effectName} = {}) {
+    return gameState.effectEvents.filter(function (ee) {
+        return (ee.type === "spawn") &&
+            (!effectName || ee.effect.name === effectName) &&
+            (!wormId || ee.effect.wormId === wormId)
+    }).map(function (ee) {
+        return ee.effect
+    });
 }
-
 
 function clearPathSegmentRenderData(canvasState) {
     forEach(canvasState.pathSegmentRenderData, function (renderData) {
@@ -86,14 +72,15 @@ function createState({pathSegmentRenderData = {}} = {}) {
     }
 }
 
+
 function getWormBlinkingStartTime(gameState, wormId, renderTime) {
     function getWallHackStartingTime(time, currentStartTime) {
-        var activeWallHackSpawnEffectEvents = getActiveSpawnEffectEvents(gameState, time, {wormId, effectName: "wall_hack"});
-        if(activeWallHackSpawnEffectEvents.length === 0) {
+        var activeWallHackEffects = getActiveEffects(gameState, time, {wormId, effectName: "wall_hack"});
+        if (activeWallHackEffects.length === 0) {
             return null;
         }
-        var startingTime = activeWallHackSpawnEffectEvents[0].time;
-        if(startingTime === currentStartTime) {
+        var startingTime = activeWallHackEffects[0].time;
+        if (startingTime === currentStartTime) {
             return currentStartTime;
         }
         var earlierStartingTime = getWallHackStartingTime(startingTime, startingTime);
@@ -103,11 +90,37 @@ function getWormBlinkingStartTime(gameState, wormId, renderTime) {
     return getWallHackStartingTime(renderTime, renderTime);
 }
 
+function getDrunkBubbles(gameState, time, segmentId, wormId) {
+    var bubbles = [];
+    var spawnFrequency = 0.2;
+    var bubbleTimeSpan = 1;
+    var bubbleRise = 40;
+    var drunkEffects = getEffects(gameState, {wormId, effectName: "drunk"});
+    drunkEffects.forEach(function (e) {
+        for (var bubbleStartTime = e.time; bubbleStartTime < e.time + e.timeLeft; bubbleStartTime += spawnFrequency) {
+            var timeDiff = time - bubbleStartTime;
+            if ((timeDiff < bubbleTimeSpan && bubbleStartTime < time)) {
+                var position = gsf.getWormPathSegmentPositionAtTime(gameState, segmentId, bubbleStartTime);
+                var fakeRandomRadius = ((bubbleStartTime % 0.157) * 40)+ 2;
+                var fakeRandomRise =  (bubbleRise * (timeDiff / bubbleTimeSpan)) * (((bubbleStartTime % 0.141) / (0.141 * 2)) + 0.5);
+                if(position) {
+                    bubbles.push({
+                        x: position.x,
+                        y: position.y - fakeRandomRise,
+                        radius: fakeRandomRadius
+                    })
+                }
+            }
+        }
+    });
+    return bubbles;
+}
+
 export {
     clearPathSegmentRenderData,
     createState,
     getActiveEffects,
-    getActiveSpawnEffectEvents,
+    getDrunkBubbles,
     getPathSegmentRenderData,
     getWormBlinkingStartTime,
     getWormRenderData,

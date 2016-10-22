@@ -68,55 +68,22 @@ describe("canvasStateFunctions", () => {
         });
     });
 
-    describe("getActiveSpawnEffectEvents", () => {
-        it("Despawned effects should not show", () => {
-            expect(csf.getActiveSpawnEffectEvents({
-                effectEvents: [
-                    {type: "spawn", time: 1, effect: {id: 1}},
-                    {type: "spawn", time: 2, effect: {id: 2}},
-                    {type: "despawn", time: 3, effectId: 2},
-                    {type: "spawn", time: 11, effect: {id: 3}}]
-            }, 10)).toEqual(
-                [{type: "spawn", time: 1, effect: {id: 1}}]
-            );
-        });
-
-        it("Filter on wormId", () => {
-            expect(csf.getActiveSpawnEffectEvents({
-                effectEvents: [
-                    {type: "spawn", time: 1, effect: {id: 1, wormId: "1"}},
-                    {type: "spawn", time: 2, effect: {id: 2, wormId: "2"}}]
-            }, 10, {wormId: "1"})).toEqual(
-                [{type: "spawn", time: 1, effect: {id: 1, wormId: "1"}}]
-            );
-        });
-
-        it("Filter on effectName", () => {
-            expect(csf.getActiveSpawnEffectEvents({
-                effectEvents: [
-                    {type: "spawn", time: 1, effect: {id: 1, name: "wall_hack"}},
-                    {type: "spawn", time: 2, effect: {id: 2, name: "drunk"}}]
-            }, 10, {effectName: "wall_hack"})).toEqual(
-                [{type: "spawn", time: 1, effect: {id: 1, name: "wall_hack"}}]
-            );
-        });
-    });
 
     describe("getWormBlinkingStartTime", () => {
         it("Basic test", () => {
             expect(csf.getWormBlinkingStartTime({
                 effectEvents: [
-                    {type: "spawn", time: 1, effect: {id: "1", name: "wall_hack", wormId: "w1"}}]
+                    {type: "spawn", time: 1, effect: {id: "1", name: "wall_hack", wormId: "w1", time: 1}}]
             }, "w1", 10)).toEqual(1)
         });
 
         it("Check when we have multiple old wallHack effects", () => {
             expect(csf.getWormBlinkingStartTime({
                 effectEvents: [
-                    {type: "spawn", time: 5, effect: {id: "3", name: "wall_hack", wormId: "w1"}},
+                    {type: "spawn", time: 5, effect: {id: "3", name: "wall_hack", wormId: "w1",time: 5}},
                     {type: "despawn", time: 6, effectId: "3"},
-                    {type: "spawn", time: 7, effect: {id: "2", name: "wall_hack", wormId: "w1"}},
-                    {type: "spawn", time: 8, effect: {id: "1", name: "wall_hack", wormId: "w1"}},
+                    {type: "spawn", time: 7, effect: {id: "2", name: "wall_hack", wormId: "w1", time: 7}},
+                    {type: "spawn", time: 8, effect: {id: "1", name: "wall_hack", wormId: "w1", time: 8}},
                     {type: "despawn", time: 9, effectId: "2"}
                 ]
 
