@@ -1,5 +1,6 @@
 import forEach from "core/src/core/util/for-each.js";
 import * as gsf from "core/src/core/game-state-functions.js";
+import * as csf from "../canvas-state-functions.js";
 import * as trajectoryUtil from "core/src/core/geometry/trajectory/trajectory-util.js";
 import {wormColors} from "core/src/core/constants.js";
 
@@ -10,47 +11,9 @@ var KEY_SWITCH_HEAD_COLOR = "#3388BB";
 
 var blinkingStartTime = Date.now() / 1000;
 
-export default function WormHeadRenderer({ gameState, players, canvas, drawTrajectories, scale=1 }) {
+export default function WormHeadRenderer({ gameState, canvasState, players, canvas, drawTrajectories, scale=1 }) {
     var context = canvas.getContext("2d");
     var scaledContext = ScaledCanvasContext(context, scale);
-    var wormRenderData = {};
-    var activeEffects = [];
-    var prevRenderTime = 0;
-    var effectEventIndex = 0;
-
-    function getSegmentRenderData(wormId) {
-        if (wormRenderData[wormId] === undefined) {
-            wormRenderData[wormId] = {
-                segmentIndex: 0,
-                latestClearSegmentIndex: 0
-            };
-        }
-        return wormRenderData[wormId];
-    }
-
-    function clearRenderData() {
-        forEach(wormRenderData, function (renderData) {
-            renderData.segmentIndex = 0;
-            renderData.latestClearSegmentIndex = 0;
-        });
-        effectEventIndex = 0;
-        activeEffects = [];
-    }
-
-    function updateEffectData(renderTime) {
-        var effectEvents = gameState.effectEvents;
-        while (effectEventIndex < effectEvents.length && effectEvents[effectEventIndex].time <= renderTime) {
-            var effectEvent = effectEvents[effectEventIndex];
-            effectEventIndex++;
-            if (effectEvent.type === "spawn") {
-                activeEffects.push(effectEvent.effect);
-            } else if (effectEvent.type === "despawn") {
-                var effect = activeEffects.splice(activeEffects.findIndex(effect => effect.id === effectEvent.id), 1);
-            } else {
-                throw Error("Unknown effect event type: " + effectEvent.type);
-            }
-        }
-    }
 
     function drawHead({ x, y, direction, size, headColor, headShape, blinking}) {
         context.save();
@@ -141,18 +104,16 @@ export default function WormHeadRenderer({ gameState, players, canvas, drawTraje
     }
 
     function render(renderTime) {
-        if (renderTime === prevRenderTime) {
+        if (renderTime === canvasState.prevRenderTime) {
             return;
         }
         context.clearRect(0, 0, canvas.width, canvas.height);
-        if (renderTime < prevRenderTime) {
-            clearRenderData();
+        if (renderTime < canvasState.prevRenderTime) {
+            csf.clearPathSegmentRenderData(canvasState);
         }
-        updateEffectData(renderTime);
-
 
         forEach(gameState.wormPathSegments, function (segments, segmentId) {
-            var renderData = getSegmentRenderData(segmentId);
+            var renderData = csf.getPathSegmentRenderData(canvasState, segmentId);
             //TODO, the list will always maxiumum contain 1 element, so this code is stupid
 
             var wormHeadSegments = segments.filter(function (segment, index) {
@@ -177,8 +138,8 @@ export default function WormHeadRenderer({ gameState, players, canvas, drawTraje
                 var headColor = HEAD_COLOR;
                 var headShape = "circle";
                 var blinking = false;
-                activeEffects.forEach(function (effect) {
-                    if (effect.wormId === segmentId) {
+                csf.getActiveEffects(gameState, renderTime).forEach(function (effect) {
+                    if (effect.wormId === segment.wormId) {
                         if (effect.name === "key_switch") {
                             headColor = KEY_SWITCH_HEAD_COLOR;
                         } else if (effect.name === "tron_turn") {
@@ -206,8 +167,6 @@ export default function WormHeadRenderer({ gameState, players, canvas, drawTraje
             });
 
         });
-
-        prevRenderTime = renderTime;
     }
 
     return {

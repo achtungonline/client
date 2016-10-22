@@ -17,10 +17,10 @@ export default React.createClass({
         renderTime: React.PropTypes.any,
         overlay: React.PropTypes.object
     },
-    getInitialState: function() {
-        return csf.createState();
+    getInitialState: function () {
+        return {canvasState: csf.createState()};
     },
-    render: function() {
+    render: function () {
         var className = "canvas-container", style;
         if (this.props.size) {
             if (this.props.size === "small") {
@@ -44,19 +44,19 @@ export default React.createClass({
                 <canvas ref="wormBodyCanvas3"/>
                 <canvas ref="wormHeadCanvas"/>
                 <canvas ref="borderCanvas"/>
-                {this.props.overlay ? <canvas ref="overlayCanvas" /> : null}
+                {this.props.overlay ? <canvas ref="overlayCanvas"/> : null}
             </div>
         )
     },
-    resizeCanvases: function() {
+    resizeCanvases: function () {
         forEach(this.refs, canvas => {
-            canvas.width  = canvas.offsetWidth;
+            canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
         });
     },
-    setupRenderers: function() {
+    setupRenderers: function () {
         var scale = this.refs.mapCanvas.width / this.props.gameState.map.width;
-        var renderers = this.state.renderers;
+        var renderers = this.state.canvasState.renderers;
         renderers.length = 0;
         renderers.push(MapRenderer({
             gameState: this.props.gameState,
@@ -79,13 +79,14 @@ export default React.createClass({
         }));
         renderers.push(WormHeadRenderer({
             gameState: this.props.gameState,
+            canvasState: this.state.canvasState,
             players: this.props.players,
             canvas: this.refs.wormHeadCanvas,
             scale,
             drawTrajectories: false
         }));
         if (this.props.overlay) {
-            this.state.overlay = this.props.overlay.createRenderer({
+            this.state.canvasState.overlay = this.props.overlay.createRenderer({
                 gameState: this.props.gameState,
                 players: this.props.players,
                 canvas: this.refs.overlayCanvas,
@@ -93,36 +94,38 @@ export default React.createClass({
             });
         }
     },
-    update: function() {
+    update: function () {
         var renderTime = this.props.renderTime;
         if (typeof renderTime === "function") {
             renderTime = renderTime();
         } else if (renderTime === undefined) {
             renderTime = this.props.gameState.gameTime;
         }
-        this.state.renderers.forEach(function (renderer) {
+        this.state.canvasState.renderers.forEach(function (renderer) {
             renderer.render(renderTime);
         });
         if (this.props.overlay) {
-            this.state.overlay.render(renderTime);
+            this.state.canvasState.overlay.render(renderTime);
         }
-        this.state.requestId = requestFrame(this.update);
+        this.state.canvasState.requestId = requestFrame(this.update);
+        this.state.canvasState.prevRenderTime = renderTime;
     },
-    clearCanvas: function() {
+    clear: function () {
+        csf.clearPathSegmentRenderData(this.state);
         forEach(this.refs, function (canvas) {
             canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
         });
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.resizeCanvases();
         this.setupRenderers();
         this.update();
     },
-    componentDidUpdate: function() {
-        this.clearCanvas();
+    componentDidUpdate: function () {
+        this.clear();
         this.setupRenderers();
     },
-    componentWillUnmount: function() {
+    componentWillUnmount: function () {
         window.cancelAnimationFrame(this.state.requestId);
     }
 });
