@@ -9,19 +9,18 @@ import ScaledCanvasContext from "../scaled-canvas-context.js";
 var HEAD_COLOR = "#FFB74D"; // 300 orange
 var KEY_SWITCH_HEAD_COLOR = "#3388BB";
 
-var blinkingStartTime = Date.now() / 1000;
-
 export default function WormHeadRenderer({ gameState, canvasState, players, canvas, drawTrajectories, scale=1 }) {
     var context = canvas.getContext("2d");
     var scaledContext = ScaledCanvasContext(context, scale);
 
-    function drawHead({ x, y, direction, size, headColor, headShape, blinking}) {
+    function drawHead({ x, y, direction, size, headColor, headShape, blinkingStartTime, renderTime}) {
         context.save();
-        if (blinking) {
-            var BLINK_DURATION = 1;
+
+        if (blinkingStartTime || blinkingStartTime === 0) {
+            var BLINK_DURATION = 2;
             var FADE_LOW_POINT = 0;
-            var timeDiff = (Date.now() / 1000 - blinkingStartTime) % BLINK_DURATION;
-            var a = timeDiff / BLINK_DURATION * Math.PI;
+            var timeDiff = (renderTime - (blinkingStartTime - BLINK_DURATION/2)) % BLINK_DURATION;
+            var a = (timeDiff / BLINK_DURATION) * Math.PI;
             context.globalAlpha = FADE_LOW_POINT + Math.sin(a) * (1 - FADE_LOW_POINT);
         }
 
@@ -137,15 +136,12 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
                 var playerColor = wormColors[players.find(p => p.id === segment.playerId).colorId];
                 var headColor = HEAD_COLOR;
                 var headShape = "circle";
-                var blinking = false;
                 csf.getActiveEffects(gameState, renderTime).forEach(function (effect) {
                     if (effect.wormId === segment.wormId) {
                         if (effect.name === "key_switch") {
                             headColor = KEY_SWITCH_HEAD_COLOR;
                         } else if (effect.name === "tron_turn") {
                             headShape = "square";
-                        } else if (effect.name === "wall_hack") {
-                            blinking = true;
                         }
                     }
                 });
@@ -162,7 +158,8 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
                     size,
                     headColor,
                     headShape,
-                    blinking
+                    blinkingStartTime: csf.getWormBlinkingStartTime(gameState, segment.wormId, renderTime),
+                    renderTime
                 });
             });
 
