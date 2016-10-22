@@ -103,9 +103,6 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
     }
 
     function render(renderTime) {
-        if (renderTime === canvasState.prevRenderTime) {
-            return;
-        }
         context.clearRect(0, 0, canvas.width, canvas.height);
         if (renderTime < canvasState.prevRenderTime) {
             csf.clearPathSegmentRenderData(canvasState);
