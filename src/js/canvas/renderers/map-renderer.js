@@ -15,6 +15,7 @@ export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1, 
     var gameEventIndex = 0;
     var startPhaseEvent = null;
     var startPhaseTimer = -1;
+    var borderRendered = false;
 
     function renderBorder() {
         var borderWidth = gameState.map.borderWidth;
@@ -92,7 +93,10 @@ export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1, 
             startPhaseTimer = Math.ceil(Math.max(0, startPhaseEvent.time + startPhaseEvent.duration - renderTime));
         }
         renderBackground();
-        renderBorder();
+        if (!borderRendered) {
+            renderBorder();
+            borderRendered = true;
+        }
 
         prevRenderTime = renderTime;
     };
