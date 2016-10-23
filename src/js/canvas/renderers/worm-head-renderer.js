@@ -9,9 +9,6 @@ import ScaledCanvasContext from "../scaled-canvas-context.js";
 var HEAD_COLOR = "#FFB74D"; // 300 orange
 var KEY_SWITCH_HEAD_COLOR = "#3388BB";
 
-var bubbleImageElement = document.createElement("img");
-bubbleImageElement.src = "svg/bubble.svg";
-
 export default function WormHeadRenderer({ gameState, canvasState, players, canvas, drawTrajectories, scale=1 }) {
     var context = canvas.getContext("2d");
     var scaledContext = ScaledCanvasContext(context, scale);
@@ -54,8 +51,9 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
             context.beginPath();
             scaledContext.arc(x, y, radius, 0, 2 * Math.PI);
             context.fill();
+            context.strokeStyle = "white";
+            context.stroke();
             context.beginPath();
-            scaledContext.drawImage(bubbleImageElement, x - radius, x - radius, radius * 2, radius * 2);
         });
 
         context.restore();
