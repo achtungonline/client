@@ -100,13 +100,13 @@ function getDrunkBubbles(gameState, time, segmentId, wormId) {
         for (var bubbleStartTime = e.time; bubbleStartTime < e.time + e.timeLeft; bubbleStartTime += spawnFrequency) {
             var timeDiff = time - bubbleStartTime;
             if ((timeDiff < bubbleTimeSpan && bubbleStartTime < time)) {
-                var position = gsf.getWormPathSegmentPositionAtTime(gameState, segmentId, bubbleStartTime);
-                var fakeRandomRadius = ((bubbleStartTime % 0.157) * 40)+ 2;
-                var fakeRandomRise =  (bubbleRise * (timeDiff / bubbleTimeSpan)) * (((bubbleStartTime % 0.141) / (0.141 * 2)) + 0.5);
-                if(position) {
+                var segmentData = gsf.getWormPathSegmentDataAtTime(gameState, segmentId, bubbleStartTime);
+                if(segmentData) {
+                    var fakeRandomRadius = ((bubbleStartTime % 0.157) * 6.37 * segmentData.segment.size) + 2;
+                    var fakeRandomRise =  (bubbleRise * (timeDiff / bubbleTimeSpan)) * (((bubbleStartTime % 0.141) / (0.141 * 2)) + 0.5);
                     bubbles.push({
-                        x: position.x,
-                        y: position.y - fakeRandomRise,
+                        x: segmentData.position.x,
+                        y: segmentData.position.y - fakeRandomRise,
                         radius: fakeRandomRadius
                     })
                 }

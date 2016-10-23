@@ -187,11 +187,7 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
                     blinkingStartTime: csf.getWormBlinkingStartTime(gameState, wormHeadSegment.wormId, renderTime),
                     renderTime
                 });
-
-
             }
-
-
         });
     }
 
