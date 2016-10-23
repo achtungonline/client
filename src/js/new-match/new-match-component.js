@@ -13,6 +13,14 @@ import GamePreview from "./game-preview-component.js";
 import * as clientStateFunctions from "../client-state-functions.js";
 
 
+var mapValueToString = {
+    "Square 500": "Small Square",
+    "Circle 500": "Small Circle",
+    "Square 800": "Large Square",
+    "Circle 800": "SLarge Circle"
+};
+
+
 var availableNames = [
     "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
     "Adolf Hitler", "Donald Trump", "Vladimir Putin", "Osama bin Laden", "Kim Jong-un", "Mao Zedong", "Joseph Stalin", "Prophet Muhammad", "Steve Jobs", "Benito Mussolini"];
@@ -88,7 +96,8 @@ export default React.createClass({
             ],
             maxScore: this.props.startMatchConfig ? this.props.startMatchConfig.maxScore : 5,
             mapString: this.props.startMatchConfig ? this.props.startMatchConfig.map.name : "Square 500",
-            maxScoreManuallyChanged: false
+            maxScoreManuallyChanged: false,
+            selectMapActive: false
         };
     },
     render: function () {
@@ -151,28 +160,45 @@ export default React.createClass({
                 </div>
                 <div className="game-settings">
                     <div className="flex flex-space-between">
-                        <div className="select select-primary side" style={{marginTop: "auto"}}>
-                            <select value={this.state.mapString} onChange={this.onMapChange}>
-                                <option value="Square 500">Small Square</option>
-                                <option value="Circle 500">Small Circle</option>
-                                <option value="Square 800">Large Square</option>
-                                <option value="Circle 800">Large Circle</option>
-                            </select>
-                        </div>
                         <div className="flex max-score">
                             <img style={{marginTop: "auto"}} src="svg/trophy.svg" alt="Max score: "/>
                             <input style={{marginTop: "auto"}} className="input" type="number" value={this.state.maxScore} onChange={this.onMaxScoreChange}/>
                         </div>
                     </div>
-                    <GamePreview matchConfig={matchConfig}/>
+                    {!this.state.selectMapActive ?
+                        <div className="flex animation-size-expand-hover-small animation-size-expand" onClick={this.onMapSelectClick}>
+                            <GamePreview size="medium" matchConfig={matchConfig}/>
+                        </div>
+                        :
+                        <div >
+                            <div className="flex flex-space-between">
+                                <div className="flex animation-size-expand-hover-small animation-size-expand" onClick={this.onMapChange.bind(this, "Square 500")}>
+                                    <GamePreview size="small" centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Square 500")})}/>
+                                </div>
+                                <div className="flex animation-size-expand-hover-small animation-size-expand" onClick={this.onMapChange.bind(this, "Square 800")}>
+                                    <GamePreview size="small" centerText="LARGE" matchConfig={this.getMatchConfig({map: createMap("Square 800")})}/>
+                                </div>
+                            </div>
+                            <div className="flex flex-space-between">
+                                <div className="flex animation-size-expand-hover-small animation-size-expand" onClick={this.onMapChange.bind(this, "Circle 500")}>
+                                    <GamePreview size="small" centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Circle 500")})}/>
+                                </div>
+                                <div className="flex animation-size-expand-hover-small animation-size-expand" onClick={this.onMapChange.bind(this, "Circle 800")}>
+                                    <GamePreview size="small" centerText="LARGE" matchConfig={this.getMatchConfig({map: createMap("Circle 800")})}/>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         );
     },
     componentDidMount: function () {
+        document.addEventListener("mouseup", this.onMouseUp);
         document.addEventListener("keydown", this.onKeyDown);
     },
     componentWillUnmount: function () {
+        document.removeEventListener("mouseup", this.onMouseUp);
         document.removeEventListener("keydown", this.onKeyDown);
     },
     onKeyDown: function (event) {
@@ -189,13 +215,20 @@ export default React.createClass({
             this.addPlayer();
         }
     },
-    startMatch: function () {
-        var matchConfig = {
+    onMouseUp: function (event) {
+        if (event.srcElement.nodeName !== "CANVAS") {
+            this.setState({selectMapActive: false});
+        }
+    },
+    getMatchConfig: function ({map} = {}) {
+        return {
             players: this.state.players,
-            map: createMap(this.state.mapString),
+            map: map || createMap(this.state.mapString),
             maxScore: this.state.maxScore
-        };
-        this.props.onStartMatchAction(matchConfig);
+        }
+    },
+    startMatch: function () {
+        this.props.onStartMatchAction(this.getMatchConfig());
     },
     onBotChange: function (playerId, event) {
         event.preventDefault();
@@ -229,8 +262,11 @@ export default React.createClass({
         newMaxScore = Math.min(newMaxScore, 1000);
         this.setState({maxScore: newMaxScore, maxScoreManuallyChanged: true})
     },
-    onMapChange: function (event) {
-        this.setState({mapString: event.target.value});
+    onMapSelectClick: function () {
+        this.setState({selectMapActive: !this.state.selectMapActive});
+    },
+    onMapChange: function (value) {
+        this.setState({mapString: value, selectMapActive: false});
     },
     onNameChange: function (playerId, event) {
         var name = event.target.value;

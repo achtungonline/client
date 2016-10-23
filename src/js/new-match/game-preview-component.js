@@ -13,7 +13,13 @@ export default React.createClass({
     propTypes: {
         matchConfig: React.PropTypes.object.isRequired
     },
-    getInitialState: function() {
+    getDefaultProps: function () {
+        return {
+            size: "medium",
+            centerText: "PREVIEW"
+        }
+    },
+    getInitialState: function () {
         return {
             localGame: null
         };
@@ -21,10 +27,10 @@ export default React.createClass({
     render: function () {
         var localGame = this.state.localGame;
         return (
-            <GameCanvas config={{size: "medium", centerText: "PREVIEW"}} gameState={localGame.gameState} players={this.props.matchConfig.players} />
+            <GameCanvas config={{size: this.props.size, centerText: this.props.centerText}} gameState={localGame.gameState} players={this.props.matchConfig.players}/>
         );
     },
-    createGame: function(props) {
+    createGame: function (props) {
         var botPlayers = props.matchConfig.players.map(player => clone(player));
         botPlayers.forEach(p => p.type = "bot");
         var game = coreGameFactory.create({
@@ -39,21 +45,21 @@ export default React.createClass({
         var localGame = LocalGameHandler({
             game,
             players: botPlayers,
-            onGameOver: function() {
+            onGameOver: function () {
                 thisComponent.createGame(thisComponent.props);
             }
         });
         if (props.matchConfig.players.length > 1) {
             localGame.start();
         }
-        this.setState({ localGame });
+        this.setState({localGame});
     },
     componentWillMount: function () {
         windowFocusHandler.on("focus", this.onWindowFocus);
         windowFocusHandler.on("blur", this.onWindowBlur);
         this.createGame(this.props);
     },
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps: function (nextProps) {
         if (this.props.matchConfig.map.name !== nextProps.matchConfig.map.name || this.props.matchConfig.players.length !== nextProps.matchConfig.players.length) {
             this.createGame(nextProps);
         }

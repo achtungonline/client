@@ -29,3 +29,19 @@
     transform: $scale;
   }
 }
+
+.animation-size-expand-hover-small:hover {
+  &.animation-size-expand,.animation-size-expand {
+    $time: 100ms;
+    $scale: scale(1.1);
+    z-index: 1000;
+    -webkit-transition: transform $time ease-in;
+    -webkit-transform: $scale;
+    -ms-transition: transform $time ease-in;
+    -ms-transform: $scale;
+    -moz-transition: transform $time ease-in;
+    -moz-transform: $scale;
+    transition: transform $time ease-in;
+    transform: $scale;
+  }
+}

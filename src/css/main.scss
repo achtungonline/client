@@ -1,4 +1,6 @@
 @import "./animations";
+@import "./variables";
+@import "./button";
 
 
 // Normalize
@@ -8,13 +10,7 @@ table {
 
 // General styling
 
-$m1: 5px;
-$m2: 10px;
-$m3: 20px;
 
-$green: #689F38;
-
-$primary-color: $green;
 
 body {
   padding: 0;
@@ -26,88 +22,10 @@ body {
   margin-left: auto;
 }
 
-.m-b-2 {
-  margin-bottom: $m2;
-}
-
-.m-b-3 {
-  margin-bottom: $m3;
-}
-
-.m-l-1 {
-  margin-left: $m1;
-}
-
-.m-l-2 {
-  margin-left: $m2;
-}
-
-.m-r-3 {
-  margin-right: $m3;
-}
-
-.m-t-2 {
-  margin-top: $m2;
-}
-
-.m-x-2 {
-  margin-left: $m2;
-  margin-right: $m2;
-}
-
-.m-t-0 {
-  margin-top: 0;
-}
-
-.m-t-3 {
-  margin-top: $m3;
-}
-
-.m-x-3 {
-  margin-left: $m3;
-  margin-right: $m3;
-}
-
 /**
  * Buttons
 */
 
-.btn {
-  margin-top: $m1;
-  margin-bottom: $m1;
-  border: none;
-  color: white;
-  padding: 13px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  width: 100%;
-  :focus {
-    outline: 0;
-  }
-}
-
-.btn-primary {
-  background-color: $primary-color;
-}
-
-.btn-secondary {
-  background-color: #757575;
-}
-
-.btn-remove-player {
-  display: none;
-}
-
-.btn-clean {
-  background-color: Transparent;
-  background-repeat: no-repeat;
-  border: none;
-  cursor: pointer;
-  overflow: hidden;
-  outline: none;
-}
 
 /**
  * Game area sizes
@@ -371,6 +289,20 @@ body {
   flex-grow: 2;
 }
 
+.flex-2x2 {
+  min-height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.flex-2x2 > * {
+  display: flex;
+  flex-basis: calc(50% - 40px);
+  justify-content: center;
+  flex-direction: column;
+}
+
 .hidden {
   display: none;
 }
@@ -423,3 +355,4 @@ body {
   }
 }
 
+@import "./utils";
