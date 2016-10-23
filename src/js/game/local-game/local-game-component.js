@@ -44,7 +44,7 @@ export default React.createClass({
             <div className="m-x-3">
                 <div className="flex flex-center">
                     <div className="m-b-2">
-                        <GameCanvas size="large" gameState={game.gameState} players={players} overlay={this.props.overlay} />
+                        <GameCanvas config={{size: "large"}} gameState={game.gameState} players={players} overlay={this.props.overlay} />
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
                         <Score gameState={game.gameState} players={players} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore} />

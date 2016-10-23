@@ -3,7 +3,6 @@ import React from "react";
 import CoreGameFactory from "core/src/game-factory.js";
 import clone from "core/src/core/util/clone.js";
 
-import GameOverlay from "../canvas/overlays/game-overlay.js";
 import GameCanvas from "../canvas/game-canvas-component.js";
 import LocalGameHandler from "../game/local-game/local-game-handler.js";
 import * as windowFocusHandler from "../window-focus-handler.js";
@@ -15,17 +14,14 @@ export default React.createClass({
         matchConfig: React.PropTypes.object.isRequired
     },
     getInitialState: function() {
-        var overlay = GameOverlay();
-        overlay.startPreviewBlink();
         return {
-            localGame: null,
-            overlay
+            localGame: null
         };
     },
     render: function () {
         var localGame = this.state.localGame;
         return (
-            <GameCanvas size="medium" gameState={localGame.gameState} players={this.props.matchConfig.players} overlay={this.state.overlay}/>
+            <GameCanvas config={{size: "medium", centerText: "PREVIEW"}} gameState={localGame.gameState} players={this.props.matchConfig.players} />
         );
     },
     createGame: function(props) {

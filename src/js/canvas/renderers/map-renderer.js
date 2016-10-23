@@ -4,7 +4,7 @@ var MAP_BACKGROUND_COLOR = "#faf7ed";
 var MAP_BORDER_COLOR = "black";
 var START_PHASE_COUNT_DOWN_COLOR = "#dddddd"
 
-export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1 }) {
+export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1, centerText }) {
 
     var context = canvas.getContext("2d");
     var scaledContext = ScaledCanvasContext(context, scale);
@@ -15,7 +15,6 @@ export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1 }
     var gameEventIndex = 0;
     var startPhaseEvent = null;
     var startPhaseTimer = -1;
-    var borderRendered = false;
 
     function renderBorder() {
         var borderWidth = gameState.map.borderWidth;
@@ -62,11 +61,16 @@ export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1 }
             throw Error("Unknown shape: " + shape.type);
         }
 
-        if (startPhaseTimer > 0) {
-            var fontSize = canvas.height / 3;
+        var fontSize;
+        context.fillStyle = START_PHASE_COUNT_DOWN_COLOR;
+        context.textAlign = "center";
+        if (centerText) {
+            fontSize = canvas.width / centerText.length;
             context.font = fontSize + "px bungee";
-            context.fillStyle = START_PHASE_COUNT_DOWN_COLOR;
-            context.textAlign = "center";
+            context.fillText(centerText, canvas.width / 2, (canvas.height + fontSize - 30) / 2);
+        } else if (startPhaseTimer > 0) {
+            fontSize = canvas.height / 3;
+            context.font = fontSize + "px bungee";
             context.fillText(startPhaseTimer + "", canvas.width / 2, (canvas.height + fontSize - 30) / 2);
         }
     }
@@ -83,18 +87,13 @@ export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1 }
             gameEventIndex++;
         }
 
-        var newStartPhaseTimer = 0;
+        startPhaseTimer = 0;
         if (startPhaseEvent) {
-            newStartPhaseTimer = Math.ceil(Math.max(0, startPhaseEvent.time + startPhaseEvent.duration - renderTime));
+            startPhaseTimer = Math.ceil(Math.max(0, startPhaseEvent.time + startPhaseEvent.duration - renderTime));
         }
-        if (newStartPhaseTimer !== startPhaseTimer) {
-            startPhaseTimer = newStartPhaseTimer;
-            renderBackground();
-        }
-        if (!borderRendered) {
-            renderBorder();
-            borderRendered = true;
-        }
+        renderBackground();
+        renderBorder();
+
         prevRenderTime = renderTime;
     };
 

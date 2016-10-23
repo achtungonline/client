@@ -13,24 +13,30 @@ export default React.createClass({
     propTypes: {
         gameState: React.PropTypes.object.isRequired,
         players: React.PropTypes.array.isRequired,
-        size: React.PropTypes.string,
+        config: React.PropTypes.object,
         renderTime: React.PropTypes.any,
         overlay: React.PropTypes.object
+    },
+    getDefaultProps: function() {
+        return {
+            config: {}
+        };
     },
     getInitialState: function () {
         return {canvasState: csf.createState()};
     },
     render: function () {
         var className = "canvas-container", style;
-        if (this.props.size) {
-            if (this.props.size === "small") {
+        var size = this.props.config.size;
+        if (size) {
+            if (size === "small") {
                 className += " game-area-small";
-            } else if (this.props.size === "medium") {
+            } else if (size === "medium") {
                 className += " game-area-medium";
-            } else if (this.props.size === "large") {
+            } else if (size === "large") {
                 className += " game-area-large";
             } else {
-                className += " " + this.props.size;
+                className += " " + size;
             }
         } else {
             style = {width: this.props.gameState.map.width, height: this.props.gameState.map.height};
@@ -62,6 +68,7 @@ export default React.createClass({
             gameState: this.props.gameState,
             canvas: this.refs.mapCanvas,
             borderCanvas: this.refs.borderCanvas,
+            centerText: this.props.config.centerText,
             scale
         }));
         renderers.push(PowerUpRenderer({
