@@ -133,6 +133,6 @@ export default React.createClass({
         this.setupRenderers();
     },
     componentWillUnmount: function () {
-        window.cancelAnimationFrame(this.state.requestId);
+        window.cancelAnimationFrame(this.state.canvasState.requestId);
     }
 });
