@@ -71,6 +71,22 @@ export default React.createClass({
                     startY: gameState.map.height - BORDER_WIDTH - MARGIN_Y - roundData.startScore[player.id] * dy,
                     endY: gameState.map.height - BORDER_WIDTH - MARGIN_Y - (roundData.startScore[player.id] + roundData.roundScore[player.id]) * dy
                 });
+                if(i === roundsData.length -1) {
+                    var prevSegment = gameState.wormPathSegments[player.id][gameState.wormPathSegments[player.id].length - 1];
+                    gameState.wormPathSegments[player.id].push({
+                        type: "worm_died",
+                        playerId: prevSegment.playerId,
+                        size: prevSegment.size,
+                        jump: prevSegment.size,
+                        startTime: prevSegment.endTime,
+                        duration: 0,
+                        endTime: prevSegment.endTime,
+                        startX: prevSegment.endX,
+                        endX: prevSegment.endX,
+                        startY: prevSegment.endY,
+                        endY: prevSegment.endY
+                    });
+                }
             });
         }
 
