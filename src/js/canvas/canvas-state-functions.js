@@ -39,14 +39,15 @@ function getEffects(gameState, {wormId, effectName} = {}) {
 function clearPathSegmentRenderData(canvasState) {
     forEach(canvasState.pathSegmentRenderData, function (renderData) {
         renderData.segmentIndex = 0;
-        renderData.latestClearSegmentIndex = 0;
+        renderData.latestClearSegmentIndex = -1;
     });
 }
 
 function getPathSegmentRenderData(canvasState, pathSegmentId) {
     if (!canvasState.pathSegmentRenderData[pathSegmentId]) {
         canvasState.pathSegmentRenderData[pathSegmentId] = {
-            segmentIndex: 0
+            segmentIndex: 0,
+            latestClearSegmentIndex: -1
         };
     }
     return canvasState.pathSegmentRenderData[pathSegmentId];
@@ -101,9 +102,9 @@ function getDrunkBubbles(gameState, time, segmentId, wormId) {
             var timeDiff = time - bubbleStartTime;
             if ((timeDiff < bubbleTimeSpan && bubbleStartTime < time)) {
                 var segmentData = gsf.getWormPathSegmentDataAtTime(gameState, segmentId, bubbleStartTime);
-                if(segmentData) {
+                if (segmentData) {
                     var fakeRandomRadius = ((bubbleStartTime % 0.157) * 6.37 * segmentData.segment.size) + 2;
-                    var fakeRandomRise =  (bubbleRise * (timeDiff / bubbleTimeSpan)) * (((bubbleStartTime % 0.141) / (0.141 * 2)) + 0.5);
+                    var fakeRandomRise = (bubbleRise * (timeDiff / bubbleTimeSpan)) * (((bubbleStartTime % 0.141) / (0.141 * 2)) + 0.5);
                     bubbles.push({
                         x: segmentData.position.x,
                         y: segmentData.position.y - fakeRandomRise,
@@ -116,6 +117,20 @@ function getDrunkBubbles(gameState, time, segmentId, wormId) {
     return bubbles;
 }
 
+function getWormHeadToRender(canvasState, gameState, pathSegmentId, renderTime) {
+    var renderData = getPathSegmentRenderData(canvasState, pathSegmentId);
+    var segments = gameState.wormPathSegments[pathSegmentId];
+    var currentSegment = segments[renderData.segmentIndex];
+    if (currentSegment.startTime <= renderTime && currentSegment.endTime >= renderTime) {
+        return currentSegment
+    } else {
+        return segments.find(function (segment, index) {
+            // Segments where a worm seemed to have died
+            return segment.type === "worm_died" && renderTime > segment.startTime && index > renderData.latestClearSegmentIndex;
+        }) || null;
+    }
+}
+
 export {
     clearPathSegmentRenderData,
     createState,
@@ -124,4 +139,5 @@ export {
     getPathSegmentRenderData,
     getWormBlinkingStartTime,
     getWormRenderData,
+    getWormHeadToRender
 }
