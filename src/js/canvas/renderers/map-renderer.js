@@ -68,7 +68,7 @@ export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1, 
         if (centerText) {
             fontSize = canvas.width / centerText.length;
             context.font = fontSize + "px bungee";
-            context.fillText(centerText, canvas.width / 2, (canvas.height + fontSize - 30) / 2);
+            context.fillText(centerText, canvas.width / 2, (canvas.height + fontSize - 5) / 2);
         } else if (startPhaseTimer > 0) {
             fontSize = canvas.height / 3;
             context.font = fontSize + "px bungee";

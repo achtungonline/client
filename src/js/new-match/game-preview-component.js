@@ -6,6 +6,7 @@ import clone from "core/src/core/util/clone.js";
 import GameCanvas from "../canvas/game-canvas-component.js";
 import LocalGameHandler from "../game/local-game/local-game-handler.js";
 import * as windowFocusHandler from "../window-focus-handler.js";
+import * as clientConstants from "../constants.js"
 
 var coreGameFactory = CoreGameFactory();
 
@@ -27,7 +28,7 @@ export default React.createClass({
     render: function () {
         var localGame = this.state.localGame;
         return (
-            <GameCanvas config={{size: this.props.size, centerText: this.props.centerText}} gameState={localGame.gameState} players={this.props.matchConfig.players}/>
+            <GameCanvas config={{size: this.props.size, width: this.props.width, height: this.props.height, centerText: this.props.centerText}} gameState={localGame.gameState} players={this.props.matchConfig.players}/>
         );
     },
     createGame: function (props) {

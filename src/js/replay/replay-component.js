@@ -9,6 +9,7 @@ import Score from "../game/score-component.js";
 import GameCanvas from "./../canvas/game-canvas-component.js";
 import * as windowFocusHandler from "../window-focus-handler.js";
 import {parseEvent, CONTINUE_KEY} from "../key-util.js";
+import * as clientConstants from "../constants.js"
 
 export default React.createClass({
     displayName: "Replay",
@@ -37,7 +38,7 @@ export default React.createClass({
         return (
             <div className="flex flex-center">
                 <div className="m-b-2 replay-container">
-                    <GameCanvas config={{size: "large"}} gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} overlay={this.props.overlay}/>
+                    <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} overlay={this.props.overlay}/>
                     <ProgressBar progress={replayGame.getReplayProgress} onTogglePause={this.progressBarTogglePause} onProgressChange={replayGame.setReplayProgress} />
                 </div>
                 <div className="m-l-2" style={{width: "290px"}}>

@@ -17,7 +17,7 @@ export default React.createClass({
         renderTime: React.PropTypes.any,
         overlay: React.PropTypes.object
     },
-    getDefaultProps: function() {
+    getDefaultProps: function () {
         return {
             config: {}
         };
@@ -26,23 +26,12 @@ export default React.createClass({
         return {canvasState: csf.createState()};
     },
     render: function () {
-        var className = "canvas-container", style;
-        var size = this.props.config.size;
-        if (size) {
-            if (size === "small") {
-                className += " game-area-small";
-            } else if (size === "medium") {
-                className += " game-area-medium";
-            } else if (size === "large") {
-                className += " game-area-large";
-            } else {
-                className += " " + size;
-            }
-        } else {
-            style = {width: this.props.gameState.map.width, height: this.props.gameState.map.height};
-        }
         return (
-            <div className={className} style={style}>
+            <div className="canvas-container" style={
+                {
+                    width: this.props.config.width || this.props.config.size || this.props.gameState.map.width,
+                    height: this.props.config.height || this.props.config.size || this.props.gameState.map.height}
+                }>
                 <canvas ref="mapCanvas"/>
                 <canvas ref="powerUpCanvas"/>
                 <canvas ref="wormBodyCanvas1"/>

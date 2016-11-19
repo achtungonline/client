@@ -3,6 +3,7 @@ import React from "react";
 import GameCanvas from "../canvas/game-canvas-component.js";
 import Score from "../game/score-component.js";
 import {parseEvent, CONTINUE_KEY, ENTER_KEY} from "../key-util.js";
+import * as clientConstants from "../constants.js"
 
 export default React.createClass({
     displayName: "Match",
@@ -24,7 +25,7 @@ export default React.createClass({
             <div className="m-x-3">
                 <div className="flex flex-center">
                     <div className="m-b-2">
-                        <GameCanvas config={{size: "large"}} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}/>
+                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}/>
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
                         <Score gameState={roundData.gameState} players={match.matchConfig.players} startScore={roundData.startScore} maxScore={match.matchConfig.maxScore} />

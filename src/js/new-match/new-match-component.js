@@ -11,14 +11,7 @@ import ColorPicker from "./color-picker-component.js";
 import KeyPicker from "./key-picker-component.js";
 import GamePreview from "./game-preview-component.js";
 import * as clientStateFunctions from "../client-state-functions.js";
-
-
-var mapValueToString = {
-    "Square 500": "Small Square",
-    "Circle 500": "Small Circle",
-    "Square 800": "Large Square",
-    "Circle 800": "SLarge Circle"
-};
+import * as clientConstants from "./../constants.js"
 
 
 var availableNames = [
@@ -165,30 +158,28 @@ export default React.createClass({
                             <input style={{marginTop: "auto"}} className="input" type="number" value={this.state.maxScore} onChange={this.onMaxScoreChange}/>
                         </div>
                     </div>
-                    {!this.state.selectMapActive ?
-                        <div className="flex animation-size-expand-hover-small animation-size-expand" onClick={this.onMapSelectClick}>
-                            <GamePreview size="medium" matchConfig={matchConfig}/>
-                        </div>
-                        :
-                        <div >
-                            <div className="flex flex-space-between">
-                                <div className="flex animation-size-expand-hover-small animation-size-expand" onClick={this.onMapChange.bind(this, "Square 500")}>
-                                    <GamePreview size="small" centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Square 500")})}/>
+                    <div style={{width: clientConstants.DEFAULT_VISUAL_MAP_SIZES.medium, height: clientConstants.DEFAULT_VISUAL_MAP_SIZES.medium}}>
+                        {!this.state.selectMapActive ?
+                            <div className="flex animation-size-expand-hover-small animation-size-expand" style={{cursor: "pointer"}} onClick={this.onMapSelectClick}>
+                                <GamePreview size={clientConstants.DEFAULT_VISUAL_MAP_SIZES.medium} centerText="CHANGE MAP" matchConfig={matchConfig}/>
+                            </div>
+                            :
+                            <div className="flex" style={{height: "100%", width: "100%", justifyContent: "space-between",alignContent: "space-around"}}>
+                                <div className="animation-size-expand-hover-small animation-size-expand" style={{cursor: "pointer"}} onClick={this.onMapChange.bind(this, "Square 500")}>
+                                    <GamePreview size="180" centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Square 400")})}/>
                                 </div>
-                                <div className="flex animation-size-expand-hover-small animation-size-expand" onClick={this.onMapChange.bind(this, "Square 800")}>
-                                    <GamePreview size="small" centerText="LARGE" matchConfig={this.getMatchConfig({map: createMap("Square 800")})}/>
+                                <div className="animation-size-expand-hover-small animation-size-expand" style={{cursor: "pointer"}} onClick={this.onMapChange.bind(this, "Square 800")}>
+                                    <GamePreview size="180" centerText="LARGE" matchConfig={this.getMatchConfig({map: createMap("Square 700")})}/>
+                                </div>
+                                <div className="animation-size-expand-hover-small animation-size-expand" style={{cursor: "pointer"}} onClick={this.onMapChange.bind(this, "Circle 500")}>
+                                    <GamePreview size="180" centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Circle 500")})}/>
+                                </div>
+                                <div className="animation-size-expand-hover-small animation-size-expand" style={{cursor: "pointer"}} onClick={this.onMapChange.bind(this, "Circle 800")}>
+                                    <GamePreview size="180" centerText="LARGE" matchConfig={this.getMatchConfig({map: createMap("Circle 800")})}/>
                                 </div>
                             </div>
-                            <div className="flex flex-space-between">
-                                <div className="flex animation-size-expand-hover-small animation-size-expand" onClick={this.onMapChange.bind(this, "Circle 500")}>
-                                    <GamePreview size="small" centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Circle 500")})}/>
-                                </div>
-                                <div className="flex animation-size-expand-hover-small animation-size-expand" onClick={this.onMapChange.bind(this, "Circle 800")}>
-                                    <GamePreview size="small" centerText="LARGE" matchConfig={this.getMatchConfig({map: createMap("Circle 800")})}/>
-                                </div>
-                            </div>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
         );

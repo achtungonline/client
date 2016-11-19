@@ -5,6 +5,7 @@ import * as scoreUtil from "core/src/core/score/score-util.js";
 
 import GameCanvas from "../canvas/game-canvas-component.js";
 import ReplayGameHandler from "../replay/replay-game-handler.js";
+import * as clientConstants from "../constants.js"
 
 var ANIMATION_DURATION = 0.5;
 var WIDTH = 600;

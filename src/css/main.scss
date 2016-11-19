@@ -1,6 +1,7 @@
 @import "./animations";
 @import "./variables";
 @import "./button";
+@import "./flex";
 
 
 // Normalize
@@ -20,30 +21,6 @@ body {
 .page-center {
   margin-right: auto;
   margin-left: auto;
-}
-
-/**
- * Buttons
-*/
-
-
-/**
- * Game area sizes
- */
-
-.game-area-large {
-  width: 700px;
-  height: 700px;
-}
-
-.game-area-medium {
-  width: 400px;
-  height: 400px;
-}
-
-.game-area-small {
-  width: 200px;
-  height: 200px;
 }
 
 /**
@@ -236,71 +213,6 @@ body {
   margin-bottom: 20px;
   border-bottom: 1px solid;
   border-color: #bdbdbd;
-}
-
-.flex {
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.flex-no-wrap {
-  flex-wrap: nowrap;
-}
-
-.flex-column {
-  flex-direction: column;
-}
-
-.flex-start {
-  justify-content: start;
-}
-
-.flex-space-between {
-  justify-content: space-between;
-}
-
-.flex-align-end {
-  align-items: flex-end;
-}
-
-.flex-align-center {
-  align-items: center;
-}
-
-.flex-center {
-  justify-content: center;
-}
-
-.flex-self-center {
-  align-self: center;
-}
-
-.flex-self-end {
-  align-self: flex-end;
-}
-
-.flex-grow-1 {
-  flex-grow: 1;
-}
-
-.flex-grow-2 {
-  flex-grow: 2;
-}
-
-.flex-2x2 {
-  min-height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-}
-
-.flex-2x2 > * {
-  display: flex;
-  flex-basis: calc(50% - 40px);
-  justify-content: center;
-  flex-direction: column;
 }
 
 .hidden {

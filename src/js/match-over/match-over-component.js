@@ -6,6 +6,7 @@ import {wormColors} from "core/src/core/constants.js";
 import GameCanvas from "./../canvas/game-canvas-component.js";
 import ScoreGraph from "./score-graph-component.js";
 import {parseEvent, CONTINUE_KEY, ENTER_KEY} from "../key-util.js";
+import * as clientConstants from "../constants.js"
 
 export default React.createClass({
     displayName: "MatchOver",
@@ -69,7 +70,7 @@ export default React.createClass({
                     <div style={{textAlign: "center"}}><span style={{color: wormColors[winningPlayer.colorId]}}>{winningPlayer.name}</span></div>
                     <div onClick={thisComponent.props.onRoundClick.bind(null, index)}>
                         <div className="round-watch-replay">Watch replay</div>
-                        <GameCanvas config={{size: "small"}} gameState={gameState} players={thisComponent.props.match.matchConfig.players}/>
+                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.small}} gameState={gameState} players={thisComponent.props.match.matchConfig.players}/>
                     </div>
                 </div>
             );
