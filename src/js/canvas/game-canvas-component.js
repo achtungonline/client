@@ -32,14 +32,15 @@ export default React.createClass({
                     width: this.props.config.width || this.props.config.size || this.props.gameState.map.width,
                     height: this.props.config.height || this.props.config.size || this.props.gameState.map.height}
                 }>
-                <canvas ref="mapCanvas"/>
-                <canvas ref="powerUpCanvas"/>
-                <canvas ref="wormBodyCanvas1"/>
-                <canvas ref="wormBodyCanvas2"/>
-                <canvas ref="wormBodyCanvas3"/>
-                <canvas ref="wormHeadCanvas"/>
-                <canvas ref="borderCanvas"/>
+                <canvas ref="mapCanvas" className="map-canvas"/>
+                <canvas ref="powerUpCanvas" className="power-up-canvas"/>
+                <canvas ref="wormBodyCanvas1" className="worm-body-canvas-1"/>
+                <canvas ref="wormBodyCanvas2" className="worm-body-canvas-2"/>
+                <canvas ref="wormBodyCanvas3" className="worm-body-canvas-3"/>
+                <canvas ref="wormHeadCanvas" className="worm-head-canvas"/>
+                <canvas ref="borderCanvas" className="border-canvas"/>
                 {this.props.overlay ? <canvas ref="overlayCanvas"/> : null}
+                {this.props.children}
             </div>
         )
     },

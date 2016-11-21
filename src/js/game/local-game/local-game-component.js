@@ -12,6 +12,7 @@ import GameCanvas from "../../canvas/game-canvas-component.js";
 import Score from "../score-component.js";
 import {parseEvent, CONTINUE_KEY} from "../../key-util.js";
 import * as clientConstants from "../../constants.js"
+import GamePausedComponent from "../../canvas/overlays/game-paused-component.js";
 
 var playerSteeringListener = PlayerSteeringListener();
 
@@ -39,16 +40,17 @@ export default React.createClass({
         var players = match.matchConfig.players;
         var pauseButton = <button className="btn btn-primary" onClick={this.togglePause}>{game.isPaused() ? "Resume" : "Pause"}</button>;
         var endGameButton = <button className="btn btn-secondary" onClick={this.endGame}>End game</button>;
-        this.props.overlay.setPaused(game.isPaused());
 
         return (
             <div className="m-x-3">
                 <div className="flex flex-center">
                     <div className="m-b-2">
-                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={game.gameState} players={players} overlay={this.props.overlay} />
+                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={game.gameState} players={players} overlay={this.props.overlay}>
+                            { game.isPaused() ? <GamePausedComponent gameState={game.gameState}/> : null}
+                        </GameCanvas>
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
-                        <Score gameState={game.gameState} players={players} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore} />
+                        <Score gameState={game.gameState} players={players} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore}/>
                         <div className="m-t-2">
                             <div>
                                 {pauseButton}
@@ -70,13 +72,13 @@ export default React.createClass({
                 var onSteeringUpdate = steering => {
                     gsf.setPlayerSteering(thisComponent.state.localGame.gameState, player.id, steering);
                 };
-                playerSteeringListener.addKeyListeners({ left: player.left, right: player.right, onSteeringUpdate });
+                playerSteeringListener.addKeyListeners({left: player.left, right: player.right, onSteeringUpdate});
             }
         });
         windowFocusHandler.on("focus", this.onWindowFocus);
         windowFocusHandler.on("blur", this.onWindowBlur);
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         document.addEventListener("keydown", this.onKeyDown);
     },
     componentWillUnmount: function () {
@@ -85,7 +87,7 @@ export default React.createClass({
         windowFocusHandler.off("focus", this.onWindowFocus);
         windowFocusHandler.off("blur", this.onWindowBlur);
     },
-    onKeyDown: function(event) {
+    onKeyDown: function (event) {
         var newKey = parseEvent(event);
         if (newKey === CONTINUE_KEY) {
             this.togglePause();
@@ -109,9 +111,9 @@ export default React.createClass({
         });
         localGame.start();
 
-        this.setState({ localGame: localGame });
+        this.setState({localGame: localGame});
     },
-    endGame: function() {
+    endGame: function () {
         this.state.localGame.stop();
         this.onGameOver();
     },
@@ -130,7 +132,7 @@ export default React.createClass({
         }
     },
     onWindowBlur: function () {
-        if(!this.state.localGame.isPaused()) {
+        if (!this.state.localGame.isPaused()) {
             this.state.localGame.pause();
             this.setState({
                 pausedDueToLostFocus: true

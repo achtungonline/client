@@ -50,6 +50,11 @@
   flex-grow: 2;
 }
 
+.flex-center-xy {
+  align-items: center;
+  justify-content: center;
+}
+
 .flex-2x2 {
   min-height: 100%;
   display: flex;

@@ -14,16 +14,6 @@ import * as clientStateFunctions from "../client-state-functions.js";
 import * as clientConstants from "./../constants.js"
 
 
-var availableNames = [
-    "My hat man gandi", "Bill Gates", "Barack Obama", "Pope Francis", "Angela Merkel", "Queen Elizabeth", "Mother Teresa", "Gustav Vasa", "Knugen", "Jesus Christ",
-    "Adolf Hitler", "Donald Trump", "Vladimir Putin", "Osama bin Laden", "Kim Jong-un", "Mao Zedong", "Joseph Stalin", "Prophet Muhammad", "Steve Jobs", "Benito Mussolini"];
-
-var playerTypeSvg = {
-    "human": "svg/human.svg",
-    "bot": "svg/computer.svg"
-};
-
-var SCORE_INCREASE = 5;
 
 function getNextPlayerId() {
     return "player_" + idGenerator();
@@ -31,7 +21,7 @@ function getNextPlayerId() {
 
 function getUnusedNames(players) {
     var usedNames = players.map(p => p.name);
-    return availableNames.filter(n => usedNames.indexOf(n) === -1);
+    return clientConstants.AVAILABLE_NAMES.filter(n => usedNames.indexOf(n) === -1);
 }
 
 function getRandomUnusedName(players) {
@@ -114,7 +104,7 @@ export default React.createClass({
                 <tr key={player.id}>
                     <td className="col-bot">
                         <button className="btn-clean animation-size-expand-hover animation-size-expand" onMouseDown={this.onBotChange.bind(this, player.id)}>
-                            <img className="" src={playerTypeSvg[player.type]} alt="X"/>
+                            <img className="" src={player.type === "human" ? "svg/human.svg" : "svg/computer.svg"} alt="X"/>
                         </button>
                     </td>
                     <td className="col-color">
@@ -274,7 +264,7 @@ export default React.createClass({
         var players = this.state.players.filter(function (player) {
             return player.id !== playerId;
         });
-        this.setState({players: players, maxScore: this.state.maxScoreManuallyChanged ? this.state.maxScore : this.state.maxScore - SCORE_INCREASE});
+        this.setState({players: players, maxScore: this.state.maxScoreManuallyChanged ? this.state.maxScore : this.state.maxScore - clientConstants.SCORE_INCREASE});
     },
     onPlayerColorChange: function (playerId, newColorId) {
         this.setState(function (oldState) {
@@ -306,7 +296,7 @@ export default React.createClass({
                     right: keyBinding.right,
                     id: getNextPlayerId()
                 }]),
-                maxScore: prevState.maxScoreManuallyChanged ? prevState.maxScore : prevState.maxScore + SCORE_INCREASE
+                maxScore: prevState.maxScoreManuallyChanged ? prevState.maxScore : prevState.maxScore + clientConstants.SCORE_INCREASE
             };
         });
     }

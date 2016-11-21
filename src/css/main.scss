@@ -2,6 +2,7 @@
 @import "./variables";
 @import "./button";
 @import "./flex";
+@import "./canvas";
 
 
 // Normalize
@@ -75,9 +76,6 @@ body {
   fill: 'green'
 }
 
-.input-clean {
-
-}
 
 /**
 * Table
@@ -86,6 +84,24 @@ body {
 .table {
   td {
     padding: 8px
+  }
+}
+
+.table-round-score {
+  width: 100%;
+
+  tr {
+    height: 25px;
+  }
+
+  .col-tie-score {
+    min-width: 45px;
+    span {
+      background-color: $primary-color;
+      color: white;
+      padding: 3px;
+      border-radius: 5px;
+    }
   }
 }
 
@@ -143,10 +159,7 @@ body {
   padding: 0 20px;
 }
 
-.canvas-container {
-  position: relative;
-  display: inline-block;
-}
+
 
 .canvas-container canvas {
   position: absolute;

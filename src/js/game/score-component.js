@@ -13,28 +13,33 @@ export default React.createClass({
         startScore: React.PropTypes.object,
         maxScore: React.PropTypes.number
     },
-    getInitialState: function() {
-        return {
-            roundScore: scoreUtil.getStartScore(this.props.players)
-        };
-    },
     render: function() {
+        //TODO Refactor
         var thisComponent = this;
-        var roundScore = this.state.roundScore;
+        var roundScore = scoreUtil.calculateRoundScore(this.props.gameState, this.getRenderTime());
         var combinedScore = this.props.startScore ? scoreUtil.combineScores(this.props.startScore, roundScore) : roundScore;
         var highestRoundScore = scoreUtil.getHighestScore(roundScore);
 
-        var scoreTableRows = scoreUtil.createSortedList(combinedScore).map(function (playerScore) {
-            var opacity = roundScore[playerScore.id] === highestRoundScore ? 1 : 0.25;
+        var highestCombinedScore = scoreUtil.getHighestScore(combinedScore);
+
+        var sortedScoreList = scoreUtil.createSortedList(combinedScore);
+
+        function isTie() {
+            return sortedScoreList[0].score >= thisComponent.props.maxScore && sortedScoreList[0].score - sortedScoreList[1].score < 2;
+        }
+
+        var scoreTableRows = sortedScoreList.map(function (playerScore) {
+            var opacityClassName = roundScore[playerScore.id] === highestRoundScore ? "" : "opacity-25";
             var player = thisComponent.props.players.find(function(p) {
                 return p.id === playerScore.id;
             });
 
             return (
-                <tr key={player.id} style={{opacity: opacity}}>
-                    <td style={{color: wormColors[player.colorId]}}>{player.name}</td>
-                    <td>{playerScore.score}</td>
-                    <td className="round-score">{roundScore[playerScore.id] ? " +" + roundScore[playerScore.id] : ""}</td>
+                <tr key={player.id} >
+                    <td className={opacityClassName} style={{color: wormColors[player.colorId]}}>{player.name}</td>
+                    <td className={opacityClassName}>{playerScore.score}</td>
+                    <td className={"round-score " + opacityClassName}>{roundScore[playerScore.id] ? " +" + roundScore[playerScore.id] : ""}</td>
+                    <td className="col-tie-score">{isTie() && highestCombinedScore - playerScore.score < 2 ? <span>TIE</span> : null}</td>
                 </tr>
             )
         });
@@ -50,7 +55,7 @@ export default React.createClass({
         return (
             <div>
                 {maxScoreDiv}
-                <table style={{width: "100%"}}>
+                <table className="table-round-score">
                     <tbody>
                     {scoreTableRows}
                     </tbody>
@@ -58,13 +63,17 @@ export default React.createClass({
             </div>
         );
     },
-    update: function() {
+    getRenderTime() {
         var renderTime = this.props.renderTime;
         if (typeof renderTime === "function") {
             renderTime = renderTime();
         } else if (renderTime === undefined) {
             renderTime = this.props.gameState.gameTime;
         }
+        return renderTime;
+    },
+    update: function() {
+        var renderTime = this.getRenderTime();
         var gameState = this.props.gameState;
         var shouldUpdate = false;
         if (renderTime < this._prevRenderTime) {
@@ -83,9 +92,8 @@ export default React.createClass({
             }
         }
         if (shouldUpdate) {
-            var roundScore = scoreUtil.calculateRoundScore(gameState, renderTime);
             // We use setTimeout here because setState otherwise triggers render() synchronously, resulting in a delayed frame.
-            setTimeout(() => this.setState({ roundScore }), 0);
+            setTimeout(() => {this.forceUpdate()}, 0);
         }
         this._requestId = requestFrame(this.update);
         this._prevRenderTime = renderTime;

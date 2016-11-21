@@ -33,6 +33,10 @@ export default function GameOverlay() {
         overlayState.paused = paused;
     }
 
+    function startRoundWinnerAnimation(text) {
+
+    }
+
     function reset() {
         endPreviewBlink();
         endGameCountdown();
@@ -60,6 +64,17 @@ export default function GameOverlay() {
                 overlayState.rendered = true;
             }
         };
+
+        function displayRoundOverInfo() {
+            context.save();
+            var timeLeft = Math.ceil(Math.max(0, overlayState.gameCountdownEndTime - Date.now())/1000);
+            var fontSize = Math.max(canvas.width, canvas.height) / 25;
+            context.font = fontSize + "px bungee";
+            context.fillStyle = "black";
+            context.textAlign = "center";
+            context.fillText("Next game starts in: " + timeLeft, canvas.width / 2, (canvas.height + fontSize) / 2);
+            context.restore();
+        }
 
         function greyFilter() {
             context.fillStyle = GREY_FILTER;

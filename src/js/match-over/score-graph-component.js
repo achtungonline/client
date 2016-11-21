@@ -25,7 +25,6 @@ export default React.createClass({
         };
     },
     render: function() {
-        var map = this.state.replayGame.gameState.map;
         return (
             <GameCanvas gameState={this.state.replayGame.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.replayGame.getReplayTime} />
         );

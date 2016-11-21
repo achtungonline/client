@@ -4,6 +4,10 @@ import GameCanvas from "../canvas/game-canvas-component.js";
 import Score from "../game/score-component.js";
 import {parseEvent, CONTINUE_KEY, ENTER_KEY} from "../key-util.js";
 import * as clientConstants from "../constants.js"
+import * as scoreUtil from "core/src/core/score/score-util.js";
+import {wormColors} from "core/src/core/constants.js";
+import * as gameStateFunctions from "core/src/core/game-state-functions.js"
+import GameOverlayComponent from "../canvas/overlays/game-overlay-component.js";
 
 export default React.createClass({
     displayName: "Match",
@@ -19,16 +23,27 @@ export default React.createClass({
         var roundData = match.matchState.roundsData[match.matchState.roundsData.length - 1];
         var startNextGameButton = this.props.onStartNextGameAction && !match.isMatchOver() ? <button className="btn btn-primary" onClick={this.props.onStartNextGameAction}>Start next game</button> : null;
         var replayButton = this.props.onReplayAction ? <button className="btn btn-secondary" onClick={this.props.onReplayAction}>Watch replay</button> : null;
-        var endMatchButton = this.props.onMatchOverAction ?  <button className={match.isMatchOver() ? "btn btn-primary" : "btn btn-secondary"} onClick={this.props.onMatchOverAction}>End match</button> : null;
+        var endMatchButton = this.props.onMatchOverAction ? <button className={match.isMatchOver() ? "btn btn-primary" : "btn btn-secondary"} onClick={this.props.onMatchOverAction}>End match</button> : null;
 
+        var roundScore = scoreUtil.calculateRoundScore(roundData.gameState, roundData.gameState.gameTime);
+        var sortedScore = scoreUtil.createSortedList(roundScore);
+
+        var roundWinningPlayer = match.matchConfig.players.find((p) => (p.id === sortedScore[0].id));
         return (
             <div className="m-x-3">
                 <div className="flex flex-center">
                     <div className="m-b-2">
-                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}/>
+                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}>
+                            <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-center-text">
+                                <div>
+                                    <div>Round winner</div>
+                                    <div style={{color: wormColors[roundWinningPlayer.colorId]}}>{roundWinningPlayer.name}</div>
+                                </div>
+                            </GameOverlayComponent>
+                        </GameCanvas>
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>
-                        <Score gameState={roundData.gameState} players={match.matchConfig.players} startScore={roundData.startScore} maxScore={match.matchConfig.maxScore} />
+                        <Score gameState={roundData.gameState} players={match.matchConfig.players} startScore={roundData.startScore} maxScore={match.matchConfig.maxScore}/>
                         <div className="m-t-2">
                             <div>
                                 {startNextGameButton}
@@ -45,13 +60,13 @@ export default React.createClass({
             </div>
         );
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         document.addEventListener("keyup", this.onKeyUp);
     },
     componentWillUnmount: function () {
         document.removeEventListener("keyup", this.onKeyUp);
     },
-    onKeyUp: function(event) {
+    onKeyUp: function (event) {
         var newKey = parseEvent(event);
         if (newKey === CONTINUE_KEY || newKey === ENTER_KEY) {
             if (this.props.onStartNextGameAction && !this.props.match.isMatchOver()) {
