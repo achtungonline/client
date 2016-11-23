@@ -13,6 +13,8 @@ import Score from "../score-component.js";
 import {parseEvent, CONTINUE_KEY} from "../../key-util.js";
 import * as clientConstants from "../../constants.js"
 import GamePausedComponent from "../../canvas/overlays/game-paused-component.js";
+import GameCountdownComponent from "../../canvas/overlays/game-countdown-component.js";
+
 
 var playerSteeringListener = PlayerSteeringListener();
 
@@ -40,13 +42,15 @@ export default React.createClass({
         var players = match.matchConfig.players;
         var pauseButton = <button className="btn btn-primary" onClick={this.togglePause}>{game.isPaused() ? "Resume" : "Pause"}</button>;
         var endGameButton = <button className="btn btn-secondary" onClick={this.endGame}>End game</button>;
+        console.log("test");
 
         return (
             <div className="m-x-3">
                 <div className="flex flex-center">
                     <div className="m-b-2">
-                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={game.gameState} players={players} overlay={this.props.overlay}>
+                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={game.gameState} players={players}>
                             { game.isPaused() ? <GamePausedComponent gameState={game.gameState}/> : null}
+                            <GameCountdownComponent gameState={game.gameState} getRenderTime={() => game.gameState.gameTime}/>
                         </GameCanvas>
                     </div>
                     <div className="m-l-2" style={{width: "290px"}}>

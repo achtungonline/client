@@ -14,8 +14,7 @@ export default React.createClass({
         gameState: React.PropTypes.object.isRequired,
         players: React.PropTypes.array.isRequired,
         config: React.PropTypes.object,
-        renderTime: React.PropTypes.any,
-        overlay: React.PropTypes.object
+        renderTime: React.PropTypes.any
     },
     getDefaultProps: function () {
         return {
@@ -39,7 +38,6 @@ export default React.createClass({
                 <canvas ref="wormBodyCanvas3" className="worm-body-canvas-3"/>
                 <canvas ref="wormHeadCanvas" className="worm-head-canvas"/>
                 <canvas ref="borderCanvas" className="border-canvas"/>
-                {this.props.overlay ? <canvas ref="overlayCanvas"/> : null}
                 {this.props.children}
             </div>
         )
@@ -82,14 +80,6 @@ export default React.createClass({
             scale,
             drawTrajectories: false
         }));
-        if (this.props.overlay) {
-            this.state.canvasState.overlay = this.props.overlay.createRenderer({
-                gameState: this.props.gameState,
-                players: this.props.players,
-                canvas: this.refs.overlayCanvas,
-                scale
-            });
-        }
     },
     update: function () {
         var renderTime = this.props.renderTime;
@@ -101,9 +91,6 @@ export default React.createClass({
         this.state.canvasState.renderers.forEach(function (renderer) {
             renderer.render(renderTime);
         });
-        if (this.props.overlay) {
-            this.state.canvasState.overlay.render(renderTime);
-        }
         this.state.canvasState.requestId = requestFrame(this.update);
         this.state.canvasState.prevRenderTime = renderTime;
     },

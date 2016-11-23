@@ -11,6 +11,7 @@ import * as windowFocusHandler from "../window-focus-handler.js";
 import {parseEvent, CONTINUE_KEY} from "../key-util.js";
 import * as clientConstants from "../constants.js"
 import GamePausedComponent from "../canvas/overlays/game-paused-component.js";
+import GameCountdownComponent from "../canvas/overlays/game-countdown-component.js";
 
 export default React.createClass({
     displayName: "Replay",
@@ -39,7 +40,8 @@ export default React.createClass({
             <div className="flex flex-center">
                 <div className="m-b-2 replay-container">
                     <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} overlay={this.props.overlay}>
-                        { replayGame.isPaused() ? <GamePausedComponent gameState={replayGame.gameState}/> : null}
+                        { replayGame.isPaused() ? <GamePausedComponent gameState={this.state.roundData.gameState}/> : null}
+                        <GameCountdownComponent gameState={this.state.roundData.gameState} getRenderTime={() => replayGame.getReplayTime()}/>
                     </GameCanvas>
                     <ProgressBar progress={replayGame.getReplayProgress} onTogglePause={this.progressBarTogglePause} onProgressChange={replayGame.setReplayProgress} />
                 </div>

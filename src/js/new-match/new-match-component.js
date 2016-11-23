@@ -150,7 +150,7 @@ export default React.createClass({
                     </div>
                     <div style={{width: clientConstants.DEFAULT_VISUAL_MAP_SIZES.medium, height: clientConstants.DEFAULT_VISUAL_MAP_SIZES.medium}}>
                         {!this.state.selectMapActive ?
-                            <div className="flex animation-size-expand-hover-tiny animation-size-expand new-match-canvas-wrapper" style={{cursor: "pointer"}} onClick={this.onMapSelectClick}>
+                            <div className="flex new-match-canvas-wrapper" style={{cursor: "pointer"}} onClick={this.onMapSelectClick}>
                                 <GamePreview size={clientConstants.DEFAULT_VISUAL_MAP_SIZES.medium} matchConfig={matchConfig}>
                                     <GameOverlayComponent className="canvas-center-text opacity-5 new-match-canvas-overlay">
                                         <h1 className="new-match-preview-content"/>

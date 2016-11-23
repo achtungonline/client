@@ -2,7 +2,6 @@ import ScaledCanvasContext from "../scaled-canvas-context.js";
 
 var MAP_BACKGROUND_COLOR = "#faf7ed";
 var MAP_BORDER_COLOR = "black";
-var START_PHASE_COUNT_DOWN_COLOR = "#dddddd"
 
 export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1, centerText }) {
 
@@ -60,19 +59,6 @@ export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1, 
             context.fill();
         } else {
             throw Error("Unknown shape: " + shape.type);
-        }
-
-        var fontSize;
-        context.fillStyle = START_PHASE_COUNT_DOWN_COLOR;
-        context.textAlign = "center";
-        if (centerText) {
-            fontSize = canvas.width / centerText.length;
-            context.font = fontSize + "px bungee";
-            context.fillText(centerText, canvas.width / 2, (canvas.height + fontSize - 5) / 2);
-        } else if (startPhaseTimer > 0) {
-            fontSize = canvas.height / 3;
-            context.font = fontSize + "px bungee";
-            context.fillText(startPhaseTimer + "", canvas.width / 2, (canvas.height + fontSize - 30) / 2);
         }
     }
 
