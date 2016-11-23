@@ -14,12 +14,6 @@ export default React.createClass({
     propTypes: {
         matchConfig: React.PropTypes.object.isRequired
     },
-    getDefaultProps: function () {
-        return {
-            size: "medium",
-            centerText: "PREVIEW"
-        }
-    },
     getInitialState: function () {
         return {
             localGame: null
@@ -28,7 +22,13 @@ export default React.createClass({
     render: function () {
         var localGame = this.state.localGame;
         return (
-            <GameCanvas config={{size: this.props.size, width: this.props.width, height: this.props.height, centerText: this.props.centerText}} gameState={localGame.gameState} players={this.props.matchConfig.players}/>
+            <GameCanvas config={{size: this.props.size, width: this.props.width, height: this.props.height}} gameState={localGame.gameState} players={this.props.matchConfig.players}>
+                {React.Children.map(this.props.children,
+                    (child) => React.cloneElement(child, {
+                        gameState: localGame.gameState
+                    })
+                )}
+            </GameCanvas>
         );
     },
     createGame: function (props) {

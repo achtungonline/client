@@ -6,7 +6,7 @@ export default React.createClass({
     render: function () {
         return (
             <GameOverlayComponent gameState={this.props.gameState} className="canvas-overlay-faded-bg canvas-center-text">
-                GAME PAUSED
+                <h1>GAME PAUSED</h1>
             </GameOverlayComponent>
         );
     }
