@@ -95,12 +95,33 @@ body {
   }
 
   .col-tie-score {
+    position: relative;
+    .tie-info {
+      display: none;
+      position: absolute;
+      left: -232px;
+      top: 3px;
+      font-size: 13px;
+      color: white;
+      background-color: black;
+      border-radius: 3px;
+      padding-left: 4px;
+      padding-right: 4px;
+      padding-top: 3px;
+      padding-bottom: 2px;
+    }
     min-width: 45px;
-    span {
+    .tie {
       background-color: $primary-color;
       color: white;
       padding: 3px;
       border-radius: 5px;
+      cursor:default
+    }
+    &:hover {
+      .tie-info {
+        display:inline;
+      }
     }
   }
 }
