@@ -1,6 +1,6 @@
 import ScaledCanvasContext from "../scaled-canvas-context.js";
 
-var MAP_BACKGROUND_COLOR = "#faf7ed";
+var MAP_BACKGROUND_COLOR = "#FEFEFA";
 var MAP_BORDER_COLOR = "black";
 
 export default function MapRenderer({ gameState, canvas, borderCanvas, scale=1, centerText }) {
