@@ -31,13 +31,13 @@ export default React.createClass({
                     width: this.props.config.width || this.props.config.size || this.props.gameState.map.width,
                     height: this.props.config.height || this.props.config.size || this.props.gameState.map.height}
                 }>
-                <canvas ref="mapCanvas" className="map-canvas"/>
-                <canvas ref="powerUpCanvas" className="power-up-canvas"/>
-                <canvas ref="wormBodyCanvas1" className="worm-body-canvas-1"/>
-                <canvas ref="wormBodyCanvas2" className="worm-body-canvas-2"/>
-                <canvas ref="wormBodyCanvas3" className="worm-body-canvas-3"/>
-                <canvas ref="wormHeadCanvas" className="worm-head-canvas"/>
-                <canvas ref="borderCanvas" className="border-canvas"/>
+                <canvas ref="mapCanvas" className="map-canvas-z-index"/>
+                <canvas ref="powerUpCanvas" className="power-up-canvas-z-index"/>
+                <canvas ref="wormBodyCanvas1" className="worm-body-canvas-1-z-index"/>
+                <canvas ref="wormBodyCanvas2" className="worm-body-canvas-2-z-index"/>
+                <canvas ref="wormBodyCanvas3" className="worm-body-canvas-3-z-index"/>
+                <canvas ref="wormHeadCanvas" className="worm-head-canvas-z-index"/>
+                <canvas ref="borderCanvas" className="border-canvas-z-index"/>
                 {this.props.children}
             </div>
         )

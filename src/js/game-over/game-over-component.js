@@ -34,7 +34,7 @@ export default React.createClass({
                 <div className="flex flex-center">
                     <div className="m-b-2">
                         <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}>
-                            <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-center-text">
+                            <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-overlay-text">
                                 <div>
                                     <h1>Round winner</h1>
                                     <h1 style={{color: wormColors[roundWinningPlayer.colorId]}}>{roundWinningPlayer.name}</h1>

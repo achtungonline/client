@@ -69,9 +69,9 @@ export default React.createClass({
             return (
                 <div key={index} className="m-x-2 m-b-3 round-replay" style={{width: width}}>
                     <div style={{textAlign: "center"}}><span style={{color: wormColors[winningPlayer.colorId]}}>{winningPlayer.name}</span></div>
-                    <div onClick={thisComponent.props.onRoundClick.bind(null, index)} className="new-match-canvas-wrapper">
+                    <div onClick={thisComponent.props.onRoundClick.bind(null, index)} className="canvas-overlay-hover-wrapper">
                         <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.small}} gameState={gameState} players={thisComponent.props.match.matchConfig.players}>
-                            <GameOverlayComponent gameState={gameState} className="canvas-center-text opacity-0 new-match-canvas-overlay">
+                            <GameOverlayComponent gameState={gameState} className="canvas-overlay-text opacity-0 canvas-overlay-hover-effect">
                                 <h3>Watch replay</h3>
                             </GameOverlayComponent>
                         </GameCanvas>

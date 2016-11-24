@@ -13,7 +13,7 @@ export default React.createClass({
             return null;
         }
         return (
-            <GameOverlayComponent gameState={this.props.gameState} className="canvas-center-text">
+            <GameOverlayComponent gameState={this.props.gameState} className="canvas-overlay-text">
                 <div style={{opacity, fontSize}}>{text}</div>
             </GameOverlayComponent>
         );
