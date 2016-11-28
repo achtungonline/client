@@ -23,8 +23,6 @@ export default function WormHeadRenderer({ gameState, canvasState, players, canv
             var timeDiff = (renderTime - (blinkingStartTime - BLINK_DURATION/2)) % BLINK_DURATION;
             var a = (timeDiff / BLINK_DURATION) * Math.PI;
             context.globalAlpha = FADE_LOW_POINT + Math.sin(a) * (1 - FADE_LOW_POINT);
-            console.log("start " + blinkingStartTime + " end: " + renderTime);
-            console.log("diff " + timeDiff);
         }
 
         context.fillStyle = headColor;

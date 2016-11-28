@@ -42,7 +42,6 @@ export default React.createClass({
         var players = match.matchConfig.players;
         var pauseButton = <button className="btn btn-primary" onClick={this.togglePause}>{game.isPaused() ? "Resume" : "Pause"}</button>;
         var endGameButton = <button className="btn btn-secondary" onClick={this.endGame}>End game</button>;
-        console.log("test");
 
         return (
             <div className="m-x-3">
