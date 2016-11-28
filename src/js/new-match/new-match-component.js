@@ -77,9 +77,8 @@ export default React.createClass({
                     id: getNextPlayerId()
                 }
             ],
-            maxScore: this.props.startMatchConfig ? this.props.startMatchConfig.maxScore : 5,
+            maxScore: this.props.startMatchConfig ? this.props.startMatchConfig.maxScore : clientConstants.SCORE_INCREASE,
             mapString: this.props.startMatchConfig ? this.props.startMatchConfig.map.name : "Square 500",
-            maxScoreManuallyChanged: false,
             selectMapActive: false
         };
     },
@@ -258,10 +257,9 @@ export default React.createClass({
         });
     },
     onMaxScoreChange: function (event) {
-        var parsedMaxScore = event.target.value.replace(/[^0-9]/g, "");
-        var newMaxScore = parsedMaxScore === "" ? 0 : parseInt(parsedMaxScore);
-        newMaxScore = Math.min(newMaxScore, 1000);
-        this.setState({maxScore: newMaxScore, maxScoreManuallyChanged: true})
+        var newMaxScore = event.target.value === "" ? 0 : parseInt(event.target.value);
+        newMaxScore = Math.max(1, newMaxScore);
+        this.setState({maxScore: newMaxScore})
     },
     onMapSelectClick: function () {
         this.setState({selectMapActive: !this.state.selectMapActive});
@@ -284,7 +282,7 @@ export default React.createClass({
         var players = this.state.players.filter(function (player) {
             return player.id !== playerId;
         });
-        this.setState({players: players, maxScore: this.state.maxScoreManuallyChanged ? this.state.maxScore : this.state.maxScore - clientConstants.SCORE_INCREASE});
+        this.setState({players: players, maxScore: (players.length - 1) * clientConstants.SCORE_INCREASE});
     },
     onPlayerColorChange: function (playerId, newColorId) {
         this.setState(function (oldState) {
@@ -307,16 +305,17 @@ export default React.createClass({
         this.setState(function (prevState) {
             var name = getRandomUnusedName(prevState.players);
             var keyBinding = getUnusedKeyBindings(prevState.players)[0] || {left: null, right: null};
+            var newPlayers = prevState.players.concat([{
+                type: "human",
+                colorId: wormColorIds.find(id => prevState.players.every(p => p.colorId !== id)),
+                name: name,
+                left: keyBinding.left,
+                right: keyBinding.right,
+                id: getNextPlayerId()
+            }]);
             return {
-                players: prevState.players.concat([{
-                    type: "human",
-                    colorId: wormColorIds.find(id => prevState.players.every(p => p.colorId !== id)),
-                    name: name,
-                    left: keyBinding.left,
-                    right: keyBinding.right,
-                    id: getNextPlayerId()
-                }]),
-                maxScore: prevState.maxScoreManuallyChanged ? prevState.maxScore : prevState.maxScore + clientConstants.SCORE_INCREASE
+                players: newPlayers,
+                maxScore: (newPlayers.length - 1) * clientConstants.SCORE_INCREASE
             };
         });
     }
