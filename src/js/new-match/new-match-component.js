@@ -112,8 +112,8 @@ export default React.createClass({
                     <td className="col-name">
                         <input className="input animation-size-expand" type="text" onChange={this.onNameChange.bind(this, player.id)} value={player.name}/>
                     </td>
-                    <KeyPicker currentKey={leftKey} onKeyPicked={onLeftKeyPicked}/>
-                    <KeyPicker currentKey={rightKey} onKeyPicked={onRightKeyPicked}/>
+                    <KeyPicker currentKey={leftKey} onKeyPicked={(key) => {onLeftKeyPicked(key); setTimeout(this["keyPickerRightRef" + player.id].onClick, 0)}}/>
+                    <KeyPicker ref={(ref) => {this["keyPickerRightRef" + player.id] = ref}} currentKey={rightKey} onKeyPicked={onRightKeyPicked}/>
                     <td className="col-remove">
                         {removeButton}
                     </td>

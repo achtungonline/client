@@ -139,7 +139,8 @@ body {
   }
   .col-selected {
     outline: 4px solid;
-    outline-offset: -5px;
+    outline-offset: -4px;
+    background-color: $selected-color;
   }
   .col-remove {
     min-width: 40px
@@ -150,7 +151,7 @@ body {
 
   tbody tr:hover {
     td:not(:last-child) {
-      background-color: lightblue;
+      background-color: $selected-color;
     }
     .btn-remove-player {
       display: block;
