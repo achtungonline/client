@@ -37,7 +37,7 @@ export default React.createClass({
         var endReplayButton = <button className="btn btn-primary" onClick={this.state.replayGame.stop}>End replay</button>;
 
         return (
-            <div className="flex flex-center">
+            <div className="flex">
                 <div className="m-b-2 replay-container">
                     <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} overlay={this.props.overlay}>
                         { replayGame.isPaused() ? <GamePausedComponent gameState={this.state.roundData.gameState}/> : null}
@@ -45,7 +45,7 @@ export default React.createClass({
                     </GameCanvas>
                     <ProgressBar progress={replayGame.getReplayProgress} onTogglePause={this.progressBarTogglePause} onProgressChange={replayGame.setReplayProgress} />
                 </div>
-                <div className="m-l-2" style={{width: "290px"}}>
+                <div className="m-l-2" style={{flex: "1 0 auto"}}>
                     <Score gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} startScore={this.state.roundData.startScore} maxScore={match.matchConfig.maxScore} />
                     <div className="m-t-2">
                         <div>

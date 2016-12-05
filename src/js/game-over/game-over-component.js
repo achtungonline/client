@@ -37,7 +37,7 @@ export default React.createClass({
 
         return (
             <div className="m-x-3">
-                <div className="flex flex-center">
+                <div className="flex">
                     <div className="m-b-2">
                         <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}>
                             {!this.props.match.isMatchOver() ?
@@ -59,7 +59,7 @@ export default React.createClass({
                             }
                         </GameCanvas>
                     </div>
-                    <div className="m-l-2" style={{width: "290px"}}>
+                    <div className="m-l-2" style={{flex: "1 0 auto"}}>
                         <Score gameState={roundData.gameState} players={match.matchConfig.players} startScore={roundData.startScore} maxScore={match.matchConfig.maxScore} showTrophys={this.props.match.isMatchOver()}/>
                         <div className="m-t-2">
                             <div>

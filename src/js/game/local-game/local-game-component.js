@@ -45,14 +45,14 @@ export default React.createClass({
 
         return (
             <div className="m-x-3">
-                <div className="flex flex-center">
-                    <div className="m-b-2">
+                <div className="flex">
+                    <div className="m-b-2" style={{width: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large, height: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} >
                         <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={game.gameState} players={players}>
                             { game.isPaused() ? <GamePausedComponent gameState={game.gameState}/> : null}
                             <GameCountdownComponent gameState={game.gameState} getRenderTime={() => game.gameState.gameTime}/>
                         </GameCanvas>
                     </div>
-                    <div className="m-l-2" style={{width: "290px"}}>
+                    <div className="m-l-2" style={{flex: "1 0 auto"}}>
                         <Score gameState={game.gameState} players={players} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore}/>
                         <div className="m-t-2">
                             <div>

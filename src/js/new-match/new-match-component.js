@@ -124,8 +124,8 @@ export default React.createClass({
         var maxPlayersReached = this.state.players.length >= wormColorIds.length;
 
         return (
-            <div className="flex flex-center new-match">
-                <div>
+            <div className="flex new-match">
+                <div style={{flexBasis: "50%"}}>
                     <table className="table table-player" cellSpacing="0" cellPadding="0">
                         <tbody>
                         {rows}
@@ -140,47 +140,47 @@ export default React.createClass({
                         </tfoot>
                     </table>
                 </div>
-                <div className="game-settings">
+                <div style={{flexBasis: "50%", marginTop: "6px"}}>
                     <div className="flex flex-space-between">
                         <div className="flex max-score">
                             <img style={{marginTop: "auto"}} src="svg/trophy.svg" alt="Max score: "/>
                             <input style={{marginTop: "auto"}} className="input" type="number" value={this.state.maxScore} onChange={this.onMaxScoreChange}/>
                         </div>
                     </div>
-                    <div style={{width: clientConstants.DEFAULT_VISUAL_MAP_SIZES.medium, height: clientConstants.DEFAULT_VISUAL_MAP_SIZES.medium}}>
+                    <div className="new-match-preview">
                         {!this.state.selectMapActive ?
-                            <div className="flex canvas-overlay-hover-wrapper" style={{cursor: "pointer"}} onClick={this.onMapSelectClick}>
-                                <GamePreview size={clientConstants.DEFAULT_VISUAL_MAP_SIZES.medium} matchConfig={matchConfig}>
+                            <div className="flex canvas-overlay-hover-wrapper preview-canvas-container" style={{cursor: "pointer"}} onClick={this.onMapSelectClick}>
+                                <GamePreview matchConfig={matchConfig}>
                                     <GameOverlayComponent className="canvas-overlay-text map-canvas-z-index opacity-5 canvas-overlay-hover-effect">
                                         <h1>CHANGE MAP</h1>
                                     </GameOverlayComponent>
                                 </GamePreview>
                             </div>
                             :
-                            <div className="flex" style={{height: "100%", width: "100%", justifyContent: "space-between",alignContent: "space-around"}}>
-                                <div className="animation-size-expand-hover-small animation-size-expand canvas-overlay-hover-wrapper" style={{cursor: "pointer"}} onClick={this.onMapChange.bind(this, "Square 500")}>
-                                    <GamePreview size="180" centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Square 400")})}>
+                            <div className="flex preview-canvas-container" style={{height: "100%", width: "100%", justifyContent: "space-around",alignContent: "space-around"}}>
+                                <div className="animation-size-expand-hover-small animation-size-expand canvas-overlay-hover-wrapper" style={{cursor: "pointer", width: "40%", height: "40%"}} onClick={this.onMapChange.bind(this, "Square 500")}>
+                                    <GamePreview centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Square 400")})}>
                                         <GameOverlayComponent className="canvas-overlay-text map-canvas-z-index opacity-5 canvas-overlay-hover-effect">
                                             <h2>SMALL</h2>
                                         </GameOverlayComponent>
                                     </GamePreview>
                                 </div>
-                                <div className="animation-size-expand-hover-small animation-size-expand canvas-overlay-hover-wrapper" style={{cursor: "pointer"}} onClick={this.onMapChange.bind(this, "Square 800")}>
-                                    <GamePreview size="180" centerText="LARGE" matchConfig={this.getMatchConfig({map: createMap("Square 700")})}>
+                                <div className="animation-size-expand-hover-small animation-size-expand canvas-overlay-hover-wrapper" style={{cursor: "pointer", width: "40%", height: "40%"}} onClick={this.onMapChange.bind(this, "Square 800")}>
+                                    <GamePreview centerText="LARGE" matchConfig={this.getMatchConfig({map: createMap("Square 700")})}>
                                         <GameOverlayComponent className="canvas-overlay-text map-canvas-z-index opacity-5 canvas-overlay-hover-effect">
                                             <h2>LARGE</h2>
                                         </GameOverlayComponent>
                                     </GamePreview>
                                 </div>
-                                <div className="animation-size-expand-hover-small animation-size-expand canvas-overlay-hover-wrapper" style={{cursor: "pointer"}} onClick={this.onMapChange.bind(this, "Circle 500")}>
-                                    <GamePreview size="180" centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Circle 500")})}>
+                                <div className="animation-size-expand-hover-small animation-size-expand canvas-overlay-hover-wrapper" style={{cursor: "pointer", width: "40%", height: "40%"}} onClick={this.onMapChange.bind(this, "Circle 500")}>
+                                    <GamePreview centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Circle 500")})}>
                                         <GameOverlayComponent className="canvas-overlay-text map-canvas-z-index opacity-5 canvas-overlay-hover-effect">
                                             <h2>SMALL</h2>
                                         </GameOverlayComponent>
                                     </GamePreview>
                                 </div>
-                                <div className="animation-size-expand-hover-small animation-size-expand canvas-overlay-hover-wrapper" style={{cursor: "pointer"}} onClick={this.onMapChange.bind(this, "Circle 800")}>
-                                    <GamePreview size="180" centerText="LARGE" matchConfig={this.getMatchConfig({map: createMap("Circle 800")})}>
+                                <div className="animation-size-expand-hover-small animation-size-expand canvas-overlay-hover-wrapper" style={{cursor: "pointer", width: "40%", height: "40%"}} onClick={this.onMapChange.bind(this, "Circle 800")}>
+                                    <GamePreview centerText="LARGE" matchConfig={this.getMatchConfig({map: createMap("Circle 800")})}>
                                         <GameOverlayComponent className="canvas-overlay-text map-canvas-z-index opacity-5 canvas-overlay-hover-effect">
                                             <h2>LARGE</h2>
                                         </GameOverlayComponent>

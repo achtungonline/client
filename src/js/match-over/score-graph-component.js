@@ -26,7 +26,9 @@ export default React.createClass({
     },
     render: function() {
         return (
-            <GameCanvas gameState={this.state.replayGame.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.replayGame.getReplayTime} />
+            <div style={{width: WIDTH, height: HEIGHT}}>
+                <GameCanvas gameState={this.state.replayGame.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.replayGame.getReplayTime} />
+            </div>
         );
     },
     componentWillMount: function() {

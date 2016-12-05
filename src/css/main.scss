@@ -4,7 +4,6 @@
 @import "./flex";
 @import "./canvas";
 
-
 // Normalize
 table {
   line-height: inherit;
@@ -12,16 +11,17 @@ table {
 
 // General styling
 
-
-
 body {
   padding: 0;
   background-color: #faf7ed;
 }
 
-.page-center {
+.page-main {
   margin-right: auto;
   margin-left: auto;
+  max-width: 1200px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 /**
@@ -35,8 +35,8 @@ body {
   width: 240px;
   select {
     color: white;
-    -webkit-appearance:none;
-    -moz-appearance : none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     background: transparent;
     border: none;
     font-size: 14px;
@@ -76,12 +76,12 @@ body {
   fill: 'green'
 }
 
-
 /**
 * Table
 */
 
 .table {
+  width: 100%;
   td {
     padding: 8px
   }
@@ -116,11 +116,11 @@ body {
       color: white;
       padding: 3px;
       border-radius: 5px;
-      cursor:default
+      cursor: default
     }
     &:hover {
       .tie-info {
-        display:inline;
+        display: inline;
       }
     }
   }
@@ -131,11 +131,27 @@ body {
 */
 
 .table-player {
-  padding-top: 40px;
+
+  .col-bot {
+    width: 10%;
+  }
+
+  .col-color {
+    width: 10%;
+  }
+  .col-name {
+    width: 40%;
+    input {
+      //min-width: 300px;
+      //max-width: 450px;
+    }
+  }
 
   .col-keybinding {
+    width: 20%;
+    min-width: 66px;
     text-align: center;
-    min-width: 75px;
+    //min-width: 65px;
   }
   .col-selected {
     outline: 4px solid;
@@ -148,6 +164,7 @@ body {
   .col-ready {
     color: $green;
   }
+
 
   tbody tr:hover {
     td:not(:last-child) {
@@ -181,7 +198,22 @@ body {
   padding: 0 20px;
 }
 
-
+.new-match-preview {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  min-width: 510px;
+  height: 0px;
+  .preview-canvas-container {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+  }
+}
 
 .canvas-container canvas {
   position: absolute;
@@ -234,10 +266,6 @@ body {
   }
 }
 
-.game-settings {
-  padding: 8px;
-}
-
 .heading {
   h1 {
     margin-bottom: 0;
@@ -245,7 +273,7 @@ body {
   }
   margin-left: 20px;
   margin-right: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   border-bottom: 1px solid;
   border-color: #bdbdbd;
 }
@@ -290,6 +318,10 @@ body {
   :first-child {
     fill: #365899;
   }
+}
+
+.fb-like span {
+  margin-bottom: 4px;
 }
 
 @import "./utils";

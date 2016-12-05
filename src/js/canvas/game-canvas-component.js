@@ -28,8 +28,8 @@ export default React.createClass({
         return (
             <div className="canvas-container" style={
                 {
-                    width: this.props.config.width || this.props.config.size || this.props.gameState.map.width,
-                    height: this.props.config.height || this.props.config.size || this.props.gameState.map.height}
+                    width: this.props.config.width || this.props.config.size || "100%",
+                    height: this.props.config.height || this.props.config.size || "100%"}
                 }>
                 <canvas ref="mapCanvas" className="map-canvas-z-index"/>
                 <canvas ref="powerUpCanvas" className="power-up-canvas-z-index"/>

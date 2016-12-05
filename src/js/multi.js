@@ -131,7 +131,7 @@ var Component = React.createClass({
         }
 
         return (
-            <div className="page-center">
+            <div className="page-main">
                 <Header/>
                 {page}
             </div>
