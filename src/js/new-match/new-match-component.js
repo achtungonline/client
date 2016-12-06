@@ -152,7 +152,7 @@ export default React.createClass({
                             <div className="flex canvas-overlay-hover-wrapper preview-canvas-container" style={{cursor: "pointer"}} onClick={this.onMapSelectClick}>
                                 <GamePreview matchConfig={matchConfig}>
                                     <GameOverlayComponent className="canvas-overlay-text map-canvas-z-index opacity-5 canvas-overlay-hover-effect">
-                                        <h1>CHANGE MAP</h1>
+                                        <h1 style={{fontSize: "40px"}}>CHANGE MAP</h1>
                                     </GameOverlayComponent>
                                 </GamePreview>
                             </div>
