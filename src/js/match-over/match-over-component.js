@@ -45,7 +45,7 @@ export default React.createClass({
                 placementElement = placement;
             }
 
-            var player = thisComponent.props.match.matchConfig.players.find(function(p) {
+            var player = thisComponent.props.match.matchConfig.players.find(function (p) {
                 return p.id === playerScore.id;
             });
 
@@ -62,28 +62,30 @@ export default React.createClass({
             var width = 208;
             var gameState = roundData.gameState;
             var winningPlayerId = scoreUtil.createSortedList(roundData.roundScore)[0].id;
-            var winningPlayer = thisComponent.props.match.matchConfig.players.find(function(p) {
+            var winningPlayer = thisComponent.props.match.matchConfig.players.find(function (p) {
                 return p.id === winningPlayerId;
             });
 
             return (
-                <div key={index} className="m-x-2 m-b-3 round-replay" style={{width: width}}>
+                <div key={index} className="m-x-2 m-b-3 round-replay" style={{width: width, flexGrow: 1}}>
                     <div style={{textAlign: "center"}}><span style={{color: wormColors[winningPlayer.colorId]}}>{winningPlayer.name}</span></div>
-                    <div onClick={thisComponent.props.onRoundClick.bind(null, index)} className="canvas-overlay-hover-wrapper">
-                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.small}} gameState={gameState} players={thisComponent.props.match.matchConfig.players}>
-                            <GameOverlayComponent gameState={gameState} className="canvas-overlay-text opacity-0 canvas-overlay-hover-effect">
-                                <h3>Watch replay</h3>
-                            </GameOverlayComponent>
-                        </GameCanvas>
+                    <div className="match-over-replay">
+                        <div onClick={thisComponent.props.onRoundClick.bind(null, index)} className="canvas-overlay-hover-wrapper preview-canvas-container">
+                            <GameCanvas gameState={gameState} players={thisComponent.props.match.matchConfig.players}>
+                                <GameOverlayComponent gameState={gameState} className="canvas-overlay-text opacity-0 canvas-overlay-hover-effect">
+                                    <h3>Watch replay</h3>
+                                </GameOverlayComponent>
+                            </GameCanvas>
+                        </div>
                     </div>
                 </div>
             );
         });
 
         return (
-            <div className="m-x-2">
-                <div className="flex flex-no-wrap flex-center">
-                    <div className="m-b-3 m-r-3 flex flex-column flex-space-between" style={{width: "455px"}}>
+            <div className="">
+                <div className="flex flex-no-wrap m-b-3">
+                    <div className="flex flex-column flex-space-between m-r-3" style={{flexBasis: "50%"}}>
                         <table className="table table-score">
                             <tbody>
                             {scoreTableRows}
@@ -94,23 +96,23 @@ export default React.createClass({
                             <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
                         </div>
                     </div>
-                    <div ref="scoreGraphContainer" className="m-b-3 flex-self-center">
-                        <ScoreGraph match={this.props.match} />
+                    <div ref="scoreGraphContainer" style={{flexBasis: "50%"}}>
+                        <ScoreGraph match={this.props.match}/>
                     </div>
                 </div>
-                <div className="flex flex-center round-replay-elements">
+                <div className="flex round-replay-elements">
                     {roundElements}
                 </div>
             </div>
         );
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         document.addEventListener("keyup", this.onKeyUp);
     },
     componentWillUnmount: function () {
         document.removeEventListener("keyup", this.onKeyUp);
     },
-    onKeyUp: function(event) {
+    onKeyUp: function (event) {
         var newKey = parseEvent(event);
         if (newKey === CONTINUE_KEY || newKey === ENTER_KEY) {
             this.props.onRestartAction();

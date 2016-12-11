@@ -36,41 +36,39 @@ export default React.createClass({
         var matchWinningPlayer = match.matchConfig.players.find((p) => (p.id === sortedMatchScore[0].id));
 
         return (
-            <div className="m-x-3">
-                <div className="flex">
-                    <div className="m-b-2">
-                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}>
-                            {!this.props.match.isMatchOver() ?
-                                <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-overlay-text">
-                                    <div style={{color: wormColors[roundWinningPlayer.colorId]}}>
-                                        <h1>Round winner</h1>
-                                        <h1>{roundWinningPlayer.name}</h1>
-                                    </div>
-                                </GameOverlayComponent>
-                                :
-                                <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-overlay-text">
-                                    <div>
-                                        <h1 style={{color: wormColors[matchWinningPlayer.colorId]}}>Match winner</h1>
-                                        <h1 style={{color: wormColors[matchWinningPlayer.colorId], marginBottom: "90px"}}>{matchWinningPlayer.name}</h1>
-                                        <h3 style={{color: wormColors[roundWinningPlayer.colorId]}}>Round winner</h3>
-                                        <h3 style={{color: wormColors[roundWinningPlayer.colorId]}}>{roundWinningPlayer.name}</h3>
-                                    </div>
-                                </GameOverlayComponent>
-                            }
-                        </GameCanvas>
-                    </div>
-                    <div className="m-l-2" style={{flex: "1 0 auto"}}>
-                        <Score gameState={roundData.gameState} players={match.matchConfig.players} startScore={roundData.startScore} maxScore={match.matchConfig.maxScore} showTrophys={this.props.match.isMatchOver()}/>
-                        <div className="m-t-2">
-                            <div>
-                                {startNextGameButton}
-                            </div>
-                            <div>
-                                {replayButton}
-                            </div>
-                            <div>
-                                {endMatchButton}
-                            </div>
+            <div className="flex">
+                <div className="m-b-2">
+                    <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}>
+                        {!this.props.match.isMatchOver() ?
+                            <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-overlay-text">
+                                <div style={{color: wormColors[roundWinningPlayer.colorId]}}>
+                                    <h1>Round winner</h1>
+                                    <h1>{roundWinningPlayer.name}</h1>
+                                </div>
+                            </GameOverlayComponent>
+                            :
+                            <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-overlay-text">
+                                <div>
+                                    <h1 style={{color: wormColors[matchWinningPlayer.colorId]}}>Match winner</h1>
+                                    <h1 style={{color: wormColors[matchWinningPlayer.colorId], marginBottom: "90px"}}>{matchWinningPlayer.name}</h1>
+                                    <h3 style={{color: wormColors[roundWinningPlayer.colorId]}}>Round winner</h3>
+                                    <h3 style={{color: wormColors[roundWinningPlayer.colorId]}}>{roundWinningPlayer.name}</h3>
+                                </div>
+                            </GameOverlayComponent>
+                        }
+                    </GameCanvas>
+                </div>
+                <div className="m-l-2" style={{flex: "1 0 auto"}}>
+                    <Score gameState={roundData.gameState} players={match.matchConfig.players} startScore={roundData.startScore} maxScore={match.matchConfig.maxScore} showTrophys={this.props.match.isMatchOver()}/>
+                    <div className="m-t-2">
+                        <div>
+                            {startNextGameButton}
+                        </div>
+                        <div>
+                            {replayButton}
+                        </div>
+                        <div>
+                            {endMatchButton}
                         </div>
                     </div>
                 </div>

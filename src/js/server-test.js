@@ -62,13 +62,11 @@ var Component = React.createClass({
                 />;
         } else if (this.state.currentView === "replay-round") {
             page =
-                <div className="m-x-3">
-                    <ReplayComponent
-                        match={this.state.match}
-                        roundId={this.state.replayRoundId}
-                        onReplayOver={this.changeView.bind(this, this.state.previousView)}
-                    />
-                </div>;
+                <ReplayComponent
+                    match={this.state.match}
+                    roundId={this.state.replayRoundId}
+                    onReplayOver={this.changeView.bind(this, this.state.previousView)}
+                />
         } else if (this.state.currentView === "game-over") {
             page = <GameOverComponent
                 match={this.state.match}

@@ -37,17 +37,15 @@ export default React.createClass({
         var leaveButton = this.props.onLeaveAction ? <button className="btn btn-secondary" onClick={this.props.onLeaveAction}>Leave game</button> : null;
 
         return (
-            <div className="m-x-3">
-                <div className="flex flex-center">
-                    <div className="m-b-2">
-                        <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={this.props.gameState} players={players} renderTime={this.state.gameHandler.getRenderTime} overlay={this.props.overlay}/>
-                    </div>
-                    <div className="m-l-2" style={{width: "290px"}}>
-                        <Score gameState={this.props.gameState} players={players} renderTime={this.state.gameHandler.getRenderTime} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore} />
-                        <div className="m-t-2">
-                            <div>
-                                {leaveButton}
-                            </div>
+            <div className="flex flex-center">
+                <div className="m-b-2">
+                    <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={this.props.gameState} players={players} renderTime={this.state.gameHandler.getRenderTime} overlay={this.props.overlay}/>
+                </div>
+                <div className="m-l-2" style={{width: "290px"}}>
+                    <Score gameState={this.props.gameState} players={players} renderTime={this.state.gameHandler.getRenderTime} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore}/>
+                    <div className="m-t-2">
+                        <div>
+                            {leaveButton}
                         </div>
                     </div>
                 </div>
@@ -58,13 +56,13 @@ export default React.createClass({
         var gameHandler = RemoteGameHandler({
             gameState: this.props.gameState
         });
-        playerSteeringListener.addKeyListeners({ left: this.props.playerData.left, right: this.props.playerData.right, onSteeringUpdate: this.props.onSteeringUpdate });
+        playerSteeringListener.addKeyListeners({left: this.props.playerData.left, right: this.props.playerData.right, onSteeringUpdate: this.props.onSteeringUpdate});
         this.setState({gameHandler});
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.state.gameHandler.start();
     },
-    componentWillUnmount: function() {
+    componentWillUnmount: function () {
         playerSteeringListener.removeKeyListeners();
     }
 });
