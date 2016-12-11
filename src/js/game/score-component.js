@@ -79,7 +79,7 @@ export default React.createClass({
         var maxScoreDiv;
         if (this.props.maxScore) {
             maxScoreDiv =
-                <div className="flex flex-center max-score m-b-2">
+                <div className="flex max-score">
                     <img src="svg/trophy.svg" alt="Max score: "/>
                     <div className="flex-self-center">{this.props.maxScore}</div>
                 </div>;
