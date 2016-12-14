@@ -219,20 +219,9 @@ body {
 }
 
 .match-over-replay {
-  position: relative;
-  width: 100%;
-  padding-top: 100%;
-  min-width: 200px;
-  height: 0px;
-  .preview-canvas-container {
-    width: 100% !important;
-    height: 100% !important;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    bottom: 0px;
-    right: 0px;
-  }
+  width: 208px;
+  height: 208px;
+  margin: auto;
 }
 
 .canvas-container canvas {
