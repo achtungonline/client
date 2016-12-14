@@ -112,8 +112,18 @@ export default React.createClass({
                     <td className="col-name">
                         <input className="input animation-size-expand" type="text" onChange={this.onNameChange.bind(this, player.id)} value={player.name}/>
                     </td>
-                    <KeyPicker currentKey={leftKey} onKeyPicked={(key) => {onLeftKeyPicked(key); setTimeout(this["keyPickerRightRef" + player.id].onClick, 0)}}/>
-                    <KeyPicker ref={(ref) => {this["keyPickerRightRef" + player.id] = ref}} currentKey={rightKey} onKeyPicked={onRightKeyPicked}/>
+                    {player.type === "human" ? [
+                        <KeyPicker key="left" currentKey={leftKey} onKeyPicked={(key) => {
+                            onLeftKeyPicked(key);
+                            setTimeout(this["keyPickerRightRef" + player.id].onClick, 0)
+                        }}/>,
+                        <KeyPicker key="right" ref={(ref) => {
+                            this["keyPickerRightRef" + player.id] = ref
+                        }} currentKey={rightKey} onKeyPicked={onRightKeyPicked}/>
+                    ] : [
+                        <td key="left" className="col-keybinding"/>,
+                        <td key="right" className="col-keybinding"/>]
+                    }
                     <td className="col-remove">
                         {removeButton}
                     </td>
@@ -157,7 +167,7 @@ export default React.createClass({
                                 </GamePreview>
                             </div>
                             :
-                            <div className="flex preview-canvas-container" style={{height: "100%", width: "100%", justifyContent: "space-around",alignContent: "space-around"}}>
+                            <div className="flex preview-canvas-container" style={{height: "100%", width: "100%", justifyContent: "space-around", alignContent: "space-around"}}>
                                 <div className="animation-size-expand-hover-small animation-size-expand canvas-overlay-hover-wrapper" style={{cursor: "pointer", width: "40%", height: "40%"}} onClick={this.onMapChange.bind(this, "Square 500")}>
                                     <GamePreview centerText="SMALL" matchConfig={this.getMatchConfig({map: createMap("Square 400")})}>
                                         <GameOverlayComponent className="canvas-overlay-text map-canvas-z-index opacity-5 canvas-overlay-hover-effect">
