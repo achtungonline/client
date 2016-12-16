@@ -157,7 +157,7 @@ export default React.createClass({
                             <input style={{marginTop: "auto"}} className="input" type="number" value={this.state.maxScore} onChange={this.onMaxScoreChange}/>
                         </div>
                     </div>
-                    <div className="new-match-preview">
+                    <div style={{minWidth: "510px"}} className="new-match-preview">
                         {!this.state.selectMapActive ?
                             <div className="flex canvas-overlay-hover-wrapper preview-canvas-container" style={{cursor: "pointer"}} onClick={this.onMapSelectClick}>
                                 <GamePreview matchConfig={matchConfig}>

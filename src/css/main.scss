@@ -205,9 +205,24 @@ body {
   position: relative;
   width: 100%;
   padding-top: 100%;
-  min-width: 510px;
   height: 0px;
   .preview-canvas-container {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+  }
+}
+
+.score-graph-outer-wrapper{
+  position: relative;
+  width: 100%;
+  padding-top: 66.667%;
+  height: 0px;
+  .score-graph-inner-wrapper{
     width: 100% !important;
     height: 100% !important;
     position: absolute;

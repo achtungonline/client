@@ -19,25 +19,27 @@ export default React.createClass({
     propTypes: {
         match: React.PropTypes.object.isRequired
     },
-    getInitialState: function() {
+    getInitialState: function () {
         return {
             replayGame: null
         };
     },
-    render: function() {
+    render: function () {
         return (
-            <div style={{width: WIDTH, height: HEIGHT}}>
-                <GameCanvas gameState={this.state.replayGame.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.replayGame.getReplayTime} />
+            <div className="score-graph-outer-wrapper">
+                <div className="score-graph-inner-wrapper">
+                    <GameCanvas gameState={this.state.replayGame.gameState} players={this.props.match.matchConfig.players} renderTime={this.state.replayGame.getReplayTime}/>
+                </div>
             </div>
         );
     },
-    componentWillMount: function() {
+    componentWillMount: function () {
         var roundsData = this.props.match.matchState.roundsData;
-        var maxScore = Math.max(1, 1.15*scoreUtil.getHighestScore(this.props.match.getCurrentScore()));
+        var maxScore = Math.max(1, 1.15 * scoreUtil.getHighestScore(this.props.match.getCurrentScore()));
 
         var gameState = {
             wormPathSegments: {},
-            players: this.props.match.matchConfig.players.map(p => ({ id: p.id })),
+            players: this.props.match.matchConfig.players.map(p => ({id: p.id})),
             gameEvents: [],
             powerUpEvents: [],
             effectEvents: [],
@@ -64,15 +66,15 @@ export default React.createClass({
                     playerId: player.id,
                     size: LINE_WIDTH,
                     jump: false,
-                    startTime: dt*i,
+                    startTime: dt * i,
                     duration: dt,
-                    endTime: dt*(i+1),
-                    startX: Math.max(BORDER_WIDTH + MARGIN_X, dx*i),
-                    endX: Math.min(gameState.map.width - BORDER_WIDTH - MARGIN_X, + dx*(i+1)),
+                    endTime: dt * (i + 1),
+                    startX: Math.max(BORDER_WIDTH + MARGIN_X, dx * i),
+                    endX: Math.min(gameState.map.width - BORDER_WIDTH - MARGIN_X, +dx * (i + 1)),
                     startY: gameState.map.height - BORDER_WIDTH - MARGIN_Y - roundData.startScore[player.id] * dy,
                     endY: gameState.map.height - BORDER_WIDTH - MARGIN_Y - (roundData.startScore[player.id] + roundData.roundScore[player.id]) * dy
                 });
-                if(i === roundsData.length -1) {
+                if (i === roundsData.length - 1) {
                     var prevSegment = gameState.wormPathSegments[player.id][gameState.wormPathSegments[player.id].length - 1];
                     gameState.wormPathSegments[player.id].push({
                         type: "worm_died",
@@ -93,9 +95,10 @@ export default React.createClass({
 
         var replayGame = ReplayGameHandler({
             gameState,
-            onReplayOver: function() {}
+            onReplayOver: function () {
+            }
         });
         replayGame.start();
-        this.setState({ replayGame });
+        this.setState({replayGame});
     }
 });
