@@ -16,16 +16,45 @@ import GameOverComponent from "./game-over/game-over-component.js";
 import MatchOverComponent from "./match-over/match-over-component.js";
 import GameOverlay from "./canvas/overlays/game-overlay.js";
 
-import io from "socket.io-client";
+// import io from "socket.io-client";
+
+
+// function setupSocket() {
+//     var socket = io("http://localhost:3000");
+//     socket.on("connect", function () {
+//         console.log("Connected to server");
+//     });
+//     socket.on("test", function () {
+//         console.log("TEST");
+//     });
+//     socket.on("disconnect", function () {
+//         console.log("Disconnected from server");
+//     });
+//     return socket;
+// }
 
 function setupSocket() {
-    var socket = io("http://localhost:3000");
-    socket.on("connect", function () {
-        console.log("Connected to server");
-    });
-    socket.on("disconnect", function () {
-        console.log("Disconnected from server");
-    });
+    const socket = new WebSocket('ws://localhost:3000');
+    socket.onopen = function (event) {
+        console.log('Opened connection to server!');
+        console.log(event);
+    };
+
+    socket.onmessage = function (event) {
+        console.log("Recieved event");
+        console.log(event);
+        console.log(event.data);
+    };
+
+    socket.onclose = function (event) {
+        console.log('Event close: Closed connection to server!');
+        console.log(event);
+    };
+
+    socket.onerror = function (event) {
+        console.log('Some error occured!');
+        console.log(event);
+    };
     return socket;
 }
 
@@ -85,7 +114,7 @@ var Component = React.createClass({
                     matchConfig={this.state.matchConfig}
                     playerData={this.state.playerData}
                     onReadyAction={this.ready}
-                    onColorChange={newColorId => this.props.socket.emit("color_change", newColorId)}
+                    onColorChange={newColorId => this.props.socket.send({type: "color_change", colorId: newColorId})}
                     onLeaveAction={this.leave}
                 />;
         } else if (this.state.currentView === "game") {
@@ -95,7 +124,7 @@ var Component = React.createClass({
                     playerData={this.state.playerData}
                     gameState={this.state.gameState}
                     overlay={this.state.overlay}
-                    onSteeringUpdate={steering => this.props.socket.emit("player_steering", steering)}
+                    onSteeringUpdate={steering => this.props.socket.send({type: "player_steering", steering: steering})}
                     onLeaveAction={this.leave}
                 />;
         } else if (this.state.currentView === "replay-round") {
@@ -140,30 +169,54 @@ var Component = React.createClass({
     },
     componentWillMount: function () {
         windowFocusHandler.startListening();
-        this.props.socket.on("match_start", this.matchStart);
-        this.props.socket.on("match_over", this.matchOver);
-        this.props.socket.on("game_countdown", this.gameCountdown);
-        this.props.socket.on("game_start", this.gameStart);
-        this.props.socket.on("game_update", this.gameUpdate);
-        this.props.socket.on("game_over", this.gameOver);
-        this.props.socket.on("lobby_enter", this.newMatch);
-        this.props.socket.on("lobby_update", this.receiveMatchConfig);
+        this.props.socket.onmessage = function (event) {
+            if (!event.data) {
+                console.error("WTF: No data in event :(", event);
+                return;
+            }
+            var parsedData = JSON.parse(event.data);
+            var events = {
+                "match_start": this.matchStart,
+                "match_over": this.matchStart,
+                "game_countdown": this.matchStart,
+                "game_start": this.matchStart,
+                "game_update": this.matchStart,
+                "game_over": this.matchStart,
+                "lobby_enter": this.matchStart,
+                "lobby_update": this.matchStart
+            };
+            var eventFunction = events[parsedData.type];
+            if (!eventFunction) {
+                console.error("WTF: Unknown event type", event);
+                return;
+            }
+            eventFunction(parsedData);
+
+        };
+        // this.props.socket.addEventListener("match_start", this.matchStart);
+        // this.props.socket.addEventListener("match_over", this.matchOver);
+        // this.props.socket.addEventListener("game_countdown", this.gameCountdown);
+        // this.props.socket.addEventListener("game_start", this.gameStart);
+        // this.props.socket.addEventListener("game_update", this.gameUpdate);
+        // this.props.socket.addEventListener("game_over", this.gameOver);
+        // this.props.socket.addEventListener("lobby_enter", this.newMatch);
+        // this.props.socket.addEventListener("lobby_update", this.receiveMatchConfig);
     },
     componentWillUnmount: function () {
-        this.props.socket.off("match_start", this.matchStart);
-        this.props.socket.off("match_over", this.matchOver);
-        this.props.socket.off("game_countdown", this.gameCountdown);
-        this.props.socket.off("game_start", this.gameStart);
-        this.props.socket.off("game_update", this.gameUpdate);
-        this.props.socket.off("game_over", this.gameOver);
-        this.props.socket.off("lobby_enter", this.newMatch);
-        this.props.socket.off("lobby_update", this.receiveMatchConfig);
+        // this.props.socket.off("match_start", this.matchStart);
+        // this.props.socket.off("match_over", this.matchOver);
+        // this.props.socket.off("game_countdown", this.gameCountdown);
+        // this.props.socket.off("game_start", this.gameStart);
+        // this.props.socket.off("game_update", this.gameUpdate);
+        // this.props.socket.off("game_over", this.gameOver);
+        // this.props.socket.off("lobby_enter", this.newMatch);
+        // this.props.socket.off("lobby_update", this.receiveMatchConfig);
         windowFocusHandler.stopListening();
     },
     componentDidMount: function () {
         this.refs.name_input.focus();
     },
-    newMatch: function ({ playerId, matchConfig }) {
+    newMatch: function ({playerId, matchConfig}) {
         this.state.playerData.playerId = playerId;
         this.setState({matchConfig});
         this.changeView("new-match");
@@ -172,7 +225,7 @@ var Component = React.createClass({
         this.setState({matchConfig});
     },
     ready: function () {
-        this.props.socket.emit("ready");
+        this.props.socket.send({type: "ready"});
     },
     matchStart: function () {
         var match = Match({matchConfig: this.state.matchConfig});
@@ -199,7 +252,7 @@ var Component = React.createClass({
             serverSegments.map(compression.decompressWormSegment).forEach(function (segment) {
                 if (segment.index !== undefined) {
                     gameStateSegments[segment.index] = segment;
-                }  else {
+                } else {
                     throw Error("No index on wormPathSegment from server");
                 }
             })
@@ -231,11 +284,11 @@ var Component = React.createClass({
         this.forceUpdate();
     },
     enter: function () {
-        this.props.socket.emit("enter", {name: this.state.playerData.name});
+        this.props.socket.send(JSON.stringify({type: "enter", name: this.state.playerData.name, id: "2"}));
         this.changeView("waiting");
     },
     leave: function () {
-        this.props.socket.emit("leave");
+        this.props.socket.send({type: "leave"});
         this.changeView("start");
     }
 });
