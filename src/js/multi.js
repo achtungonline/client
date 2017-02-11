@@ -284,7 +284,7 @@ var Component = React.createClass({
         this.forceUpdate();
     },
     enter: function () {
-        this.props.socket.send(JSON.stringify({type: "enter", name: this.state.playerData.name, id: "2"}));
+        this.props.socket.send(JSON.stringify({type: "enter_lobby", name: this.state.playerData.name, id: "2"}));
         this.changeView("waiting");
     },
     leave: function () {
