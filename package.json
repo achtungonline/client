@@ -29,8 +29,8 @@
     "test": "node npm-scripts/bin/cmd.js test",
     "test-core": "node node_modules/core/npm-scripts/bin/cmd.js test node_modules/core/",
     "lint": "eslint src",
-    "clean": "shx rm -rf public/build",
-    "prebuild": "npm run clean && shx mkdir -p public/build/js && shx mkdir -p public/build/css",
+    "clean": "rm -rf public/build",
+    "prebuild": "npm run clean && mkdirp public/build/js && mkdirp public/build/css",
     "build": "npm run build:css && npm run build:js && npm run build:multi",
     "build:js": "browserify src/js/index.js -o public/build/js/index.js && uglifyjs public/build/js/index.js -o public/build/js/index.js",
     "build:multi": "browserify src/js/multi.js -o public/build/js/multi.js && uglifyjs public/build/js/multi.js -o public/build/js/multi.js",
@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "core": "achtungonline/core",
+    "mkdirp": "^0.5.1",
     "normalize.css": "^4.2.0",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
@@ -64,7 +65,6 @@
     "parallelshell": "^2.0.0",
     "promise": "^7.1.1",
     "serve-static": "^1.11.1",
-    "shx": "^0.1.4",
     "uglify-js": "^2.6.2",
     "uglifycss": "0.0.21",
     "watchify": "^3.7.0"
