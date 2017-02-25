@@ -230,7 +230,7 @@ var Component = React.createClass({
         this.setState({matchConfig: data.matchConfig});
     },
     ready: function () {
-        this.props.socket.send({type: "ready"});
+        this.props.socket.send(JSON.stringify({type: "player_ready", ready: true}));
     },
     matchStart: function () {
         var match = Match({matchConfig: this.state.matchConfig});
@@ -293,7 +293,7 @@ var Component = React.createClass({
         this.changeView("waiting");
     },
     leave: function () {
-        this.props.socket.send({type: "leave"});
+        this.props.socket.send(JSON.stringify({type: "player_leave"}));
         this.changeView("start");
     }
 });
