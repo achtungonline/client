@@ -5,6 +5,7 @@ import Match from "core/src/core/match.js";
 import forEach from "core/src/core/util/for-each.js";
 import * as gsf from "core/src/core/game-state-functions.js";
 import * as compression from "core/src/core/util/compression.js";
+import {wormColors} from "core/src/core/constants.js";
 
 import {parseEvent, keyPairs} from "./key-util.js";
 import * as windowFocusHandler from "./window-focus-handler.js";
@@ -168,6 +169,7 @@ var Component = React.createClass({
         this.setState({previousView: this.state.currentView, currentView: view})
     },
     componentWillMount: function () {
+        var thisComponent = this;
         windowFocusHandler.startListening();
         this.props.socket.onmessage = function (event) {
             if (!event.data) {
@@ -176,16 +178,17 @@ var Component = React.createClass({
             }
             var parsedData = JSON.parse(event.data);
             var events = {
-                "match_start": this.matchStart,
-                "match_over": this.matchStart,
-                "game_countdown": this.matchStart,
-                "game_start": this.matchStart,
-                "game_update": this.matchStart,
-                "game_over": this.matchStart,
-                "lobby_enter": this.matchStart,
-                "lobby_update": this.matchStart
+                "match_start": thisComponent.matchStart,
+                "match_over": thisComponent.matchOver,
+                "game_countdown": thisComponent.gameCountdown,
+                "game_start": thisComponent.gameStart,
+                "game_update": thisComponent.gameUpdate,
+                "game_over": thisComponent.gameOver,
+                "lobby_entered": thisComponent.newMatch,
+                "lobby_update": thisComponent.receiveMatchConfig
             };
             var eventFunction = events[parsedData.type];
+            console.log("parsedData: ", parsedData);
             if (!eventFunction) {
                 console.error("WTF: Unknown event type", event);
                 return;
@@ -216,13 +219,15 @@ var Component = React.createClass({
     componentDidMount: function () {
         this.refs.name_input.focus();
     },
-    newMatch: function ({playerId, matchConfig}) {
-        this.state.playerData.playerId = playerId;
-        this.setState({matchConfig});
+    newMatch: function (data) {
+        this.state.playerData.playerId = data.playerId;
+        data.matchConfig.map = gsf.createMapSquare({size: 600}); //TODO Refactor mapping of map
+        this.setState({matchConfig: data.matchConfig});
         this.changeView("new-match");
     },
-    receiveMatchConfig: function (matchConfig) {
-        this.setState({matchConfig});
+    receiveMatchConfig: function (data) {
+        data.matchConfig.map = gsf.createMapSquare({size: 600}); //TODO Refactor mapping of map
+        this.setState({matchConfig: data.matchConfig});
     },
     ready: function () {
         this.props.socket.send({type: "ready"});
@@ -284,7 +289,7 @@ var Component = React.createClass({
         this.forceUpdate();
     },
     enter: function () {
-        this.props.socket.send(JSON.stringify({type: "enter_lobby", name: this.state.playerData.name, id: "2"}));
+        this.props.socket.send(JSON.stringify({type: "enter_lobby", playerName: this.state.playerData.name}));
         this.changeView("waiting");
     },
     leave: function () {
