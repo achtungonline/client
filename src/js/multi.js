@@ -115,7 +115,7 @@ var Component = React.createClass({
                     matchConfig={this.state.matchConfig}
                     playerData={this.state.playerData}
                     onReadyAction={this.ready}
-                    onColorChange={newColorId => this.props.socket.send({type: "color_change", colorId: newColorId})}
+                    onColorChange={newColorId => this.props.socket.send(JSON.stringify({type: "color_change", colorId: newColorId}))}
                     onLeaveAction={this.leave}
                 />;
         } else if (this.state.currentView === "game") {
