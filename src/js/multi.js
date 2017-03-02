@@ -239,15 +239,15 @@ var Component = React.createClass({
     matchOver: function () {
         this.changeView("match-over");
     },
-    gameCountdown: function (countdown) {
-        this.state.overlay.startGameCountdown(countdown);
+    gameCountdown: function ({ duration }) {
+        this.state.overlay.startGameCountdown(duration);
     },
-    gameStart: function (gameState) {
+    gameStart: function ({ gameState }) {
         this.state.overlay.endGameCountdown();
         this.setState({gameState});
         this.changeView("game");
     },
-    gameUpdate: function (data) {
+    gameUpdate: function ({ data }) {
         var thisComponent = this;
         forEach(data.wormPathSegments, function (serverSegments, id) {
             var gameStateSegments = thisComponent.state.gameState.wormPathSegments[id];
