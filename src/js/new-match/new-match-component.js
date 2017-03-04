@@ -33,22 +33,6 @@ function getUnusedKeyBindings(players) {
     return keyPairs.filter(b => players.every(p => p.left !== b.left && p.right !== b.left && p.left !== b.right && p.right !== b.right));
 }
 
-function createMap(mapString) {
-    var mapData = mapString.split(" ");
-    var mapType = mapData[0];
-    var mapWidth = Number(mapData[1]);
-    var mapHeight = Number(mapData[2]);
-    if (mapType === "Square") {
-        return gsf.createMapSquare({name: mapString, size: mapWidth});
-    } else if (mapType === "Rectangle") {
-        return gsf.createMapRectangle({name: mapString, width: mapWidth, height: mapHeight});
-    } else if (mapType === "Circle") {
-        return gsf.createMapCircle({name: mapString, radius: mapWidth / 2});
-    } else {
-        throw new Error("Invalid map string: " + mapString);
-    }
-}
-
 export default React.createClass({
     displayName: "NewMatch",
     propType: {
@@ -85,7 +69,7 @@ export default React.createClass({
     render: function () {
         var matchConfig = {
             players: this.state.players,
-            map: createMap(this.state.mapString),
+            map: gsf.createMapFromString(this.state.mapString),
             maxScore: this.state.maxScore
         };
 
