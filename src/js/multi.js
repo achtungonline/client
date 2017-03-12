@@ -221,12 +221,12 @@ var Component = React.createClass({
     },
     newMatch: function (data) {
         this.state.playerData.playerId = data.playerId;
-        data.matchConfig.map = gsf.createMapSquare({size: 600}); //TODO Refactor mapping of map
+        data.matchConfig.map = gsf.createMapSquare({size: 800}); //TODO Refactor mapping of map
         this.setState({matchConfig: data.matchConfig});
         this.changeView("new-match");
     },
     receiveMatchConfig: function (data) {
-        data.matchConfig.map = gsf.createMapSquare({size: 600}); //TODO Refactor mapping of map
+        data.matchConfig.map = gsf.createMapSquare({size: 800}); //TODO Refactor mapping of map
         this.setState({matchConfig: data.matchConfig});
     },
     ready: function () {
