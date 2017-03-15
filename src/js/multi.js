@@ -35,7 +35,7 @@ import GameOverlay from "./canvas/overlays/game-overlay.js";
 // }
 
 function setupSocket() {
-    const socket = new WebSocket('ws://localhost:3000');
+    const socket = new WebSocket('ws://192.168.1.246:3000');
     socket.onopen = function (event) {
         console.log('Opened connection to server!');
         console.log(event);
@@ -114,6 +114,7 @@ var Component = React.createClass({
                 <NewMatchComponent
                     matchConfig={this.state.matchConfig}
                     playerData={this.state.playerData}
+                    lobbyData={this.state.lobbyData}
                     onReadyAction={this.ready}
                     onColorChange={newColorId => this.props.socket.send(JSON.stringify({type: "color_change", colorId: newColorId}))}
                     onLeaveAction={this.leave}
@@ -188,7 +189,7 @@ var Component = React.createClass({
                 "lobby_update": thisComponent.receiveMatchConfig
             };
             var eventFunction = events[parsedData.type];
-            console.log("parsedData: ", parsedData);
+            // console.log("parsedData: ", parsedData);
             if (!eventFunction) {
                 console.error("WTF: Unknown event type", event);
                 return;
@@ -222,32 +223,38 @@ var Component = React.createClass({
     newMatch: function (data) {
         this.state.playerData.playerId = data.playerId;
         data.matchConfig.map = gsf.createMapSquare({size: 800}); //TODO Refactor mapping of map
-        this.setState({matchConfig: data.matchConfig});
+        this.setState({
+            matchConfig: data.matchConfig,
+            lobbyData: data.lobbyData
+        });
         this.changeView("new-match");
     },
     receiveMatchConfig: function (data) {
         data.matchConfig.map = gsf.createMapSquare({size: 800}); //TODO Refactor mapping of map
-        this.setState({matchConfig: data.matchConfig});
+        this.setState({
+            matchConfig: data.matchConfig,
+            lobbyData: data.lobbyData
+        });
     },
     ready: function () {
         this.props.socket.send(JSON.stringify({type: "player_ready", ready: true}));
     },
-    matchStart: function () {
-        var match = Match({matchConfig: this.state.matchConfig});
+    matchStart: function ({matchConfig}) {
+        var match = Match({matchConfig: matchConfig});
         this.setState({match});
     },
     matchOver: function () {
         this.changeView("match-over");
     },
-    gameCountdown: function ({ duration }) {
+    gameCountdown: function ({duration}) {
         this.state.overlay.startGameCountdown(duration);
     },
-    gameStart: function ({ gameState }) {
+    gameStart: function ({gameState}) {
         this.state.overlay.endGameCountdown();
         this.setState({gameState});
         this.changeView("game");
     },
-    gameUpdate: function ({ data }) {
+    gameUpdate: function ({data}) {
         var thisComponent = this;
         forEach(data.wormPathSegments, function (serverSegments, id) {
             var gameStateSegments = thisComponent.state.gameState.wormPathSegments[id];
