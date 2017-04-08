@@ -35,7 +35,7 @@ import GameOverlay from "./canvas/overlays/game-overlay.js";
 // }
 
 function setupSocket() {
-    const socket = new WebSocket('ws://192.168.1.246:3000');
+    const socket = new WebSocket('ws://localhost:3000');
     socket.onopen = function (event) {
         console.log('Opened connection to server!');
         console.log(event);
@@ -126,7 +126,7 @@ var Component = React.createClass({
                     playerData={this.state.playerData}
                     gameState={this.state.gameState}
                     overlay={this.state.overlay}
-                    onSteeringUpdate={steering => this.props.socket.send({type: "player_steering", steering: steering})}
+                    onSteeringUpdate={steering => this.props.socket.send(JSON.stringify({type: "player_steering", steering: steering}))}
                     onLeaveAction={this.leave}
                 />;
         } else if (this.state.currentView === "replay-round") {
