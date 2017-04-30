@@ -5,6 +5,7 @@ import Match from "core/src/core/match.js";
 import forEach from "core/src/core/util/for-each.js";
 import * as gsf from "core/src/core/game-state-functions.js";
 import * as compression from "core/src/core/util/compression.js";
+import {wormColors} from "core/src/core/constants.js";
 
 import {parseEvent, keyPairs} from "./key-util.js";
 import * as windowFocusHandler from "./window-focus-handler.js";
@@ -16,16 +17,45 @@ import GameOverComponent from "./game-over/game-over-component.js";
 import MatchOverComponent from "./match-over/match-over-component.js";
 import GameOverlay from "./canvas/overlays/game-overlay.js";
 
-import io from "socket.io-client";
+// import io from "socket.io-client";
+
+
+// function setupSocket() {
+//     var socket = io("http://localhost:3000");
+//     socket.on("connect", function () {
+//         console.log("Connected to server");
+//     });
+//     socket.on("test", function () {
+//         console.log("TEST");
+//     });
+//     socket.on("disconnect", function () {
+//         console.log("Disconnected from server");
+//     });
+//     return socket;
+// }
 
 function setupSocket() {
-    var socket = io("http://localhost:3000");
-    socket.on("connect", function () {
-        console.log("Connected to server");
-    });
-    socket.on("disconnect", function () {
-        console.log("Disconnected from server");
-    });
+    const socket = new WebSocket('ws://localhost:3000');
+    socket.onopen = function (event) {
+        console.log('Opened connection to server!');
+        console.log(event);
+    };
+
+    socket.onmessage = function (event) {
+        console.log("Recieved event");
+        console.log(event);
+        console.log(event.data);
+    };
+
+    socket.onclose = function (event) {
+        console.log('Event close: Closed connection to server!');
+        console.log(event);
+    };
+
+    socket.onerror = function (event) {
+        console.log('Some error occured!');
+        console.log(event);
+    };
     return socket;
 }
 
@@ -84,8 +114,9 @@ var Component = React.createClass({
                 <NewMatchComponent
                     matchConfig={this.state.matchConfig}
                     playerData={this.state.playerData}
+                    lobbyData={this.state.lobbyData}
                     onReadyAction={this.ready}
-                    onColorChange={newColorId => this.props.socket.emit("color_change", newColorId)}
+                    onColorChange={newColorId => this.props.socket.send(JSON.stringify({type: "color_change", colorId: newColorId}))}
                     onLeaveAction={this.leave}
                 />;
         } else if (this.state.currentView === "game") {
@@ -95,7 +126,7 @@ var Component = React.createClass({
                     playerData={this.state.playerData}
                     gameState={this.state.gameState}
                     overlay={this.state.overlay}
-                    onSteeringUpdate={steering => this.props.socket.emit("player_steering", steering)}
+                    onSteeringUpdate={steering => this.props.socket.send(JSON.stringify({type: "player_steering", steering: steering}))}
                     onLeaveAction={this.leave}
                 />;
         } else if (this.state.currentView === "replay-round") {
@@ -139,57 +170,91 @@ var Component = React.createClass({
         this.setState({previousView: this.state.currentView, currentView: view})
     },
     componentWillMount: function () {
+        var thisComponent = this;
         windowFocusHandler.startListening();
-        this.props.socket.on("match_start", this.matchStart);
-        this.props.socket.on("match_over", this.matchOver);
-        this.props.socket.on("game_countdown", this.gameCountdown);
-        this.props.socket.on("game_start", this.gameStart);
-        this.props.socket.on("game_update", this.gameUpdate);
-        this.props.socket.on("game_over", this.gameOver);
-        this.props.socket.on("lobby_enter", this.newMatch);
-        this.props.socket.on("lobby_update", this.receiveMatchConfig);
+        this.props.socket.onmessage = function (event) {
+            if (!event.data) {
+                console.error("WTF: No data in event :(", event);
+                return;
+            }
+            var parsedData = JSON.parse(event.data);
+            var events = {
+                "match_start": thisComponent.matchStart,
+                "match_over": thisComponent.matchOver,
+                "game_countdown": thisComponent.gameCountdown,
+                "game_start": thisComponent.gameStart,
+                "game_update": thisComponent.gameUpdate,
+                "game_over": thisComponent.gameOver,
+                "lobby_entered": thisComponent.newMatch,
+                "lobby_update": thisComponent.receiveMatchConfig
+            };
+            var eventFunction = events[parsedData.type];
+            // console.log("parsedData: ", parsedData);
+            if (!eventFunction) {
+                console.error("WTF: Unknown event type", event);
+                return;
+            }
+            eventFunction(parsedData);
+
+        };
+        // this.props.socket.addEventListener("match_start", this.matchStart);
+        // this.props.socket.addEventListener("match_over", this.matchOver);
+        // this.props.socket.addEventListener("game_countdown", this.gameCountdown);
+        // this.props.socket.addEventListener("game_start", this.gameStart);
+        // this.props.socket.addEventListener("game_update", this.gameUpdate);
+        // this.props.socket.addEventListener("game_over", this.gameOver);
+        // this.props.socket.addEventListener("lobby_enter", this.newMatch);
+        // this.props.socket.addEventListener("lobby_update", this.receiveMatchConfig);
     },
     componentWillUnmount: function () {
-        this.props.socket.off("match_start", this.matchStart);
-        this.props.socket.off("match_over", this.matchOver);
-        this.props.socket.off("game_countdown", this.gameCountdown);
-        this.props.socket.off("game_start", this.gameStart);
-        this.props.socket.off("game_update", this.gameUpdate);
-        this.props.socket.off("game_over", this.gameOver);
-        this.props.socket.off("lobby_enter", this.newMatch);
-        this.props.socket.off("lobby_update", this.receiveMatchConfig);
+        // this.props.socket.off("match_start", this.matchStart);
+        // this.props.socket.off("match_over", this.matchOver);
+        // this.props.socket.off("game_countdown", this.gameCountdown);
+        // this.props.socket.off("game_start", this.gameStart);
+        // this.props.socket.off("game_update", this.gameUpdate);
+        // this.props.socket.off("game_over", this.gameOver);
+        // this.props.socket.off("lobby_enter", this.newMatch);
+        // this.props.socket.off("lobby_update", this.receiveMatchConfig);
         windowFocusHandler.stopListening();
     },
     componentDidMount: function () {
         this.refs.name_input.focus();
     },
-    newMatch: function ({ playerId, matchConfig }) {
-        this.state.playerData.playerId = playerId;
-        this.setState({matchConfig});
+    newMatch: function (data) {
+        this.state.playerData.playerId = data.playerId;
+        data.matchConfig.map = gsf.createMapSquare({size: 800}); //TODO Refactor mapping of map
+        this.setState({
+            matchConfig: data.matchConfig,
+            lobbyData: data.lobbyData
+        });
         this.changeView("new-match");
     },
-    receiveMatchConfig: function (matchConfig) {
-        this.setState({matchConfig});
+    receiveMatchConfig: function (data) {
+        data.matchConfig.map = gsf.createMapSquare({size: 800}); //TODO Refactor mapping of map
+        this.setState({
+            matchConfig: data.matchConfig,
+            lobbyData: data.lobbyData
+        });
     },
     ready: function () {
-        this.props.socket.emit("ready");
+        this.props.socket.send(JSON.stringify({type: "player_ready", ready: true}));
     },
-    matchStart: function () {
-        var match = Match({matchConfig: this.state.matchConfig});
+    matchStart: function ({matchConfig}) {
+        var match = Match({matchConfig: matchConfig});
         this.setState({match});
     },
     matchOver: function () {
         this.changeView("match-over");
     },
-    gameCountdown: function (countdown) {
-        this.state.overlay.startGameCountdown(countdown);
+    gameCountdown: function ({duration}) {
+        this.state.overlay.startGameCountdown(duration);
     },
-    gameStart: function (gameState) {
+    gameStart: function ({gameState}) {
         this.state.overlay.endGameCountdown();
         this.setState({gameState});
         this.changeView("game");
     },
-    gameUpdate: function (data) {
+    gameUpdate: function ({data}) {
         var thisComponent = this;
         forEach(data.wormPathSegments, function (serverSegments, id) {
             var gameStateSegments = thisComponent.state.gameState.wormPathSegments[id];
@@ -199,7 +264,7 @@ var Component = React.createClass({
             serverSegments.map(compression.decompressWormSegment).forEach(function (segment) {
                 if (segment.index !== undefined) {
                     gameStateSegments[segment.index] = segment;
-                }  else {
+                } else {
                     throw Error("No index on wormPathSegment from server");
                 }
             })
@@ -231,11 +296,11 @@ var Component = React.createClass({
         this.forceUpdate();
     },
     enter: function () {
-        this.props.socket.emit("enter", {name: this.state.playerData.name});
+        this.props.socket.send(JSON.stringify({type: "enter_lobby", playerName: this.state.playerData.name}));
         this.changeView("waiting");
     },
     leave: function () {
-        this.props.socket.emit("leave");
+        this.props.socket.send(JSON.stringify({type: "player_leave"}));
         this.changeView("start");
     }
 });

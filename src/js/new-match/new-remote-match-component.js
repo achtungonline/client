@@ -10,6 +10,7 @@ export default React.createClass({
     displayName: "NewMatch",
     propType: {
         matchConfig: React.PropTypes.object.isRequired,
+        lobbyData: React.PropTypes.object.isRequired,
         playerData: React.PropTypes.object.isRequired,
         onReadyAction: React.PropTypes.func.isRequired,
         onColorChange: React.PropTypes.func,
@@ -18,7 +19,7 @@ export default React.createClass({
     render: function () {
         var availableWormColorIds = wormColorIds.filter(colorId => this.props.matchConfig.players.every(p => p.colorId !== colorId));
 
-        var rows = this.props.matchConfig.players.map(function (player) {
+        var rows = this.props.lobbyData.players.map(function (player) {
             var leftKey, onLeftKeyPicked, rightKey, onRightKeyPicked;
             if (player.id === this.props.playerData.playerId) {
                 leftKey = this.props.playerData.left;
@@ -47,7 +48,7 @@ export default React.createClass({
             );
         }, this);
 
-        var controlledPlayer = this.props.matchConfig.players.find(p => p.id === this.props.playerData.playerId);
+        var controlledPlayer = this.props.lobbyData.players.find(p => p.id === this.props.playerData.playerId);
         var readyButton = controlledPlayer.ready ? null : <button className="btn btn-primary" onClick={this.props.onReadyAction}>Ready</button>;
         var leaveButton = this.props.onLeaveAction ? <button className="btn btn-secondary" onClick={this.props.onLeaveAction}>Leave</button> : null;
 
