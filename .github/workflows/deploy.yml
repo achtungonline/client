@@ -25,6 +25,7 @@ jobs:
           cache: 'npm'
       - run: npm install --no-audit --no-fund --legacy-peer-deps
       # Single-player build only — multiplayer needs a backend server we don't host.
+      - run: npm run prebuild
       - run: npm run build:css
       - run: npm run build:js
       - uses: actions/configure-pages@v5
