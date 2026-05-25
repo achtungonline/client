@@ -361,6 +361,8 @@ body {
   .page-main {
     padding-left: 8px;
     padding-right: 8px;
+    /* Breathing room at the bottom of scrollable pages; respect iOS home indicator. */
+    padding-bottom: calc(48px + env(safe-area-inset-bottom));
     max-width: 100%;
   }
 
