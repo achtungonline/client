@@ -54,8 +54,8 @@ export default React.createClass({
                             { game.isPaused() ? <GamePausedComponent gameState={game.gameState}/> : null}
                             <GameCountdownComponent gameState={game.gameState} getRenderTime={() => game.gameState.gameTime}/>
                         </GameCanvas>
-                        <TouchSteeringOverlay players={players} onSteeringUpdate={this.onTouchSteeringUpdate}/>
                     </div>
+                    <TouchSteeringOverlay players={players} onSteeringUpdate={this.onTouchSteeringUpdate}/>
                     <div className="local-game-mobile-topbar">
                         <Score gameState={game.gameState} players={players} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore} compact={true}/>
                     </div>

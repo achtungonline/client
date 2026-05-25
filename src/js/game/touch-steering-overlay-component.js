@@ -44,6 +44,7 @@ export default React.createClass({
             touchAction: "none",
             userSelect: "none",
             WebkitUserSelect: "none",
+            WebkitTouchCallout: "none",
             WebkitTapHighlightColor: "transparent"
         };
 
@@ -80,6 +81,7 @@ export default React.createClass({
                 onMouseDown={this.onMouseDown}
                 onMouseUp={this.onMouseUp}
                 onMouseLeave={this.onMouseUp}
+                onContextMenu={this.onContextMenu}
             />
         );
     },
@@ -138,6 +140,10 @@ export default React.createClass({
         var pressed = Object.assign({}, this.state.pressed);
         pressed[zoneKey] = true;
         this.applyZones(pressed, this.state.touches);
+    },
+    onContextMenu: function (event) {
+        // Prevent the long-press context menu on Android (which can also trigger haptic feedback)
+        event.preventDefault();
     },
     onMouseUp: function (event) {
         var zoneKey = event.currentTarget.getAttribute("data-zone");

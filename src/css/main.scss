@@ -467,6 +467,19 @@ body {
     background-color: #000;
     overflow: hidden;
     z-index: 1000;
+    /* Suppress Android haptic feedback / context menus / text selection on
+       long-press during play. */
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    * {
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
   }
 
   .local-game-mobile-canvas {
