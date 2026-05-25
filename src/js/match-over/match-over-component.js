@@ -84,6 +84,7 @@ export default React.createClass({
         var mobile = clientStateFunctions.isMobile();
 
         if (mobile) {
+            var hasManyRounds = this.props.match.matchState.roundsData.length >= 3;
             return (
                 <div className="match-over-mobile">
                     <table className="table table-score">
@@ -95,12 +96,19 @@ export default React.createClass({
                         <button className="btn btn-primary" onClick={this.props.onRestartAction}>Restart</button>
                         <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
                     </div>
-                    <div ref="scoreGraphContainer">
-                        <ScoreGraph match={this.props.match}/>
-                    </div>
-                    <div className="match-over-rounds-mobile">
-                        {roundElements}
-                    </div>
+                    {hasManyRounds ? (
+                        <div ref="scoreGraphContainer" className="match-over-score-graph-mobile">
+                            <ScoreGraph match={this.props.match}/>
+                        </div>
+                    ) : null}
+                    {roundElements.length > 0 ? (
+                        <div>
+                            <h3 className="match-over-rounds-heading-mobile">Rounds</h3>
+                            <div className="match-over-rounds-mobile">
+                                {roundElements}
+                            </div>
+                        </div>
+                    ) : null}
                 </div>
             );
         }

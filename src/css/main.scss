@@ -555,18 +555,38 @@ body {
     }
   }
 
+  .match-over-rounds-heading-mobile {
+    margin: 8px 0;
+    font-size: 16px;
+  }
+
   .match-over-rounds-mobile {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: 10px;
     .round-replay {
       width: 100% !important;
       height: auto !important;
+      margin: 0 !important;
+    }
+    /* Force the inner fixed-size .match-over-replay to fill the grid cell */
+    .match-over-replay {
+      width: 100% !important;
+      height: auto !important;
       aspect-ratio: 1 / 1;
+      margin: 0 !important;
       .canvas-container {
+        position: relative;
         width: 100% !important;
         height: 100% !important;
       }
+    }
+  }
+
+  /* Score graph: only shown for ≥3 rounds; force a shorter aspect for mobile */
+  .match-over-score-graph-mobile {
+    .score-graph-outer-wrapper {
+      padding-top: 50%; /* 2:1 aspect instead of 3:2 */
     }
   }
 

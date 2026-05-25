@@ -60,9 +60,6 @@ export default React.createClass({
                         <Score gameState={game.gameState} players={players} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore} compact={true}/>
                     </div>
                     <div className="local-game-mobile-actions">
-                        <button className="btn-clean local-game-mobile-icon-btn" onClick={this.togglePause} aria-label={game.isPaused() ? "Resume" : "Pause"}>
-                            {game.isPaused() ? "▶" : "❚❚"}
-                        </button>
                         <button className="btn-clean local-game-mobile-icon-btn" onClick={this.endGame} aria-label="End game">✕</button>
                     </div>
                 </div>
