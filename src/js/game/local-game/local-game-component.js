@@ -6,12 +6,14 @@ import * as scoreUtil from "core/src/core/score/score-util.js";
 import * as gsf from "core/src/core/game-state-functions.js";
 
 import PlayerSteeringListener from "../player-steering-listener.js";
+import TouchSteeringOverlay from "../touch-steering-overlay-component.js";
 import * as windowFocusHandler from "../../window-focus-handler.js";
 import LocalGameHandler from "./local-game-handler.js";
 import GameCanvas from "../../canvas/game-canvas-component.js";
 import Score from "../score-component.js";
 import {parseEvent, CONTINUE_KEY} from "../../key-util.js";
 import * as clientConstants from "../../constants.js"
+import * as clientStateFunctions from "../../client-state-functions.js";
 import GamePausedComponent from "../../canvas/overlays/game-paused-component.js";
 import GameCountdownComponent from "../../canvas/overlays/game-countdown-component.js";
 
@@ -33,7 +35,8 @@ export default React.createClass({
         return {
             localGame: null,
             startScore: startScore,
-            pausedDueToLostFocus: false
+            pausedDueToLostFocus: false,
+            mobile: clientStateFunctions.isMobile()
         }
     },
     render: function () {
@@ -43,15 +46,38 @@ export default React.createClass({
         var pauseButton = <button className="btn btn-primary" onClick={this.togglePause}>{game.isPaused() ? "Resume" : "Pause"}</button>;
         var endGameButton = <button className="btn btn-secondary" onClick={this.endGame}>End game</button>;
 
+        if (this.state.mobile) {
+            return (
+                <div className="local-game-mobile">
+                    <div className="local-game-mobile-canvas">
+                        <GameCanvas config={{fullscreen: true}} gameState={game.gameState} players={players}>
+                            { game.isPaused() ? <GamePausedComponent gameState={game.gameState}/> : null}
+                            <GameCountdownComponent gameState={game.gameState} getRenderTime={() => game.gameState.gameTime}/>
+                        </GameCanvas>
+                        <TouchSteeringOverlay players={players} onSteeringUpdate={this.onTouchSteeringUpdate}/>
+                    </div>
+                    <div className="local-game-mobile-topbar">
+                        <Score gameState={game.gameState} players={players} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore} compact={true}/>
+                    </div>
+                    <div className="local-game-mobile-actions">
+                        <button className="btn-clean local-game-mobile-icon-btn" onClick={this.togglePause} aria-label={game.isPaused() ? "Resume" : "Pause"}>
+                            {game.isPaused() ? "▶" : "❚❚"}
+                        </button>
+                        <button className="btn-clean local-game-mobile-icon-btn" onClick={this.endGame} aria-label="End game">✕</button>
+                    </div>
+                </div>
+            );
+        }
+
         return (
-            <div className="flex">
-                <div className="m-b-2" style={{width: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large, height: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}}>
+            <div className="flex local-game-desktop">
+                <div className="m-b-2 local-game-canvas-wrapper" style={{width: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large, height: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}}>
                     <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={game.gameState} players={players}>
                         { game.isPaused() ? <GamePausedComponent gameState={game.gameState}/> : null}
                         <GameCountdownComponent gameState={game.gameState} getRenderTime={() => game.gameState.gameTime}/>
                     </GameCanvas>
                 </div>
-                <div className="m-l-2" style={{flex: "1 0 auto"}}>
+                <div className="m-l-2 local-game-side" style={{flex: "1 0 auto"}}>
                     <Score gameState={game.gameState} players={players} startScore={this.state.startScore} maxScore={match.matchConfig.maxScore}/>
                     <div className="m-t-2">
                         <div>
@@ -64,6 +90,9 @@ export default React.createClass({
                 </div>
             </div>
         );
+    },
+    onTouchSteeringUpdate: function (playerId, steering) {
+        gsf.setPlayerSteering(this.state.localGame.gameState, playerId, steering);
     },
     componentWillMount: function () {
         var thisComponent = this;

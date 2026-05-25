@@ -10,6 +10,7 @@ import GameCanvas from "./../canvas/game-canvas-component.js";
 import * as windowFocusHandler from "../window-focus-handler.js";
 import {parseEvent, CONTINUE_KEY} from "../key-util.js";
 import * as clientConstants from "../constants.js"
+import * as clientStateFunctions from "../client-state-functions.js";
 import GamePausedComponent from "../canvas/overlays/game-paused-component.js";
 import GameCountdownComponent from "../canvas/overlays/game-countdown-component.js";
 
@@ -36,10 +37,36 @@ export default React.createClass({
         var pauseButton = replayGame.isReplayOver() ? null : <button className="btn btn-secondary" onClick={this.buttonTogglePause}>{replayGame.isPaused() ? "Resume" : "Pause"}</button>;
         var endReplayButton = <button className="btn btn-primary" onClick={this.state.replayGame.stop}>End replay</button>;
 
+        var mobile = clientStateFunctions.isMobile();
+        var canvasConfig = mobile
+            ? {fullscreen: true}
+            : {size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large};
+
+        if (mobile) {
+            return (
+                <div className="game-over-mobile">
+                    <div className="canvas-wrapper replay-container">
+                        <GameCanvas config={canvasConfig} gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} overlay={this.props.overlay}>
+                            { replayGame.isPaused() ? <GamePausedComponent gameState={this.state.roundData.gameState}/> : null}
+                            <GameCountdownComponent gameState={this.state.roundData.gameState} getRenderTime={() => replayGame.getReplayTime()}/>
+                        </GameCanvas>
+                        <ProgressBar progress={replayGame.getReplayProgress} onTogglePause={this.progressBarTogglePause} onProgressChange={replayGame.setReplayProgress} />
+                    </div>
+                    <div className="side">
+                        <Score gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} startScore={this.state.roundData.startScore} maxScore={match.matchConfig.maxScore} />
+                        <div className="m-t-2">
+                            {pauseButton}
+                            {endReplayButton}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div className="flex">
                 <div className="m-b-2 replay-container">
-                    <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} overlay={this.props.overlay}>
+                    <GameCanvas config={canvasConfig} gameState={this.state.roundData.gameState} players={match.matchConfig.players} renderTime={replayGame.getReplayTime} overlay={this.props.overlay}>
                         { replayGame.isPaused() ? <GamePausedComponent gameState={this.state.roundData.gameState}/> : null}
                         <GameCountdownComponent gameState={this.state.roundData.gameState} getRenderTime={() => replayGame.getReplayTime()}/>
                     </GameCanvas>

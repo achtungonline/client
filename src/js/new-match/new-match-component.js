@@ -14,6 +14,8 @@ import * as clientStateFunctions from "../client-state-functions.js";
 import * as clientConstants from "./../constants.js"
 import GameOverlayComponent from "../canvas/overlays/game-overlay-component.js";
 
+var MOBILE_MAX_HUMANS = 2;
+
 
 function getNextPlayerId() {
     return "player_" + idGenerator();
@@ -58,7 +60,10 @@ export default React.createClass({
     getInitialState: function () {
         var firstName = getRandomUnusedName([]);
         var secondName = getRandomUnusedName([{name: firstName}]);
+        var mobile = clientStateFunctions.isMobile();
+        var defaultMap = mobile ? "Square 400" : "Square 500";
         return {
+            mobile: mobile,
             players: this.props.startMatchConfig ? this.props.startMatchConfig.players : [
                 {
                     type: "human",
@@ -69,7 +74,7 @@ export default React.createClass({
                     id: getNextPlayerId()
                 },
                 {
-                    type: "bot",
+                    type: mobile ? "human" : "bot",
                     colorId: wormColorIds[1],
                     name: secondName,
                     left: keyPairs[1].left,
@@ -78,7 +83,7 @@ export default React.createClass({
                 }
             ],
             maxScore: this.props.startMatchConfig ? this.props.startMatchConfig.maxScore : clientConstants.SCORE_INCREASE,
-            mapString: this.props.startMatchConfig ? this.props.startMatchConfig.map.name : "Square 500",
+            mapString: this.props.startMatchConfig ? this.props.startMatchConfig.map.name : defaultMap,
             selectMapActive: false
         };
     },
@@ -88,6 +93,10 @@ export default React.createClass({
             map: createMap(this.state.mapString),
             maxScore: this.state.maxScore
         };
+
+        if (this.state.mobile) {
+            return this.renderMobile(matchConfig);
+        }
 
         var rows = this.state.players.map(function (player) {
             var leftKey, onLeftKeyPicked, rightKey, onRightKeyPicked;
@@ -203,13 +212,98 @@ export default React.createClass({
             </div>
         );
     },
+    renderMobile: function (matchConfig) {
+        var thisComponent = this;
+        var humanCount = this.state.players.filter(function (p) { return p.type === "human"; }).length;
+        var mapOptions = [
+            {label: "Small square", value: "Square 400"},
+            {label: "Big square", value: "Square 700"},
+            {label: "Small circle", value: "Circle 500"},
+            {label: "Big circle", value: "Circle 800"}
+        ];
+
+        var playerCards = this.state.players.map(function (player) {
+            var disableBotToggle = player.type === "bot" && humanCount >= MOBILE_MAX_HUMANS;
+            var removeButton = thisComponent.state.players.length > 2 ?
+                <button className="btn-clean player-card-remove animation-size-expand-hover" onMouseDown={thisComponent.onRemoveClick.bind(thisComponent, player.id)}>
+                    <img src="svg/cross.svg" alt="Remove" style={{width: 24, height: 24}}/>
+                </button> : null;
+            return (
+                <div key={player.id} className="player-card-mobile">
+                    <button className="btn-clean player-card-type-btn animation-size-expand-hover"
+                            onClick={disableBotToggle ? null : thisComponent.onBotChange.bind(thisComponent, player.id)}
+                            style={disableBotToggle ? {opacity: 0.4} : {}}
+                            title={disableBotToggle ? "Maximum 2 humans on mobile" : (player.type === "human" ? "Switch to bot" : "Switch to human")}
+                    >
+                        <img src={player.type === "human" ? "svg/human.svg" : "svg/computer.svg"} alt={player.type}/>
+                    </button>
+                    <div className="player-card-color">
+                        <ColorPicker colorId={player.colorId} availableWormColorIds={wormColorIds} onColorSelected={thisComponent.onPlayerColorChange.bind(thisComponent, player.id)}/>
+                    </div>
+                    <div className="player-card-name">
+                        <input className="input" type="text" onChange={thisComponent.onNameChange.bind(thisComponent, player.id)} value={player.name}/>
+                    </div>
+                    {removeButton}
+                </div>
+            );
+        });
+
+        var maxPlayersReached = this.state.players.length >= wormColorIds.length;
+
+        return (
+            <div className="new-match-mobile">
+                <div className="new-match-mobile-controls-hint">
+                    Up to 2 humans + bots. Players sit on opposite sides of the phone —
+                    P1 taps the bottom half (left/right), P2 taps the top half (mirrored).
+                </div>
+
+                {playerCards}
+
+                <div className="new-match-mobile-actions">
+                    {!maxPlayersReached ?
+                        <button className="btn btn-secondary" onClick={this.addPlayer}>Add player</button> : null}
+                    <button className="btn btn-primary" onClick={this.startMatch}>Start</button>
+                </div>
+
+                <div className="flex max-score" style={{margin: "0 auto"}}>
+                    <img style={{marginTop: "auto"}} src="svg/trophy.svg" alt="Max score: "/>
+                    <input style={{marginTop: "auto"}} className="input" type="number" value={this.state.maxScore} onChange={this.onMaxScoreChange}/>
+                </div>
+
+                <div className="new-match-mobile-map">
+                    {mapOptions.map(function (opt) {
+                        var selected = thisComponent.state.mapString === opt.value;
+                        return (
+                            <div key={opt.value}
+                                 className={"map-choice" + (selected ? " selected" : "")}
+                                 onClick={thisComponent.onMapChange.bind(thisComponent, opt.value)}>
+                                <GamePreview matchConfig={thisComponent.getMatchConfig({map: createMap(opt.value)})}>
+                                    <GameOverlayComponent className="canvas-overlay-text map-canvas-z-index opacity-5">
+                                        <h3 style={{fontSize: "14px"}}>{opt.label}</h3>
+                                    </GameOverlayComponent>
+                                </GamePreview>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    },
     componentDidMount: function () {
         document.addEventListener("mouseup", this.onMouseUp);
         document.addEventListener("keydown", this.onKeyDown);
+        window.addEventListener("resize", this.onWindowResize);
     },
     componentWillUnmount: function () {
         document.removeEventListener("mouseup", this.onMouseUp);
         document.removeEventListener("keydown", this.onKeyDown);
+        window.removeEventListener("resize", this.onWindowResize);
+    },
+    onWindowResize: function () {
+        var nowMobile = clientStateFunctions.isMobile();
+        if (nowMobile !== this.state.mobile) {
+            this.setState({mobile: nowMobile});
+        }
     },
     onKeyDown: function (event) {
         if (clientStateFunctions.isInputElementActive()) {
@@ -241,10 +335,17 @@ export default React.createClass({
         this.props.onStartMatchAction(this.getMatchConfig());
     },
     onBotChange: function (playerId, event) {
-        event.preventDefault();
+        if (event) {
+            event.preventDefault();
+        }
+        var mobile = this.state.mobile;
         this.setState(function (oldState) {
             var player = oldState.players.find(p => p.id === playerId);
             if (player.type === "bot") {
+                var humanCount = oldState.players.filter(p => p.type === "human").length;
+                if (mobile && humanCount >= MOBILE_MAX_HUMANS) {
+                    return {};
+                }
                 player.type = "human";
             } else {
                 player.type = "bot";
@@ -312,11 +413,14 @@ export default React.createClass({
         });
     },
     addPlayer: function () {
+        var mobile = this.state.mobile;
         this.setState(function (prevState) {
             var name = getRandomUnusedName(prevState.players);
             var keyBinding = getUnusedKeyBindings(prevState.players)[0] || {left: null, right: null};
+            var humanCount = prevState.players.filter(p => p.type === "human").length;
+            var newPlayerType = (mobile && humanCount >= MOBILE_MAX_HUMANS) ? "bot" : "human";
             var newPlayers = prevState.players.concat([{
-                type: "human",
+                type: newPlayerType,
                 colorId: wormColorIds.find(id => prevState.players.every(p => p.colorId !== id)),
                 name: name,
                 left: keyBinding.left,

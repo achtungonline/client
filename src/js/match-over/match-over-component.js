@@ -7,6 +7,7 @@ import GameCanvas from "./../canvas/game-canvas-component.js";
 import ScoreGraph from "./score-graph-component.js";
 import {parseEvent, CONTINUE_KEY, ENTER_KEY} from "../key-util.js";
 import * as clientConstants from "../constants.js"
+import * as clientStateFunctions from "../client-state-functions.js";
 import GameOverlayComponent from "../canvas/overlays/game-overlay-component.js";
 
 export default React.createClass({
@@ -79,6 +80,30 @@ export default React.createClass({
                 </div>
             );
         });
+
+        var mobile = clientStateFunctions.isMobile();
+
+        if (mobile) {
+            return (
+                <div className="match-over-mobile">
+                    <table className="table table-score">
+                        <tbody>
+                        {scoreTableRows}
+                        </tbody>
+                    </table>
+                    <div className="new-match-mobile-actions">
+                        <button className="btn btn-primary" onClick={this.props.onRestartAction}>Restart</button>
+                        <button className="btn btn-secondary" onClick={this.props.onExitAction}>Exit</button>
+                    </div>
+                    <div ref="scoreGraphContainer">
+                        <ScoreGraph match={this.props.match}/>
+                    </div>
+                    <div className="match-over-rounds-mobile">
+                        {roundElements}
+                    </div>
+                </div>
+            );
+        }
 
         return (
             <div className="">

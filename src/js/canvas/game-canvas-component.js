@@ -25,12 +25,19 @@ export default React.createClass({
         return {canvasState: csf.createState()};
     },
     render: function () {
+        var containerStyle;
+        var containerClass = "canvas-container";
+        if (this.props.config.fullscreen) {
+            containerStyle = {width: "100%", height: "100%"};
+            containerClass += " canvas-container-fullscreen";
+        } else {
+            containerStyle = {
+                width: this.props.config.width || this.props.config.size || "100%",
+                height: this.props.config.height || this.props.config.size || "100%"
+            };
+        }
         return (
-            <div className="canvas-container" style={
-                {
-                    width: this.props.config.width || this.props.config.size || "100%",
-                    height: this.props.config.height || this.props.config.size || "100%"}
-                }>
+            <div className={containerClass} style={containerStyle}>
                 <canvas ref="mapCanvas" className="map-canvas-z-index"/>
                 <canvas ref="powerUpCanvas" className="power-up-canvas-z-index"/>
                 <canvas ref="wormBodyCanvas1" className="worm-body-canvas-1-z-index"/>

@@ -7,6 +7,7 @@ import * as clientConstants from "../constants.js"
 import * as scoreUtil from "core/src/core/score/score-util.js";
 import {wormColors} from "core/src/core/constants.js";
 import * as gameStateFunctions from "core/src/core/game-state-functions.js"
+import * as clientStateFunctions from "../client-state-functions.js";
 import GameOverlayComponent from "../canvas/overlays/game-overlay-component.js";
 
 export default React.createClass({
@@ -35,27 +36,53 @@ export default React.createClass({
         var sortedMatchScore = scoreUtil.createSortedList(matchScore);
         var matchWinningPlayer = match.matchConfig.players.find((p) => (p.id === sortedMatchScore[0].id));
 
+        var mobile = clientStateFunctions.isMobile();
+        var canvasConfig = mobile
+            ? {fullscreen: true}
+            : {size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large};
+
+        var canvasOverlay = !this.props.match.isMatchOver() ?
+            <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-overlay-text">
+                <div style={{color: wormColors[roundWinningPlayer.colorId]}}>
+                    <h1>Round winner</h1>
+                    <h1>{roundWinningPlayer.name}</h1>
+                </div>
+            </GameOverlayComponent>
+            :
+            <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-overlay-text">
+                <div>
+                    <h1 style={{color: wormColors[matchWinningPlayer.colorId]}}>Match winner</h1>
+                    <h1 style={{color: wormColors[matchWinningPlayer.colorId], marginBottom: "90px"}}>{matchWinningPlayer.name}</h1>
+                    <h3 style={{color: wormColors[roundWinningPlayer.colorId]}}>Round winner</h3>
+                    <h3 style={{color: wormColors[roundWinningPlayer.colorId]}}>{roundWinningPlayer.name}</h3>
+                </div>
+            </GameOverlayComponent>;
+
+        if (mobile) {
+            return (
+                <div className="game-over-mobile">
+                    <div className="canvas-wrapper">
+                        <GameCanvas config={canvasConfig} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}>
+                            {canvasOverlay}
+                        </GameCanvas>
+                    </div>
+                    <div className="side">
+                        <Score gameState={roundData.gameState} players={match.matchConfig.players} startScore={roundData.startScore} maxScore={match.matchConfig.maxScore} showTrophys={this.props.match.isMatchOver()}/>
+                        <div className="m-t-2">
+                            {startNextGameButton}
+                            {replayButton}
+                            {endMatchButton}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div className="flex">
                 <div className="m-b-2">
-                    <GameCanvas config={{size: clientConstants.DEFAULT_VISUAL_MAP_SIZES.large}} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}>
-                        {!this.props.match.isMatchOver() ?
-                            <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-overlay-text">
-                                <div style={{color: wormColors[roundWinningPlayer.colorId]}}>
-                                    <h1>Round winner</h1>
-                                    <h1>{roundWinningPlayer.name}</h1>
-                                </div>
-                            </GameOverlayComponent>
-                            :
-                            <GameOverlayComponent gameState={roundData.gameState} className="canvas-overlay-faded-bg canvas-overlay-text">
-                                <div>
-                                    <h1 style={{color: wormColors[matchWinningPlayer.colorId]}}>Match winner</h1>
-                                    <h1 style={{color: wormColors[matchWinningPlayer.colorId], marginBottom: "90px"}}>{matchWinningPlayer.name}</h1>
-                                    <h3 style={{color: wormColors[roundWinningPlayer.colorId]}}>Round winner</h3>
-                                    <h3 style={{color: wormColors[roundWinningPlayer.colorId]}}>{roundWinningPlayer.name}</h3>
-                                </div>
-                            </GameOverlayComponent>
-                        }
+                    <GameCanvas config={canvasConfig} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}>
+                        {canvasOverlay}
                     </GameCanvas>
                 </div>
                 <div className="m-l-2" style={{flex: "1 0 auto"}}>
