@@ -570,6 +570,64 @@ body {
     }
   }
 
+  /* game-over on mobile reuses the fullscreen .local-game-mobile layout so the map
+     stays in the exact same place/size as during play (no flicker).
+
+     The action area is pinned to the bottom of the screen so in portrait it lives
+     entirely in the black letterbox band *below* the square map -- never covering
+     gameplay. It stays non-tappable for ~1s after mount so reflexive turn-taps at
+     round-end are ignored, then fades + slides up into view. */
+  .game-over-mobile-actions {
+    position: absolute;
+    left: 50%;
+    bottom: max(18px, env(safe-area-inset-bottom, 18px));
+    transform: translateX(-50%) translateY(10px);
+    z-index: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    width: min(320px, 82vw);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    &.armed {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+    /* Primary "Start next game": large rounded pill, prominent shadow */
+    .btn-primary {
+      margin: 0;
+      padding: 16px 24px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      background-color: $primary-color;
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45),
+                  0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+    }
+    /* Secondary actions become low-key ghost chips, side-by-side under the CTA */
+    .game-over-mobile-actions-secondary {
+      display: flex;
+      gap: 8px;
+      .btn-secondary {
+        flex: 1 1 0;
+        margin: 0;
+        padding: 10px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        border-radius: 999px;
+        background-color: rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        box-shadow: none;
+      }
+    }
+  }
+
   .match-over-rounds-heading-mobile {
     margin: 8px 0;
     font-size: 16px;

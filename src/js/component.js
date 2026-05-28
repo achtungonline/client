@@ -56,6 +56,7 @@ export default React.createClass({
             page = <GameOverComponent
                 match={this.state.match}
                 overlay={this.state.overlay}
+                previousView={this.state.previousView}
                 onStartNextGameAction={this.startNextGame}
                 onReplayAction={this.replayLastRound}
                 onMatchOverAction={this.endMatch}

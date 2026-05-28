@@ -19,6 +19,18 @@ export default React.createClass({
         onReplayAction: React.PropTypes.func,
         onMatchOverAction: React.PropTypes.func
     },
+    getInitialState: function () {
+        // On mobile the round/match ends while the player's thumbs are still
+        // mid-turn. We keep the action buttons non-tappable for a short moment
+        // so reflexive taps don't immediately trigger them.
+        //
+        // Skip the delay when re-entering from a replay -- the player got here
+        // by deliberately tapping "End replay", not by a round suddenly ending.
+        var armImmediately = this.props.previousView === "replay-round";
+        return {
+            actionsArmed: armImmediately
+        };
+    },
     render: function () {
         var match = this.props.match;
         var roundData = match.matchState.roundsData[match.matchState.roundsData.length - 1];
@@ -59,20 +71,28 @@ export default React.createClass({
             </GameOverlayComponent>;
 
         if (mobile) {
+            // Reuse the exact same fullscreen layout/classes as the live game so the
+            // map stays pixel-identical between gameplay and game-over (no flicker/jump).
+            // The action buttons float in the centre and only become tappable once armed.
+            var actionsClass = "game-over-mobile-actions" + (this.state.actionsArmed ? " armed" : "");
             return (
-                <div className="game-over-mobile">
-                    <div className="canvas-wrapper">
+                <div className="local-game-mobile game-over-mobile-fullscreen">
+                    <div className="local-game-mobile-canvas">
                         <GameCanvas config={canvasConfig} gameState={roundData.gameState} players={match.matchConfig.players} overlay={this.props.overlay}>
                             {canvasOverlay}
                         </GameCanvas>
                     </div>
-                    <div className="side">
+                    <div className="local-game-mobile-topbar">
                         <Score gameState={roundData.gameState} players={match.matchConfig.players} startScore={roundData.startScore} maxScore={match.matchConfig.maxScore} showTrophys={this.props.match.isMatchOver()}/>
-                        <div className="m-t-2">
-                            {startNextGameButton}
-                            {replayButton}
-                            {endMatchButton}
-                        </div>
+                    </div>
+                    <div className={actionsClass}>
+                        {startNextGameButton}
+                        {(replayButton || endMatchButton) ? (
+                            <div className="game-over-mobile-actions-secondary">
+                                {replayButton}
+                                {endMatchButton}
+                            </div>
+                        ) : null}
                     </div>
                 </div>
             );
@@ -104,9 +124,15 @@ export default React.createClass({
     },
     componentDidMount: function () {
         document.addEventListener("keyup", this.onKeyUp);
+        if (!this.state.actionsArmed) {
+            this._armTimer = setTimeout(() => {
+                this.setState({actionsArmed: true});
+            }, 1000);
+        }
     },
     componentWillUnmount: function () {
         document.removeEventListener("keyup", this.onKeyUp);
+        clearTimeout(this._armTimer);
     },
     onKeyUp: function (event) {
         var newKey = parseEvent(event);
